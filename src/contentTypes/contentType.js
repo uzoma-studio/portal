@@ -72,7 +72,7 @@ const ContentType = ({ pageData, contentTypeId, setIsPageIndex }) => {
                 const passDataToTheRightComponent = () => {
                     switch (type) {
                         case blog:
-                            return <Blog data={data} setIsPageIndex={setIsPageIndex} />
+                            return <Blog data={data} setIsPageIndex={setIsPageIndex} updateId={pageData.updates[0].id} />
                         case files:
                             return <Archive data={data} />
                         case chatbot:

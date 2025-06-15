@@ -29,7 +29,7 @@ const RenderSinglePageContent = ({ children, pageData, setCurrentPage }) => {
 
   return (
     <div>
-        {title && isPageIndex && <h4 className='mb-8'>{pageData.title}</h4> }
+        {title && isPageIndex && <h1 className='mb-8'>{pageData.title}</h1> }
 
         <div>
           {/* Button positioned to the left of close button */}

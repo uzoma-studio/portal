@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Single from './single'
 import Image from 'next/image'
 import { parseDate } from '@/utils/helpers'
+import AddPostModal from '@/widgets/SpaceEditor/AddPostModal'
 
 const StyledBlogPostsList = styled.ul`
     li {
@@ -27,12 +28,25 @@ const StyledBlogPostsList = styled.ul`
     }
 `
 
-const Blog = ({ data, setIsPageIndex }) => {
+const Blog = ({ data, setIsPageIndex, updateId }) => {
   
   const [currentPost, setCurrentPost] = useState(null)
+  const [showAddPostModal, setShowAddPostModal] = useState(false)
 
   return (
     <div>
+      {
+        showAddPostModal ? 
+          <AddPostModal
+            setIsModalOpen={setShowAddPostModal}
+            isCreatePostMode={true}
+            postData={null}
+            setIsEditMode={null}
+            updateId={updateId}
+          />
+          :
+          <button className='text-button' onClick={() => setShowAddPostModal(true)}>Add Post</button>
+      }
       {
         !currentPost ?
           data && 

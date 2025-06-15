@@ -12,7 +12,8 @@ import CreateStaticPageSection from './components/CreateStaticPageSection'
 import CreateChatbotSection from './components/CreateChatbotSection'
 import defaultBotNodes from './components/defaultBotNodes.json';
 
-const StyledForm = styled.form`
+// TODO: Move all styled components to a dedicated style.js file and import them from there
+export const StyledForm = styled.form`
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -61,7 +62,7 @@ export const StyledTextArea = styled.textarea`
     }
 `;
 
-const StyledSubmitButton = styled.button`
+export const StyledSubmitButton = styled.button`
     background: var(--primary-color);
     color: var(--accent-color);
     padding: 0.75rem 1.5rem;
@@ -81,7 +82,7 @@ const StyledSubmitButton = styled.button`
     }
 `;
 
-const StyledNumberInput = styled.input`
+export const StyledNumberInput = styled.input`
     padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 0.25rem;
@@ -159,7 +160,7 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, setIsEditMode }) 
         contentType: pageData?.contentType || '',
         body: pageData?.body || null,
         space,
-        update: pageData?.update || null,
+        updates: pageData?.updates || null,
         blogTitle: pageData?.title || '',
         blogDescription: pageData?.update?.description || '',
         chatbot: pageData?.chatbot || null,
@@ -245,7 +246,8 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, setIsEditMode }) 
                     }
 
                     // Link the page to the update
-                    pageData.update = update.id;
+                    pageData.updates = update.id;
+
                 } else if (formData.contentType === 'chatbot') {
                     const chatbot = await createEntry('chatbot', {
                         spaceId: String(formData.space.id),
