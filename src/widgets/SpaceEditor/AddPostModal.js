@@ -4,6 +4,7 @@ import { useSpace } from '@/context/SpaceProvider';
 import { generateSlug } from '@/utils/helpers';
 import RichTextEditor from './RichTextEditor';
 import { StyledMessage } from '@/styles/rootStyles';
+import CloseButton from '@/components/closeButton';
 
 // Import styled components from AddPageModal
 import {
@@ -14,7 +15,7 @@ import {
     StyledSubmitButton,
 } from './AddPageModal';
 
-const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, setIsEditMode, updateId }) => {
+const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) => {
     const { space } = useSpace();
     const [postBodyField, setPostBodyField] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,7 +50,6 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, setIsEditMod
 
     const handleClose = () => {
         setIsModalOpen(false);
-        !isCreatePostMode && setIsEditMode(false);
     };
 
     const handleSubmit = async (e) => {
@@ -120,6 +120,7 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, setIsEditMod
 
     return (
         <div className="mt-4">
+            <CloseButton closeFn={handleClose} position={{x: '95', y: '0'}} />
             <h2 className='mb-6'>Add a new post</h2>
             <StyledForm onSubmit={handleSubmit}>
                 <div>

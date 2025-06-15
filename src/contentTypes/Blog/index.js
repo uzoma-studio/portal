@@ -36,34 +36,32 @@ const Blog = ({ data, setIsPageIndex, updateId }) => {
   return (
     <div>
       {
-        showAddPostModal ? 
-          <AddPostModal
-            setIsModalOpen={setShowAddPostModal}
-            isCreatePostMode={true}
-            postData={null}
-            setIsEditMode={null}
-            updateId={updateId}
-          />
-          :
-          <button className='text-button' onClick={() => setShowAddPostModal(true)}>Add Post</button>
-      }
-      {
         !currentPost ?
-          data && 
-            <StyledBlogPostsList>
-                {
-                    data.map((blogPost) => {
-                      const { id, title, date } = blogPost
-                      return <li key={id} onClick={() => setCurrentPost(blogPost)}>
-                          {blogPost.coverImage && <Image src={blogPost.coverImage.url} width={100} height={150} alt={blogPost.coverImage.alt} /> }
-                          <div className='text'>
-                            <h4>{title}</h4>
-                            <p>{parseDate(date)}</p>
-                          </div>
-                      </li>
-                    })
-                }
-            </StyledBlogPostsList>
+            showAddPostModal ? 
+              <AddPostModal
+                setIsModalOpen={setShowAddPostModal}
+                isCreatePostMode={true}
+                postData={null}
+                updateId={updateId}
+              />
+              :
+              <>
+                <button className='text-button' onClick={() => setShowAddPostModal(true)}>Add Post</button>
+                <StyledBlogPostsList>
+                    {
+                        data.map((blogPost) => {
+                          const { id, title, date } = blogPost
+                          return <li key={id} onClick={() => setCurrentPost(blogPost)}>
+                              {blogPost.coverImage && <Image src={blogPost.coverImage.url} width={100} height={150} alt={blogPost.coverImage.alt} /> }
+                              <div className='text'>
+                                <h4>{title}</h4>
+                                <p>{parseDate(date)}</p>
+                              </div>
+                          </li>
+                        })
+                    }
+                </StyledBlogPostsList>
+              </>
           :
           <Single currentPost={currentPost} setCurrentPost={setCurrentPost} setIsPageIndex={setIsPageIndex} />
       }
