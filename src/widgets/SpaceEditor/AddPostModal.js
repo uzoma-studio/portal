@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { createEntry, updateEntry } from '../../../data/createContent.server';
-import { uploadMedia } from '../../../data/media.server';
 import { useSpace } from '@/context/SpaceProvider';
 import { generateSlug } from '@/utils/helpers';
 import RichTextEditor from './RichTextEditor';
