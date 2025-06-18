@@ -5,6 +5,7 @@ import { generateSlug } from '@/utils/helpers';
 import RichTextEditor from './RichTextEditor';
 import { StyledMessage } from '@/styles/rootStyles';
 import CloseButton from '@/components/closeButton';
+import { handleMediaUpload } from '@/utils/helpers';
 
 // Import styled components from AddPageModal
 import {
@@ -63,43 +64,6 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, setPosts, postData, up
         setIsModalOpen(false);
     };
 
-    const handleMediaUpload = async (formImage, updateData) => {
-        if (formImage instanceof File) {
-            try {
-
-                const uploadFormData = new FormData();
-                uploadFormData.append('file', formImage);
-                uploadFormData.append(
-                    '_payload',
-                    JSON.stringify({
-                        alt: formImage.name,
-                    }),
-                )
-    
-                const response = await fetch(`/api/media`, {
-                    method: 'POST',
-                    body: uploadFormData,
-                });
-    
-                if (!response.ok) {
-                    throw new Error('Failed to upload media');
-                }
-    
-                const media = await response.json();
-                
-                return media?.doc?.id;
-            } catch (error) {
-                console.error('Error uploading media:', error);
-                setMessage({
-                    type: 'error',
-                    text: 'Failed to upload cover image. Please try again.'
-                });
-                setIsSubmitting(false);
-                return;
-            }
-        }
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -114,7 +78,7 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, setPosts, postData, up
                 };
 
                 // Handle cover image upload if present
-                newPostData.coverImage = await handleMediaUpload(formData.coverImage, newPostData)
+                newPostData.coverImage = await handleMediaUpload(formData.coverImage)
 
                 const createdPost = await createEntry('posts', newPostData);
 
@@ -147,7 +111,7 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, setPosts, postData, up
                 let updateData = { ...formData };
 
                 // Handle cover image upload if present
-                updateData.coverImage = await handleMediaUpload(formData.coverImage, updateData)
+                updateData.coverImage = await handleMediaUpload(formData.coverImage)
 
                 const updatedPost = await updateEntry('posts', postData.id, updateData);
 

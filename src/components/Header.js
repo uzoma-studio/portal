@@ -45,7 +45,6 @@ const Header = ({ background, height, pages, showPagesNav }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const theme = isSpace && settings?.theme ? settings.theme : {};
-    const siteTitle = isSpace && settings?.siteTitle ? settings.siteTitle : '';
 
     return (
         <>
@@ -67,7 +66,7 @@ const Header = ({ background, height, pages, showPagesNav }) => {
                             <span className="block w-full h-0.5" />
                         </StyledHamburger>
                         <p className="uppercase text-2xl m-0">
-                            {siteTitle}
+                            {space.name}
                         </p>
                         <div className="flex items-center gap-4 z-10">
                             {user ? <UserProfile /> : <AuthButton />}

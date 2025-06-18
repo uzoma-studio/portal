@@ -55,7 +55,7 @@ const NewsTicker = ({ backgroundColor, scrollSpeed, itemSpacing }) => {
     useEffect(() => {
         async function fetchData() {
             const data = await getContent('newsTicker', settings.spaceId);
-            setTickerItems(data.docs[0].tickerItems)
+            setTickerItems(data?.docs[0]?.tickerItems)
         }
 
         fetchData();

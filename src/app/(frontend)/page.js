@@ -1,17 +1,9 @@
-import React from 'react'
-import { AppProvider } from '../../../context'
-import Link from 'next/link'
+'use client'
 
-/**
- * Home component
- * 
- * This is a server-side component that fetches data from the server and provides
- * it to the client-side components for rendering. The component uses a provider
- * for context management and dynamically renders templates based on the fetched data.
- * 
- * @returns {JSX.Element} The Home page with the appropriate template and site settings
- */
-export const dynamic = 'force-dynamic'; //TODO: with this, data is fetched on every incoming request to the server. Find less expensive ways of handling this while ensuring config stays fresh and up to date
+import React, { useEffect } from 'react'
+import Link from 'next/link'
+import { useAuth } from '@/context/AuthProvider';
+import { useRouter } from 'next/navigation';
 
 const features = [
   {
@@ -37,10 +29,20 @@ const features = [
   },
 ];
 
-const Home = async () => {
+
+const Home = () => {
+  
+  const { user } = useAuth()
+  const router = useRouter();
+
+  useEffect(() => {
+    if(user){
+      router.push('/jumping')
+    }
+  }, [])
+  
   return (
-    <AppProvider value={{ title: 'Home' }}>
-      <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
         {/* Hero Section */}
         <div className="max-w-4xl mx-auto px-4 pt-24 pb-20 text-center">
           <h1 className="text-5xl sm:text-6xl font-extrabold text-gray-900 mb-6 font-mono tracking-tight">
@@ -100,8 +102,7 @@ const Home = async () => {
             </Link>
           </div>
         </div>
-      </div>
-    </AppProvider>
+    </div>
   );
 }
 

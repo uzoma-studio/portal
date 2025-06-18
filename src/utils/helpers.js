@@ -78,3 +78,40 @@ export const generateSlug = (title) => {
     
     return slug;
 }; 
+
+export const handleMediaUpload = async (formImage) => {
+    if (formImage instanceof File) {
+        try {
+
+            const uploadFormData = new FormData();
+            uploadFormData.append('file', formImage);
+            uploadFormData.append(
+                '_payload',
+                JSON.stringify({
+                    alt: formImage.name,
+                }),
+            )
+
+            const response = await fetch(`/api/media`, {
+                method: 'POST',
+                body: uploadFormData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to upload media');
+            }
+
+            const media = await response.json();
+            
+            return media?.doc?.id;
+        } catch (error) {
+            console.error('Error uploading media:', error);
+            setMessage({
+                type: 'error',
+                text: 'Failed to upload cover image. Please try again.'
+            });
+            setIsSubmitting(false);
+            return;
+        }
+    }
+}

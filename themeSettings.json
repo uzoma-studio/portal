@@ -10,7 +10,6 @@
     "defaultPageStyles": {
       "borderColor": "purple",
       "borderWidth": "3px",
-      "displayStyle": "center-modal",
       "backgroundColor": "#ffffff",
       "textColor": "#222222",
       "font": "Courier New"
@@ -26,7 +25,7 @@
     "backgroundColor": "#fff",
     "headerFontColor": "#222",
     "contentTextColor": "#222",
-    "backgroundImageRenderMode": "center",
+    "backgroundImageRenderMode": "background",
     "environment": "park"
   }
 }

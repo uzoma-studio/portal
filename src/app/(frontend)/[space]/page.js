@@ -32,7 +32,7 @@ const SpacePageContent = () => {
         )
     }
 
-    if (!space || !(pages.length > 0)) {
+    if (!space) {
         return (
             <p>No data available</p>
         )

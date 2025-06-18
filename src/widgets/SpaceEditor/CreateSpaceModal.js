@@ -10,6 +10,7 @@ import {
 } from './AddPageModal';
 import { StyledMessage, StyledModalOverlay, StyledModalContent } from '@/styles/rootStyles';
 import CloseButton from '@/components/closeButton';
+import { handleMediaUpload } from '@/utils/helpers';
 
 const CreateSpaceModal = ({ spaceData }) => {
 
@@ -18,6 +19,9 @@ const CreateSpaceModal = ({ spaceData }) => {
     const [formData, setFormData] = useState({
         name: spaceData?.name || '',
         domain: spaceData?.domain || '',
+        settings: {
+            backgroundImage: spaceData?.settings?.backgroundImage || null
+        }
     });
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [message, setMessage] = useState({ type: '', text: '' })
@@ -53,13 +57,28 @@ const CreateSpaceModal = ({ spaceData }) => {
         router.push('/jumping')
     }
 
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setFormData(prev => ({
+                ...prev,
+                settings: {
+                    backgroundImage: file
+                }
+            }));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setMessage({ type: '', text: '' });
 
         try {
-            const newSpace = await createEntry('spaces', formData);
+            let newSpaceData = { ...formData }
+            newSpaceData.settings.backgroundImage = await handleMediaUpload(formData.settings.backgroundImage)
+
+            const newSpace = await createEntry('spaces', newSpaceData);
                 
             if (newSpace?.id) {
                 setMessage({ 
@@ -107,7 +126,7 @@ const CreateSpaceModal = ({ spaceData }) => {
                             />
                         </div>
                         <div>
-                            <StyledLabel htmlFor="title" className="block mb-2">
+                            <StyledLabel htmlFor="domain" className="block mb-2">
                                 Space Domain <span style={{color: '#ccc'}}><i><small>portal8.space/___</small></i></span>
                             </StyledLabel>
                             <StyledInput
@@ -118,6 +137,20 @@ const CreateSpaceModal = ({ spaceData }) => {
                                 onChange={handleInputChange}
                                 className="w-full"
                                 required
+                            />
+                        </div>
+
+                        <div>
+                            <StyledLabel htmlFor="backgroundImage" className="block mb-2">
+                                Space Image
+                            </StyledLabel>
+                            <StyledInput
+                                id="backgroundImage"
+                                name="backgroundImage"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="w-full"
                             />
                         </div>
 

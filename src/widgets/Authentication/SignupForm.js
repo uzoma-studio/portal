@@ -24,9 +24,9 @@ const SignupForm = ({ onClose, setUser, isAuthPage }) => {
           setMessage(data.message || data.error);
           setTimeout(async() => {
             if(data.user){
+              setUser(data.user);
               // Different behaviours depending on where the user is signing in from
               if(!isAuthPage){
-                setUser(data.user);
                 onClose();
               } else {
                 router.push('/jumping')
