@@ -51,6 +51,7 @@ const LoginForm = ({ onClose, isAuthPage }) => {
         }
     };
 
+    // TODO: Use modal styling in `rootStyles` here
     return (
         <form onSubmit={handleLogin}>
             <input
