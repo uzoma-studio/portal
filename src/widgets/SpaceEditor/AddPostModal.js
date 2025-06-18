@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createEntry, updateEntry } from '../../../data/createContent.server';
+import { uploadMedia } from '../../../data/media.server';
 import { useSpace } from '@/context/SpaceProvider';
 import { generateSlug } from '@/utils/helpers';
 import RichTextEditor from './RichTextEditor';
@@ -20,6 +21,7 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) 
     const [postBodyField, setPostBodyField] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
+    const [uploadedFile, setUploadedFile] = useState(null)
 
     const buttonText = isCreatePostMode ? { default: 'Create', active: 'Creating' } : { default: 'Edit', active: 'Editing' };
     
@@ -48,6 +50,16 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) 
         }));
     };
 
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setFormData(prev => ({
+                ...prev,
+                coverImage: file
+            }));
+        }
+    };
+
     const handleClose = () => {
         setIsModalOpen(false);
     };
@@ -60,12 +72,30 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) 
         if (isCreatePostMode) {
             try {
                 const slug = generateSlug(formData.title);
-                const postData = {
+                let newPostData = {
                     ...formData,
                     slug
                 };
 
-                const res = await createEntry('posts', postData);
+                // Handle cover image upload if present
+                if (formData.coverImage instanceof File) {
+                    const uploadFormData = new FormData();
+                    uploadFormData.append('file', formData.coverImage);
+
+                    const response = await fetch('/api/media', {
+                        method: 'POST',
+                        body: uploadFormData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to upload media');
+                    }
+
+                    const media = await response.json();
+                    newPostData.coverImage = media.id;
+                }
+
+                const res = await createEntry('posts', newPostData);
 
                 if (res?.id) {
                     setMessage({
@@ -90,7 +120,36 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) 
             }
         } else {
             try {
-                const updatedPost = await updateEntry('posts', postData.id, formData);
+                let updateData = { ...formData };
+
+                // Handle cover image upload if present
+                if (formData.coverImage instanceof File) {
+
+                    const uploadFormData = new FormData();
+                    uploadFormData.append('file', formData.coverImage);
+                    uploadFormData.append(
+                        '_payload',
+                        JSON.stringify({
+                            alt: formData.coverImage.name,
+                        }),
+                    )
+
+                    const response = await fetch(`/api/media`, {
+                        method: 'POST',
+                        body: uploadFormData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to upload media');
+                    }
+
+                    const media = await response.json();
+                    console.log(media);
+                    
+                    updateData.coverImage = media?.doc?.id;
+                }
+
+                const updatedPost = await updateEntry('posts', postData.id, updateData);
 
                 if (updatedPost?.id) {
                     setMessage({
@@ -172,7 +231,7 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) 
                         name="coverImage"
                         type="file"
                         accept="image/*"
-                        onChange={handleInputChange}
+                        onChange={handleFileChange}
                         className="w-full"
                     />
                 </div>
