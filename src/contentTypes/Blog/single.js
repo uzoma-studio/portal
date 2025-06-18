@@ -3,10 +3,16 @@ import RichText from '@/utils/richTextRenderer'
 import { parseDate } from '@/utils/helpers'
 import Image from 'next/image'
 import AddPostModal from '@/widgets/SpaceEditor/AddPostModal'
+import { useSpace } from '@/context/SpaceProvider'
 
-const Single = ({ currentPost, setCurrentPost, setIsPageIndex }) => {
-  const { title, date, body, coverImage } = currentPost
+const Single = ({ currentPostId, setCurrentPostId, setIsPageIndex }) => {
   const [showAddPostModal, setShowAddPostModal] = useState(false)
+  
+  const { posts, setPosts } = useSpace()
+  const currentPost = posts.find((post) => post.id === currentPostId)
+  
+  const { title, date, body, coverImage } = currentPost
+
 
   useEffect(() => {
     setIsPageIndex(false)
@@ -20,11 +26,12 @@ const Single = ({ currentPost, setCurrentPost, setIsPageIndex }) => {
             setIsModalOpen={setShowAddPostModal}
             isCreatePostMode={false}
             postData={currentPost}
+            setPosts={setPosts}
           />
           :
           <>
             <button 
-              onClick={() => { setCurrentPost(null); setIsPageIndex(true) }}
+              onClick={() => { setCurrentPostId(null); setIsPageIndex(true) }}
               style={{fontSize: '2rem', marginBottom: '1rem'}}
             >
               ⬅️

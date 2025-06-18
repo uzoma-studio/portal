@@ -15,7 +15,7 @@ import {
     StyledSubmitButton,
 } from './AddPageModal';
 
-const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) => {
+const AddPostModal = ({ setIsModalOpen, isCreatePostMode, setPosts, postData, updateId }) => {
     const { space } = useSpace();
     const [postBodyField, setPostBodyField] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,6 +63,43 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) 
         setIsModalOpen(false);
     };
 
+    const handleMediaUpload = async (formImage, updateData) => {
+        if (formImage instanceof File) {
+            try {
+
+                const uploadFormData = new FormData();
+                uploadFormData.append('file', formImage);
+                uploadFormData.append(
+                    '_payload',
+                    JSON.stringify({
+                        alt: formImage.name,
+                    }),
+                )
+    
+                const response = await fetch(`/api/media`, {
+                    method: 'POST',
+                    body: uploadFormData,
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Failed to upload media');
+                }
+    
+                const media = await response.json();
+                
+                return media?.doc?.id;
+            } catch (error) {
+                console.error('Error uploading media:', error);
+                setMessage({
+                    type: 'error',
+                    text: 'Failed to upload cover image. Please try again.'
+                });
+                setIsSubmitting(false);
+                return;
+            }
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -77,26 +114,14 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) 
                 };
 
                 // Handle cover image upload if present
-                if (formData.coverImage instanceof File) {
-                    const uploadFormData = new FormData();
-                    uploadFormData.append('file', formData.coverImage);
+                newPostData.coverImage = await handleMediaUpload(formData.coverImage, newPostData)
 
-                    const response = await fetch('/api/media', {
-                        method: 'POST',
-                        body: uploadFormData,
-                    });
+                const createdPost = await createEntry('posts', newPostData);
 
-                    if (!response.ok) {
-                        throw new Error('Failed to upload media');
-                    }
-
-                    const media = await response.json();
-                    newPostData.coverImage = media.id;
-                }
-
-                const res = await createEntry('posts', newPostData);
-
-                if (res?.id) {
+                if (createdPost?.id) {
+                    // Update the posts list with the new post
+                    setPosts(prevPosts => [...prevPosts, createdPost]);
+                    
                     setMessage({
                         type: 'success',
                         text: 'Post created successfully!'
@@ -122,35 +147,18 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, postData, updateId }) 
                 let updateData = { ...formData };
 
                 // Handle cover image upload if present
-                if (formData.coverImage instanceof File) {
-
-                    const uploadFormData = new FormData();
-                    uploadFormData.append('file', formData.coverImage);
-                    uploadFormData.append(
-                        '_payload',
-                        JSON.stringify({
-                            alt: formData.coverImage.name,
-                        }),
-                    )
-
-                    const response = await fetch(`/api/media`, {
-                        method: 'POST',
-                        body: uploadFormData,
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to upload media');
-                    }
-
-                    const media = await response.json();
-                    console.log(media);
-                    
-                    updateData.coverImage = media?.doc?.id;
-                }
+                updateData.coverImage = await handleMediaUpload(formData.coverImage, updateData)
 
                 const updatedPost = await updateEntry('posts', postData.id, updateData);
 
                 if (updatedPost?.id) {
+                    // Update the posts list with the updated post
+                    setPosts(prevPosts => 
+                        prevPosts.map(post => 
+                            post.id === updatedPost.id ? updatedPost : post
+                        )
+                    );
+                    
                     setMessage({
                         type: 'success',
                         text: 'Post edited successfully!'

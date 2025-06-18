@@ -22,7 +22,7 @@ import Shop from './Shop'
  */
 
 const ContentType = ({ pageData, contentTypeId, setIsPageIndex }) => {
-    const { space } = useSpace()
+    const { space, setPosts } = useSpace()
     const spaceId = space?.id
 
     /**
@@ -43,9 +43,8 @@ const ContentType = ({ pageData, contentTypeId, setIsPageIndex }) => {
 
         switch (type) {
             case blog:
-                return getPostsByUpdate(pageData?.updates[0]?.id || 0 ) //TODO: This is a workaround bc no update is likely to have an id of 0. Confirm this but also find a better way
-            case files:
-                return getContent('files', spaceId)
+                const posts = await getPostsByUpdate(pageData?.updates[0]?.id || 0 ) //TODO: This is a workaround bc no update is likely to have an id of 0. Confirm this but also find a better way
+                setPosts(posts.docs)
             case chatbot:
                 return getContent('chatbot', contentTypeId)
             case chat:
@@ -72,7 +71,7 @@ const ContentType = ({ pageData, contentTypeId, setIsPageIndex }) => {
                 const passDataToTheRightComponent = () => {
                     switch (type) {
                         case blog:
-                            return <Blog data={data} setIsPageIndex={setIsPageIndex} updateId={pageData.updates[0].id} />
+                            return <Blog setIsPageIndex={setIsPageIndex} updateId={pageData.updates[0].id} />
                         case files:
                             return <Archive data={data} />
                         case chatbot:

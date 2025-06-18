@@ -6,8 +6,9 @@ import { getCurrentSpace, fetchPages } from '../../data/fetchContent.server'
 export const SpaceContext = createContext();
 
 export const SpaceProvider = ({ children }) => {
-  const [pages, setPages] = useState([]);
   const [space, setSpace] = useState(null);
+  const [pages, setPages] = useState([]);
+  const [posts, setPosts] = useState([])
   const [settings, setSettings] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,7 +40,9 @@ export const SpaceProvider = ({ children }) => {
     <SpaceContext.Provider value={{ 
       space, 
       pages, 
-      setPages, 
+      setPages,
+      posts,
+      setPosts, 
       settings,
       loadingState: { isLoading, error } 
     }}>
