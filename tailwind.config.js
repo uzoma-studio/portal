@@ -21,7 +21,10 @@ module.exports = {
       },
       animation: {
         'fade-in': 'fade-in 1s ease-out forwards',
-      }
+      },
+      fontFamily: {
+        mono: ['"Space Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+      },
     },
   },
   plugins: [],
