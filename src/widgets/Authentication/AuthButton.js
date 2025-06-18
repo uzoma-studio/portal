@@ -21,7 +21,7 @@ const StyledButton = styled.button`
 `
 
 const AuthButton = () => {
-    const { user, setUser, loading } = useAuth();
+    const { loading } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (loading) return <p>Loading...</p>;
@@ -29,7 +29,7 @@ const AuthButton = () => {
     return (
         <>
             <StyledButton onClick={() => setIsModalOpen(true)}>Log In</StyledButton>
-            <AuthModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} setUser={setUser} />
+            <AuthModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </>
   );
 };

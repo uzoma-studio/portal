@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useSpace } from '@/context/SpaceProvider'
 import AuthButton from '../widgets/Authentication/AuthButton'
@@ -6,6 +6,7 @@ import UserProfile from '../widgets/Authentication/UserProfile'
 import { useAuth } from '@/context/AuthProvider'
 import JoinSpaceButton from '../widgets/Spaces/JoinSpaceButton'
 import PagesSidebar from './PagesSidebar'
+import Link from 'next/link';
 
 const StyledHamburger = styled.button`
     span {
@@ -34,11 +35,18 @@ const StyledHeader = styled.div`
  * @returns {JSX.Element} Header component
  */
 const Header = ({ background, height, pages, showPagesNav }) => {
-    const { space, settings } = useSpace()
-    const { siteTitle, theme } = settings
-    const { user } = useAuth()
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-    
+    const isSpace = typeof window !== 'undefined' && window.location.pathname !== '/jumping';
+
+    const spaceContext = useSpace();
+    const space = spaceContext?.space
+    const settings = spaceContext?.settings
+
+    const { user } = useAuth();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const theme = isSpace && settings?.theme ? settings.theme : {};
+    const siteTitle = isSpace && settings?.siteTitle ? settings.siteTitle : '';
+
     return (
         <>
             <StyledHeader
@@ -47,22 +55,44 @@ const Header = ({ background, height, pages, showPagesNav }) => {
                 className="w-full z-50 flex items-center justify-between px-10 py-4"
                 style={{ height: theme?.style?.menu?.defaultHeight || '3.5rem' }}
             >
-                <StyledHamburger 
-                    onClick={() => setIsSidebarOpen(true)}
-                    $theme={theme}
-                    className="bg-transparent border-none cursor-pointer p-2 flex flex-col justify-between w-8 h-7 z-10"
-                >
-                    <span className="block w-full h-0.5" />
-                    <span className="block w-full h-0.5" />
-                    <span className="block w-full h-0.5" />
-                </StyledHamburger>
-                <p className="uppercase text-2xl m-0">
-                    {siteTitle}
-                </p>
-                <div className="flex items-center gap-4 z-10">
-                    {user ? <UserProfile /> : <AuthButton />}
-                    <JoinSpaceButton spaceId={space.id} theme={theme} />
-                </div>
+                {isSpace ? (
+                    <>
+                        <StyledHamburger 
+                            onClick={() => setIsSidebarOpen(true)}
+                            $theme={theme}
+                            className="bg-transparent border-none cursor-pointer p-2 flex flex-col justify-between w-8 h-7 z-10"
+                        >
+                            <span className="block w-full h-0.5" />
+                            <span className="block w-full h-0.5" />
+                            <span className="block w-full h-0.5" />
+                        </StyledHamburger>
+                        <p className="uppercase text-2xl m-0">
+                            {siteTitle}
+                        </p>
+                        <div className="flex items-center gap-4 z-10">
+                            {user ? <UserProfile /> : <AuthButton />}
+                            {space?.id && <JoinSpaceButton spaceId={space.id} theme={theme} />}
+                        </div>
+                    </>
+                ) : (
+                    <StyledHeader className="w-full z-50 flex items-center justify-between px-10 py-4">
+                        <div>{` `}</div>
+                        <div>{` `}</div>
+                        <div className="flex items-center gap-4 z-10">
+                            {
+                                user ? 
+                                    <>
+                                        <Link href="/create" className="default-button font-mono p-2">
+                                            Create Space +
+                                        </Link>
+                                        <UserProfile />
+                                    </>
+                                    :
+                                    <AuthButton />
+                            }
+                        </div>
+                    </StyledHeader>
+                )}
             </StyledHeader>
             <PagesSidebar 
                 isOpen={isSidebarOpen}

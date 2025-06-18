@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getLastVisitedSpace } from '../../utils/spaces';
+import { useAuth } from '@/context/AuthProvider';
 
-const LoginForm = ({ onClose, setUser, isAuthPage }) => {
+const LoginForm = ({ onClose, isAuthPage }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const { setUser } = useAuth()
 
     const router = useRouter()
 
@@ -26,21 +28,21 @@ const LoginForm = ({ onClose, setUser, isAuthPage }) => {
           setMessage(data.message || data.error);
           setTimeout(async () => { 
             if(data.user){
+              setUser(data.user);
               // Different behaviours depending on where the user is logging in from
               if(!isAuthPage){
-                setUser(data.user);
                 onClose();
-              } else {
-                const lastVisitedSpace = await getLastVisitedSpace(data.user.id)
-                if(lastVisitedSpace){
-                  router.push(process.env.NODE_ENV === 'development' ?
-                    `http://${lastVisitedSpace}.localhost:3000?userId=${data.user.id}` //TODO: Set domain name as env var
-                    :
-                    `https://${lastVisitedSpace}.portal8.space?userId=${data.user.id}`
-                  )
-                } else {
-                  router.push('/jumping')
-                }
+              }
+              // } else {
+                // const lastVisitedSpace = await getLastVisitedSpace(data.user.id)
+                // if(lastVisitedSpace){
+                //   router.push(process.env.NODE_ENV === 'development' ?
+                //     `http://${lastVisitedSpace}.localhost:3000?userId=${data.user.id}` //TODO: Set domain name as env var
+                //     :
+                //     `https://${lastVisitedSpace}.portal8.space?userId=${data.user.id}`
+                //   )
+              else {
+                router.push('/jumping')
               }
             }
           }, 2000);

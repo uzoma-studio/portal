@@ -51,7 +51,7 @@ const Home = async () => {
           </p>
           <div className="mt-10">
             <Link
-              href="/dashboard"
+              href="/auth"
               className="inline-block px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition"
             >
               Get Started
@@ -93,7 +93,7 @@ const Home = async () => {
               Join creators and communities using Portal to design their own digital worlds.
             </p>
             <Link
-              href="/dashboard"
+              href="/auth"
               className="inline-block px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition"
             >
               Start Your Journey

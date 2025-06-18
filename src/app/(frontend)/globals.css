@@ -70,7 +70,7 @@ h6 {
   line-height: 1.6;
 }
 
-button.default-button {
+.default-button {
   border: 2px solid #fff;
   background: #222;
   color: #fff;
@@ -78,7 +78,7 @@ button.default-button {
   padding: 5px;
 }
 
-button.default-button:hover {
+.default-button:hover {
   background: #fff;
   color: #222;
   border-color: #222;
