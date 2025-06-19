@@ -297,7 +297,7 @@ export interface Space {
   /**
    * Select the user who owns this space
    */
-  owner?: (number | null) | User;
+  owner: number | User;
   updatedAt: string;
   createdAt: string;
 }
