@@ -33,7 +33,7 @@ const Blog = ({ setIsPageIndex, updateId }) => {
   
   const [currentPostId, setCurrentPostId] = useState(null)
   const [showAddPostModal, setShowAddPostModal] = useState(false)
-  const { posts, setPosts } = useSpace()
+  const { posts, setPosts, isCurrentUserSpaceOwner } = useSpace()
 
   return (
     <div>
@@ -49,7 +49,7 @@ const Blog = ({ setIsPageIndex, updateId }) => {
               />
               :
               <>
-                <button className='text-button' onClick={() => setShowAddPostModal(true)}>Add Post</button>
+                {isCurrentUserSpaceOwner && <button className='text-button' onClick={() => setShowAddPostModal(true)}>Add Post</button>}
                 <StyledBlogPostsList>
                     {
                         posts.map((blogPost) => {

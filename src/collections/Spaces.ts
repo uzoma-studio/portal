@@ -41,6 +41,15 @@ export const Spaces: CollectionConfig = {
           defaultValue: themeSettings
         }
       ]
-    }
+    },
+    {
+      name: 'owner',
+      type: 'relationship',
+      relationTo: 'users',
+      required: true,
+      admin: {
+        description: 'Select the user who owns this space',
+      },
+    },
   ],
 }; 

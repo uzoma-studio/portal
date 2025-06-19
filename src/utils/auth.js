@@ -1,4 +1,5 @@
 // TODO: Move this to a server function and update AuthProvider
+// TODO: Also, look! There's a whole ass plug and play REST API for auth https://payloadcms.com/docs/rest-api/overview#auth-operations
 
 export async function getCurrentUser() {
     try {

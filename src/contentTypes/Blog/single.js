@@ -8,7 +8,7 @@ import { useSpace } from '@/context/SpaceProvider'
 const Single = ({ currentPostId, setCurrentPostId, setIsPageIndex }) => {
   const [showAddPostModal, setShowAddPostModal] = useState(false)
   
-  const { posts, setPosts } = useSpace()
+  const { posts, setPosts, isCurrentUserSpaceOwner } = useSpace()
   const currentPost = posts.find((post) => post.id === currentPostId)
   
   const { title, date, body, coverImage } = currentPost
@@ -38,7 +38,7 @@ const Single = ({ currentPostId, setCurrentPostId, setIsPageIndex }) => {
             </button>
             <h1>{title}</h1>
             <p>{parseDate(date)}</p>
-            { !showAddPostModal && <button className='text-button mt-4 mb-4' onClick={() => setShowAddPostModal(true)}>Edit Post</button>}
+            { !showAddPostModal && isCurrentUserSpaceOwner && <button className='text-button mt-4 mb-4' onClick={() => setShowAddPostModal(true)}>Edit Post</button>}
             <br />
             {coverImage && <Image src={coverImage.url} width={500} height={500} alt={coverImage.alt} style={{objectFit: 'contain', margin: '2rem 0'}} /> }
             <RichText data={body} />

@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from 'react'
 import { getCurrentSpace, fetchPages } from '../../data/fetchContent.server'
+import { getCurrentUser } from '@/utils/auth';
+import { useAuth } from './AuthProvider';
 
 export const SpaceContext = createContext();
 
@@ -13,6 +15,10 @@ export const SpaceProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { user } = useAuth()
+  const [spaceUser, setSpaceUser] = useState(null)
+  const [isCurrentUserSpaceOwner, setIsCurrentUserSpaceOwner] = useState(false)
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -22,10 +28,17 @@ export const SpaceProvider = ({ children }) => {
         const spaceDomain = window.location.pathname.split('/')[1];
         const space = await getCurrentSpace(spaceDomain);
         setSpace(space);
+        
         setSettings(space.settings);
 
         const pages = await fetchPages(space.id);
         setPages(pages.docs);
+
+        // If user has already been called by the useAuth hook, use that data instead
+        const userData = user ? user : await getCurrentUser();
+        setSpaceUser(userData)
+
+        setIsCurrentUserSpaceOwner(space.owner.id === userData.id)
 
       } catch (err) {
         setError(err.message || 'Failed to load space data');
@@ -34,6 +47,7 @@ export const SpaceProvider = ({ children }) => {
       }
     }
     fetchData();
+    
   }, []);
 
   return (
@@ -44,6 +58,9 @@ export const SpaceProvider = ({ children }) => {
       posts,
       setPosts, 
       settings,
+      user: spaceUser,
+      isCurrentUserSpaceOwner,
+      setIsCurrentUserSpaceOwner,
       loadingState: { isLoading, error } 
     }}>
       {children}

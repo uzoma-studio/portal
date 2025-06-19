@@ -3,6 +3,7 @@ import ContentType from '@/contentTypes/contentType'
 import RichText from './richTextRenderer'
 import CloseButton from '../components/closeButton'
 import BuildMode from '@/widgets/SpaceEditor'
+import { useSpace } from '@/context/SpaceProvider'
 
 /**
  * RenderSinglePageContent component
@@ -28,19 +29,23 @@ const RenderSinglePageContent = ({ children, pageData, setCurrentPage }) => {
   // Used to control whether the page builder opens for creating or editing page
   const [ isModalOpen, setIsModalOpen ] = useState(false)
 
+  const { isCurrentUserSpaceOwner } = useSpace()
+
   return (
     <div>
         {title && isPageIndex && <h1 className='mb-8'>{pageData.title}</h1> }
 
         <div>
-          {/* Button positioned to the left of close button */}
-          {/* TODO: Button should only show if current user is space owner */}
-          <button 
-            className='text-button' style={{position: 'absolute', top: '2%', left: '85%'}}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Edit
-          </button>
+          {
+            isCurrentUserSpaceOwner &&
+              <button 
+                // Button positioned to the left of close button
+                className='text-button' style={{position: 'absolute', top: '2%', left: '85%'}}
+                onClick={() => setIsModalOpen(true)}
+              >
+                Edit
+              </button>
+          }
           {/* Display a close button if a close function has been provided */}
           { setCurrentPage && <CloseButton closeFn={() => setCurrentPage(null)} position={{x: 95, y: 0}} /> }
         </div>

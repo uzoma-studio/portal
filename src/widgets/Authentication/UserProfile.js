@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthProvider';
 import styled from 'styled-components';
 import { logoutUser } from '@/utils/auth';
+import { useSpace } from '@/context/SpaceProvider';
 
 const StyledProfile = styled.div`
     position: relative;
@@ -87,6 +88,7 @@ const StyledSpaceItem = styled.div`
 
 const UserProfile = () => {
     const { user, setUser } = useAuth();
+    const { setIsCurrentUserSpaceOwner } = useSpace();
     const [showModal, setShowModal] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [userSpaces, setUserSpaces] = useState([]);
@@ -119,7 +121,8 @@ const UserProfile = () => {
         setIsLoggingOut(true);
         const success = await logoutUser();
         if (success) {
-            setUser(null);
+            setUser(null)
+            setIsCurrentUserSpaceOwner && setIsCurrentUserSpaceOwner(false)
             setShowModal(false);
         }
         setIsLoggingOut(false);

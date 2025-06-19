@@ -294,8 +294,39 @@ export interface Space {
       | boolean
       | null;
   };
+  /**
+   * Select the user who owns this space
+   */
+  owner?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  username: string;
+  avatar?: (number | null) | Media;
+  /**
+   * Spaces this user is a member of
+   */
+  spaces?: (number | Space)[] | null;
+  /**
+   * The last space the user visited
+   */
+  lastVisitedSpace?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -474,33 +505,6 @@ export interface Subscription {
   status?: ('active' | 'cancelled' | 'expired') | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  username: string;
-  avatar?: (number | null) | Media;
-  /**
-   * Spaces this user is a member of
-   */
-  spaces?: (number | Space)[] | null;
-  /**
-   * The last space the user visited
-   */
-  lastVisitedSpace?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -822,6 +826,7 @@ export interface SpacesSelect<T extends boolean = true> {
         backgroundImage?: T;
         theme?: T;
       };
+  owner?: T;
   updatedAt?: T;
   createdAt?: T;
 }

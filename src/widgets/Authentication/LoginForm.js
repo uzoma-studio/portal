@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getLastVisitedSpace } from '../../utils/spaces';
 import { useAuth } from '@/context/AuthProvider';
+import { useSpace } from '@/context/SpaceProvider';
 
 const LoginForm = ({ onClose, isAuthPage }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const { setUser } = useAuth()
+    const { space, setIsCurrentUserSpaceOwner } = useSpace()
 
     const router = useRouter()
 
@@ -29,6 +31,7 @@ const LoginForm = ({ onClose, isAuthPage }) => {
           setTimeout(async () => { 
             if(data.user){
               setUser(data.user);
+              setIsCurrentUserSpaceOwner && setIsCurrentUserSpaceOwner(space.owner.id === data.user.id)
               // Different behaviours depending on where the user is logging in from
               if(!isAuthPage){
                 onClose();
