@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyledForm,
   StyledLabel,
@@ -22,10 +22,23 @@ const EditSpaceModal = ({ setIsModalOpen }) => {
 
     const { space, settings, setSettings } = useSpace()
     
-  const [formData, setFormData] = useState(settings?.theme.style || themeSettings.style);
-  const [backgroundImage, setBackgroundImage] = useState({ file: settings?.backgroundImage || null, isSet: false })
-  const [message, setMessage] = useState({ type: '', text: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+    // UseRef to keep values constant across renders
+    const defaultFormData = useRef(settings?.theme?.style || themeSettings.style).current;
+    const defaultBgImage = useRef(settings?.backgroundImage).current;
+
+    const [formData, setFormData] = useState(defaultFormData);
+    const [backgroundImage, setBackgroundImage] = useState({ file: settings?.backgroundImage || null, isSet: false })
+    const [message, setMessage] = useState({ type: '', text: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setSettings({
+        ...settings,
+        theme: {
+            style:  { ...formData }
+        }
+    });
+  }, [formData, setSettings]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -64,8 +77,15 @@ const EditSpaceModal = ({ setIsModalOpen }) => {
             }
     }
 
-  const handleClose = () => {
-    setIsModalOpen(false);
+  const handleCancel = () => {
+    setSettings({
+        ...settings,
+        backgroundImage: defaultBgImage,
+        theme: {
+            style:  { ...defaultFormData }
+        }
+    });
+    setIsModalOpen(false)
   };
 
   const handleSubmit = async (e) => {
@@ -97,7 +117,7 @@ const EditSpaceModal = ({ setIsModalOpen }) => {
                 text: 'Space edited successfully!' 
             });
             setTimeout(() => {
-                handleClose();
+                setIsModalOpen(false);
             }, 1500);
         } else {
             setMessage({ 
@@ -378,7 +398,7 @@ const EditSpaceModal = ({ setIsModalOpen }) => {
           <StyledSubmitButton type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Saving...' : 'Save Settings'}
           </StyledSubmitButton>
-          <button type="button" className="default-button" onClick={handleClose}>
+          <button type="button" className="default-button" onClick={handleCancel}>
             Cancel
           </button>
         </div>
