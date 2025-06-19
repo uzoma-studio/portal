@@ -18,6 +18,15 @@ import themeSettings from '../../../themeSettings.json'
 import { updateEntry } from 'data/createContent.server';
 import { handleMediaUpload } from '@/utils/helpers';
 
+const fonts = [
+  'Courier New',
+  'Helvetica',
+  'Times New Roman',
+  'Arial',
+  'Georgia',
+  'Verdana',
+];
+
 const EditSpaceModal = ({ setIsModalOpen }) => {
 
     const { space, settings, setSettings } = useSpace()
@@ -192,21 +201,31 @@ const EditSpaceModal = ({ setIsModalOpen }) => {
           <StyledSettingsGrid>
             <div>
               <StyledLabel htmlFor="bodyFont" className="inline-block" style={{marginRight: '.5rem'}}>Body Font</StyledLabel>
-              <StyledInput
-                type="text"
+              <StyledSelect
                 name="bodyFont"
                 value={formData.bodyFont || ''}
                 onChange={handleInputChange}
-              />
+                style={{ fontFamily: formData.bodyFont || 'inherit' }}
+              >
+                <option value="">Select a font</option>
+                {fonts.map(font => (
+                  <option key={font} value={font} style={{ fontFamily: font }}>{font}</option>
+                ))}
+              </StyledSelect>
             </div>
             <div>
               <StyledLabel htmlFor="headerFont" className="inline-block" style={{marginRight: '.5rem'}}>Header Font</StyledLabel>
-              <StyledInput
-                type="text"
+              <StyledSelect
                 name="headerFont"
                 value={formData.headerFont || ''}
                 onChange={handleInputChange}
-              />
+                style={{ fontFamily: formData.bodyFont || 'inherit' }}
+              >
+                <option value="">Select a font</option>
+                {fonts.map(font => (
+                  <option key={font} value={font} style={{ fontFamily: font }}>{font}</option>
+                ))}
+              </StyledSelect>
             </div>
           </StyledSettingsGrid>
         </StyledSettingsSection>
