@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 
 import { StyledBackgroundContainer, StyledGrid, StyledDisplayModeWrapper } from '../styles'
@@ -29,6 +29,11 @@ const Index = () => {
     const [isPositioning, setIsPositioning] = useState(false)
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
     const [draggedIconPageId, setDraggedIconPageId] = useState(null)
+    
+    const [isBuildMode, setIsBuildMode] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [pageCoords, setPageCoords] = useState(null)
+
     const currentPage = pages.find(p => p.id === currentPageId)
 
     const getDisplayMode = (pageData) => {
@@ -43,11 +48,49 @@ const Index = () => {
         return displayModes[pageData.themeConfig.displayMode]
     }
 
+    const clickTimeout = useRef(null);
+    
+    const openAddPageModal = (currentTarget, clientX, clientY) => {
+        
+        if(isBuildMode){
+            
+            setIsModalOpen(true)
+            
+            // Calculate the coordinates of the to-be-created page display mode
+            const rect = currentTarget.getBoundingClientRect();
+            
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
+            setPageCoords({ x: xPercent, y: yPercent})
+        }
+    }
+
+    const handleClick = (e) => {
+        // Always clear any previous timer before setting a new one
+        clearTimeout(clickTimeout.current);
+        // Start a timer for single click
+        const currentTarget = e.currentTarget
+        const clientX = e.clientX
+        const clientY = e.clientY
+
+        clickTimeout.current = setTimeout(() => {
+            openAddPageModal(currentTarget, clientX, clientY);
+        }, 250);
+    };
+      
+    const handleDoubleClick = () => {
+        // If double click, prevent single click action
+        clearTimeout(clickTimeout.current);
+        setIsBuildMode(!isBuildMode)
+    };
+
     return (
         <>
             <Environment environment={environment} />
             <Header />
-            <BuildMode isCreatePageMode={true} />
             <StyledBackgroundContainer $settings={config} ref={containerRef}>
                 { backgroundImage && config.style.backgroundMode === 'image' ?
                     imageRenderMode === 'background' ? (
@@ -57,6 +100,8 @@ const Index = () => {
                             objectFit="cover"
                             quality={100}
                             alt={settings.backgroundImage?.alt}
+                            onClick={(e) => handleClick(e)}
+                            onDoubleClick={() => handleDoubleClick()}
                         />
                     ) : (
                         <div className="fixed inset-0 flex items-center justify-center">
@@ -74,6 +119,8 @@ const Index = () => {
                                 className="md:w-[70%] lg:w-[60%] xl:w-[50%]"
                                 quality={100}
                                 alt={settings.backgroundImage?.alt}
+                                onClick={(e) => handleClick(e)}
+                                onDoubleClick={handleDoubleClick}
                             />
                         </div>
                     )
@@ -124,7 +171,19 @@ const Index = () => {
                             />
                         </RenderPages>
                 }
-                {isPositioning && <StyledGrid />}
+                { isBuildMode && 
+                    <>
+                        { isModalOpen && 
+                                <BuildMode 
+                                    isCreatePageMode={true}
+                                    isModalOpen={isModalOpen}
+                                    setIsModalOpen={setIsModalOpen} 
+                                    pageCoords={pageCoords} 
+                                />
+                        }
+                        <StyledGrid />
+                    </>
+                }
                 <Footer />
             </StyledBackgroundContainer>
         </>

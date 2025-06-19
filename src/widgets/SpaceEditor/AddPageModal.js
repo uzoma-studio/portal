@@ -145,7 +145,7 @@ const StyledColorPreview = styled.div`
     border: 1px solid #ddd;
 `;
 
-const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, setIsEditMode }) => {
+const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
     const { space, setPages } = useSpace()
 
     const [pageBodyField, setPageBodyField] = useState(null)
@@ -168,8 +168,8 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, setIsEditMode }) 
         // avatar: pageData?.chatbot?.avatar || null,
         themeConfig: {
             position: pageData?.themeConfig?.position || {
-                x: 50,
-                y: 50
+                x: Math.floor(pageCoords?.x) || 50,
+                y: Math.floor(pageCoords?.y) || 50
             },
             size: pageData?.themeConfig?.size || {
                 width: 600,
@@ -217,8 +217,6 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, setIsEditMode }) 
 
     const handleClose = () => {
         setIsModalOpen(false)
-        // Prevents the modal button from still showing up after edits have been made (set in @renderSinglePageContent)
-        !isCreatePageMode && setIsEditMode(false)
     }
 
     const handleSubmit = async (e) => {

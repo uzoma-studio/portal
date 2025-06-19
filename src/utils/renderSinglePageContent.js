@@ -25,7 +25,8 @@ const RenderSinglePageContent = ({ children, pageData, setCurrentPage }) => {
   // Used to track whether a page is an index page or a sub-page
   const [ isPageIndex, setIsPageIndex ] = useState(true)
 
-  const [ isEditMode, setIsEditMode ] = useState(false)
+  // Used to control whether the page builder opens for creating or editing page
+  const [ isModalOpen, setIsModalOpen ] = useState(false)
 
   return (
     <div>
@@ -36,7 +37,7 @@ const RenderSinglePageContent = ({ children, pageData, setCurrentPage }) => {
           {/* TODO: Button should only show if current user is space owner */}
           <button 
             className='text-button' style={{position: 'absolute', top: '2%', left: '85%'}}
-            onClick={() => setIsEditMode(true)}
+            onClick={() => setIsModalOpen(true)}
           >
             Edit
           </button>
@@ -44,7 +45,7 @@ const RenderSinglePageContent = ({ children, pageData, setCurrentPage }) => {
           { setCurrentPage && <CloseButton closeFn={() => setCurrentPage(null)} position={{x: 95, y: 0}} /> }
         </div>
 
-        { isEditMode && <BuildMode modalOpenState={true} isCreatePageMode={!isEditMode} setIsEditMode={setIsEditMode} pageData={pageData} /> }
+        { isModalOpen && <BuildMode isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} isCreatePageMode={false} pageData={pageData} /> }
         
         {isPageIndex && (
           <>

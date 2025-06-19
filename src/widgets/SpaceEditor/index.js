@@ -5,7 +5,7 @@ import CloseButton from '../../components/closeButton';
 
 const StyledModalOverlay = styled.div`
     background: rgba(0, 0, 0, 0.5);
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
@@ -17,7 +17,6 @@ const StyledModalOverlay = styled.div`
 
 const StyledModalContent = styled.div`
     background: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     position: absolute;
     ${props => props.$isCreatePageMode && `
         top: 50%;
@@ -80,53 +79,50 @@ const StyledTabButton = styled.button`
     }
 `;
 
-const BuildMode = ({ theme, modalOpenState, isCreatePageMode, setIsEditMode, pageData }) => {
-    const [isModalOpen, setIsModalOpen] = useState(modalOpenState);
+const BuildMode = ({ theme, isModalOpen, setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
+
     const [activeTab, setActiveTab] = useState('addPage');
 
     const handleClose = () => {
         setIsModalOpen(false)
-        !isCreatePageMode && setIsEditMode(false)
     }
 
     return (
-        !isModalOpen ?
-            <StyledAddButton 
-                onClick={() => setIsModalOpen(true)}
+        <StyledModalOverlay onClick={handleClose}>
+            <StyledModalContent 
+                $isCreatePageMode={isCreatePageMode}
+                onClick={e => e.stopPropagation()}
             >
-                +
-            </StyledAddButton>
-            :
-            <StyledModalOverlay onClick={handleClose}>
-                <StyledModalContent 
-                    $isCreatePageMode={isCreatePageMode}
-                    onClick={e => e.stopPropagation()}
-                >
-                    <CloseButton closeFn={handleClose} position={{x: '95', y: '0'}} />
+                <CloseButton closeFn={handleClose} position={{x: '95', y: '0'}} />
 
-                    <div className="flex justify-start mb-4 border-b border-gray-200">
-                        <StyledTabButton
-                            onClick={() => setActiveTab('addPage')}
-                            className={`relative mr-4 py-2 px-4 bg-transparent border-none cursor-pointer ${activeTab === 'addPage' ? 'active' : ''}`}
-                            $theme={theme}
-                        >
-                            { isCreatePageMode ? 'Add Page' : 'Edit Page' }
-                        </StyledTabButton>
-                        {
-                            isCreatePageMode &&
-                                <StyledTabButton
-                                    onClick={() => setActiveTab('editSpace')}
-                                    className={`relative mr-4 py-2 px-4 bg-transparent border-none cursor-pointer ${activeTab === 'editSpace' ? 'active' : ''}`}
-                                    $theme={theme}
-                                >
-                                    Edit Space
-                                </StyledTabButton>
-                        }
-                    </div>
+                <div className="flex justify-start mb-4 border-b border-gray-200">
+                    <StyledTabButton
+                        onClick={() => setActiveTab('addPage')}
+                        className={`relative mr-4 py-2 px-4 bg-transparent border-none cursor-pointer ${activeTab === 'addPage' ? 'active' : ''}`}
+                        $theme={theme}
+                    >
+                        { isCreatePageMode ? 'Add Page' : 'Edit Page' }
+                    </StyledTabButton>
+                    {
+                        isCreatePageMode &&
+                            <StyledTabButton
+                                onClick={() => setActiveTab('editSpace')}
+                                className={`relative mr-4 py-2 px-4 bg-transparent border-none cursor-pointer ${activeTab === 'editSpace' ? 'active' : ''}`}
+                                $theme={theme}
+                            >
+                                Edit Space
+                            </StyledTabButton>
+                    }
+                </div>
 
-                    <AddPageModal setIsModalOpen={setIsModalOpen} isCreatePageMode={isCreatePageMode} pageData={pageData} setIsEditMode={setIsEditMode} />
-                </StyledModalContent>
-            </StyledModalOverlay>
+                <AddPageModal 
+                    setIsModalOpen={setIsModalOpen} 
+                    isCreatePageMode={isCreatePageMode} 
+                    pageData={pageData} 
+                    pageCoords={pageCoords}
+                />
+            </StyledModalContent>
+        </StyledModalOverlay>
     );
 };
 
