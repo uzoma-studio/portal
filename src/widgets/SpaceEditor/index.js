@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import AddPageModal from './AddPageModal';
+import EditSpaceModal from './EditSpaceModal'
 import CloseButton from '../../components/closeButton';
 
 const StyledModalOverlay = styled.div`
@@ -115,12 +116,18 @@ const BuildMode = ({ theme, isModalOpen, setIsModalOpen, isCreatePageMode, pageD
                     }
                 </div>
 
+            { activeTab === 'addPage' &&
                 <AddPageModal 
                     setIsModalOpen={setIsModalOpen} 
                     isCreatePageMode={isCreatePageMode} 
                     pageData={pageData} 
                     pageCoords={pageCoords}
                 />
+            }
+            {
+                activeTab === 'editSpace' &&
+                    <EditSpaceModal setIsModalOpen={setIsModalOpen} />
+            }
             </StyledModalContent>
         </StyledModalOverlay>
     );

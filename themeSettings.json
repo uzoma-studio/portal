@@ -2,30 +2,33 @@
   "style": {
     "menu": {
       "defaultHeight": "3.5rem",
-      "backgroundColor": "#ccc",
-      "showNewsTicker": true
+      "backgroundColor": "#cccccc",
+      "showNewsTicker": true,
+      "showFooter": true
     },
     "bodyFont": "Courier New",
     "headerFont": "Courier New",
     "defaultPageStyles": {
-      "borderColor": "purple",
+      "borderColor": "#82007f",
       "borderWidth": "3px",
       "backgroundColor": "#ffffff",
       "textColor": "#222222",
-      "font": "Courier New"
+      "font": "Courier New",
+      "displayStyle": "pagePositionModal"
     },
-    "accentColor": "purple",
+    "accentColor": "#ffffff",
     "defaultPageDisplayMode": "icon",
     "hotspotSize": "15",
-    "hotspotColor": "purple",
+    "hotspotColor": "#82007f",
     "primaryColor": "#9333ea",
-    "bodyTextColor": "#222",
+    "bodyTextColor": "#222222",
     "backgroundMode": "color",
     "secondaryColor": "#c084fc",
-    "backgroundColor": "#fff",
-    "headerFontColor": "#222",
-    "contentTextColor": "#222",
+    "backgroundColor": "#ffffff",
+    "headerFontColor": "#222222",
+    "contentTextColor": "#222222",
     "backgroundImageRenderMode": "background",
-    "environment": "park"
+    "environment": "park",
+    "showEnvironment": false
   }
 }

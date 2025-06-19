@@ -36,7 +36,7 @@ export const StyledInput = styled.input`
     }
 `;
 
-const StyledSelect = styled.select`
+export const StyledSelect = styled.select`
     padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 0.25rem;
@@ -95,20 +95,20 @@ export const StyledNumberInput = styled.input`
     }
 `;
 
-const StyledSettingsGrid = styled.div`
+export const StyledSettingsGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
 `;
 
-const StyledSettingsSection = styled.div`
+export const StyledSettingsSection = styled.div`
     margin-top: 1rem;
     padding: 1rem;
     border: 1px solid #ddd;
     border-radius: 0.25rem;
 `;
 
-const StyledColorInput = styled.input`
+export const StyledColorInput = styled.input`
     padding: 0.25rem;
     border: 1px solid #ddd;
     border-radius: 0.25rem;
@@ -131,14 +131,14 @@ const StyledColorInput = styled.input`
     }
 `;
 
-const StyledColorLabel = styled.div`
+export const StyledColorLabel = styled.div`
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
 `;
 
-const StyledColorPreview = styled.div`
+export const StyledColorPreview = styled.div`
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 0.25rem;
