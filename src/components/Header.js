@@ -34,12 +34,13 @@ const StyledHeader = styled.div`
  * @param {object} [pages=false] - Pages to be passed to the Navbar component
  * @returns {JSX.Element} Header component
  */
-const Header = ({ background, height, pages, showPagesNav }) => {
+const Header = ({ background, height, pages, isBuildMode, setIsBuildMode }) => {
     const isSpace = typeof window !== 'undefined' && window.location.pathname !== '/jumping';
 
     const spaceContext = useSpace();
     const space = spaceContext?.space
     const settings = spaceContext?.settings
+    const isCurrentUserSpaceOwner = spaceContext?.isCurrentUserSpaceOwner
 
     const { user } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -69,6 +70,17 @@ const Header = ({ background, height, pages, showPagesNav }) => {
                             {space.name}
                         </p>
                         <div className="flex items-center gap-4 z-10">
+                            {isCurrentUserSpaceOwner && 
+                                <div>
+                                    <span className="mr-2 text-sm">Build Mode</span>
+                                    <input
+                                        type="checkbox"
+                                        checked={isBuildMode}
+                                        onChange={() => setIsBuildMode(!isBuildMode)}
+                                        className="toggle-checkbox"
+                                    />
+                                </div>
+                            }
                             {user ? <UserProfile /> : <AuthButton />}
                             {space?.id && <JoinSpaceButton spaceId={space.id} theme={theme} />}
                         </div>

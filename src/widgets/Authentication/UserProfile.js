@@ -92,7 +92,7 @@ const UserProfile = () => {
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [userSpaces, setUserSpaces] = useState([]);
     const spaceContext = useSpace();
-    const setIsCurrentUserSpaceOwner = spaceContext?.isCurrentUserSpaceOwner
+    const setIsCurrentUserSpaceOwner = spaceContext?.setIsCurrentUserSpaceOwner
 
     useEffect(() => {
         const fetchUserSpaces = async () => {

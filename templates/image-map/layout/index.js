@@ -96,7 +96,7 @@ const Index = () => {
     return (
         <>
             { showEnvironment && <Environment environment={environment} /> }
-            <Header />
+            <Header isBuildMode={isBuildMode} setIsBuildMode={setIsBuildMode} />
             <StyledBackgroundContainer $settings={theme} ref={containerRef}>
                 { backgroundImage && theme.style.backgroundMode === 'image' ?
                     imageRenderMode === 'background' ? (
