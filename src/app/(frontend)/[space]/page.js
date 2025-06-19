@@ -14,7 +14,7 @@ const SpacePage = () => {
 }
 
 const SpacePageContent = () => {
-    const { space, pages, settings, loadingState } = useSpace()
+    const { space, settings, loadingState } = useSpace()
 
     if (loadingState.isLoading) {
         return (

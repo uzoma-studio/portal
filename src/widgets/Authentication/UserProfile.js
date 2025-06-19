@@ -88,10 +88,11 @@ const StyledSpaceItem = styled.div`
 
 const UserProfile = () => {
     const { user, setUser } = useAuth();
-    const { setIsCurrentUserSpaceOwner } = useSpace();
     const [showModal, setShowModal] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [userSpaces, setUserSpaces] = useState([]);
+    const spaceContext = useSpace();
+    const setIsCurrentUserSpaceOwner = spaceContext?.isCurrentUserSpaceOwner
 
     useEffect(() => {
         const fetchUserSpaces = async () => {

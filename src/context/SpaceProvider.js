@@ -52,12 +52,13 @@ export const SpaceProvider = ({ children }) => {
 
   return (
     <SpaceContext.Provider value={{ 
-      space, 
+      space,
       pages, 
       setPages,
       posts,
       setPosts, 
       settings,
+      setSettings,
       user: spaceUser,
       isCurrentUserSpaceOwner,
       setIsCurrentUserSpaceOwner,

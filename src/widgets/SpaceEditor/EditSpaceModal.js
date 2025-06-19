@@ -20,10 +20,13 @@ import { handleMediaUpload } from '@/utils/helpers';
 
 const EditSpaceModal = ({ setIsModalOpen }) => {
 
-    const { space, settings } = useSpace()
+    const { space, settings, setSettings } = useSpace()
+
+    console.log(settings?.backgroundImage);
+    
     
   const [formData, setFormData] = useState(settings?.theme.style || themeSettings.style);
-  const [backgroundImage, setBackgroundImage] = useState({ file: settings?.backgroundImage || null, isSet: 'false' })
+  const [backgroundImage, setBackgroundImage] = useState({ file: settings?.backgroundImage || null, isSet: false })
   const [message, setMessage] = useState({ type: '', text: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -91,6 +94,7 @@ const EditSpaceModal = ({ setIsModalOpen }) => {
         const updatedSpace = await updateEntry('spaces', space.id, spaceData)
 
         if (updatedSpace?.id) {
+            setSettings(spaceData.settings)
             setMessage({ 
                 type: 'success', 
                 text: 'Space edited successfully!' 
@@ -111,12 +115,6 @@ const EditSpaceModal = ({ setIsModalOpen }) => {
                 text: error.message || 'An error occurred while editing the space.'
         });
     }
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setMessage({ type: 'success', text: 'Settings saved!' });
-      if (onSave) onSave(formData);
-    }, 1500);
   };
 
   return (

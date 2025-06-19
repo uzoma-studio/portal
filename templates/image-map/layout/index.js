@@ -21,10 +21,11 @@ const Index = () => {
     
     const containerRef = useRef(null)
     
-    const config = settings.theme
-    const backgroundImage = settings.backgroundImage
-    const imageRenderMode = config.style?.backgroundImageRenderMode || 'center'
-    const environment = config.style?.environment || 'park'
+    const backgroundImage = settings?.backgroundImage
+
+    const theme = settings?.theme
+    const imageRenderMode = theme?.style?.backgroundImageRenderMode
+    const environment = theme?.style?.environment
 
     const [currentPageId, setCurrentPageId] = useState(null)
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
@@ -46,7 +47,7 @@ const Index = () => {
             }}/>
         }
 
-        //use the display mode set in the page config
+        //use the display mode set in the page theme
         return displayModes[pageData.themeConfig.displayMode]
     }
 
@@ -92,24 +93,24 @@ const Index = () => {
 
     return (
         <>
-            <Environment environment={environment} />
+            { environment && <Environment environment={environment} /> }
             <Header />
-            <StyledBackgroundContainer $settings={config} ref={containerRef}>
-                { backgroundImage && config.style.backgroundMode === 'image' ?
+            <StyledBackgroundContainer $settings={theme} ref={containerRef}>
+                { backgroundImage && theme.style.backgroundMode === 'image' ?
                     imageRenderMode === 'background' ? (
                         <Image 
-                            src={settings.backgroundImage.url}
+                            src={backgroundImage.url}
                             layout="fill"
                             objectFit="cover"
                             quality={100}
-                            alt={settings.backgroundImage?.alt}
+                            alt={backgroundImage?.alt}
                             onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
                             onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
                         />
                     ) : (
                         <div className="fixed inset-0 flex items-center justify-center">
                             <Image 
-                                src={settings.backgroundImage.url}
+                                src={backgroundImage.url}
                                 width={1200}
                                 height={800}
                                 style={{
@@ -121,17 +122,20 @@ const Index = () => {
                                 }}
                                 className="md:w-[70%] lg:w-[60%] xl:w-[50%]"
                                 quality={100}
-                                alt={settings.backgroundImage?.alt}
+                                alt={backgroundImage?.alt}
                                 onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
                                 onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
                             />
                         </div>
                     )
                     :
-                    <div className='background' />
+                    <div className='background'
+                        onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
+                        onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
+                    />
                 }
                 {
-                    config && pages.map((pageData) =>
+                    theme && pages.map((pageData) =>
                         <StyledDisplayModeWrapper 
                             key={pageData.id} 
                             onClick={() => {
