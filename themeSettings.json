@@ -22,7 +22,7 @@
     "hotspotColor": "#82007f",
     "primaryColor": "#9333ea",
     "bodyTextColor": "#222222",
-    "backgroundMode": "color",
+    "backgroundMode": "image",
     "secondaryColor": "#c084fc",
     "backgroundColor": "#ffffff",
     "headerFontColor": "#222222",
