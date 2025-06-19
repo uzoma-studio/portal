@@ -12,6 +12,7 @@ import Footer from '@/components/Footer'
 import Environment from './environment'
 
 import Icon from '../../displayModes/icon'
+import Hotspot from '../../displayModes/hotspot'
 import DragIconToPosition from '@/widgets/SpaceEditor/components/DragIconToPosition'
 
 import BuildMode from '@/widgets/SpaceEditor'
@@ -41,12 +42,14 @@ const Index = () => {
 
     const getDisplayMode = (pageData) => {
         const getDisplayModePosition = isBuildMode && draggedIconPageId === pageData.id ? dragPosition : pageData.themeConfig.position
+        const pageConfig = {
+            ...pageData.themeConfig,
+            position: getDisplayModePosition
+        }
         
         const displayModes = {
-            icon: <Icon page={pageData} pageConfig={{
-                ...pageData.themeConfig,
-                position: getDisplayModePosition
-            }}/>
+            icon: <Icon pageData={pageData} pageConfig={pageConfig} />,
+            hotspot: <Hotspot pageData={pageData} pageConfig={pageConfig} spaceTheme={theme} />,
         }
 
         //use the display mode set in the page theme

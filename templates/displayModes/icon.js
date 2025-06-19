@@ -45,7 +45,7 @@ const StyledIconText = styled.p`
     transition: color 0.2s ease;
 `
 
-const Icon = ({ page, pageConfig }) => {    
+const Icon = ({ pageData, pageConfig }) => {    
     
   return (
     <StyledIconWrapper $config={pageConfig}>
@@ -55,7 +55,7 @@ const Icon = ({ page, pageConfig }) => {
                     ? pageConfig.icon?.url 
                     : `/icons/${pageConfig.icon?.filename}`
                     || '/icons/default.svg'}
-                alt={pageConfig.hotspotName || page.title}
+                alt={pageConfig.hotspotName || pageData.title}
                 width={36}
                 height={36}
                 style={{
@@ -66,7 +66,7 @@ const Icon = ({ page, pageConfig }) => {
             />
         </StyledIcon>
         <StyledIconText>
-            {pageConfig.hotspotName || page.title}
+            {pageConfig.hotspotName || pageData.title}
         </StyledIconText>
     </StyledIconWrapper>
   )
