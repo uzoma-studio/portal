@@ -14,7 +14,7 @@
       "backgroundColor": "#ffffff",
       "textColor": "#222222",
       "font": "Courier New",
-      "displayStyle": "pagePositionModal"
+      "pageDisplayStyle": "page-position-modal"
     },
     "accentColor": "#ffffff",
     "defaultPageDisplayMode": "icon",
