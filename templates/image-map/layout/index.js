@@ -26,6 +26,8 @@ const Index = () => {
     const theme = settings?.theme
     const imageRenderMode = theme?.style?.backgroundImageRenderMode
     const environment = theme?.style?.environment
+    const showEnvironment = theme?.style?.showEnvironment
+    const showFooter = theme?.style?.showFooter
 
     const [currentPageId, setCurrentPageId] = useState(null)
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
@@ -93,7 +95,7 @@ const Index = () => {
 
     return (
         <>
-            { environment && <Environment environment={environment} /> }
+            { showEnvironment && <Environment environment={environment} /> }
             <Header />
             <StyledBackgroundContainer $settings={theme} ref={containerRef}>
                 { backgroundImage && theme.style.backgroundMode === 'image' ?
@@ -103,6 +105,7 @@ const Index = () => {
                             layout="fill"
                             objectFit="cover"
                             quality={100}
+                            style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
                             alt={backgroundImage?.alt}
                             onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
                             onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
@@ -118,7 +121,8 @@ const Index = () => {
                                     position: 'absolute',
                                     top: '50%',
                                     left: '50%',
-                                    transform: 'translate(-50%, -50%)'
+                                    transform: 'translate(-50%, -50%)',
+                                    cursor: isBuildMode ? 'crosshair' : 'auto'
                                 }}
                                 className="md:w-[70%] lg:w-[60%] xl:w-[50%]"
                                 quality={100}
@@ -130,6 +134,7 @@ const Index = () => {
                     )
                     :
                     <div className='background'
+                        style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
                         onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
                         onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
                     />
@@ -191,7 +196,7 @@ const Index = () => {
                         <StyledGrid />
                     </>
                 }
-                <Footer />
+                {showFooter && <Footer /> }
             </StyledBackgroundContainer>
         </>
     )
