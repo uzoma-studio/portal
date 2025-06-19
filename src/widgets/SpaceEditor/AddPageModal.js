@@ -261,9 +261,11 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
                     pageData.chatbot = chatbot.id
                 }
 
-                const res = await createEntry('pages', pageData);
+                const createdPage = await createEntry('pages', pageData);
                 
-                if (res?.id) {
+                if (createdPage?.id) {
+                    setPages(prevPages => [...prevPages, createdPage]);
+
                     setMessage({ 
                         type: 'success', 
                         text: 'Page created successfully!' 
