@@ -26,7 +26,6 @@ const Index = () => {
     const environment = config.style?.environment || 'park'
 
     const [currentPageId, setCurrentPageId] = useState(null)
-    const [isPositioning, setIsPositioning] = useState(false)
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
     const [draggedIconPageId, setDraggedIconPageId] = useState(null)
     
@@ -37,10 +36,12 @@ const Index = () => {
     const currentPage = pages.find(p => p.id === currentPageId)
 
     const getDisplayMode = (pageData) => {
+        const getDisplayModePosition = isBuildMode && draggedIconPageId === pageData.id ? dragPosition : pageData.themeConfig.position
+        
         const displayModes = {
             icon: <Icon page={pageData} pageConfig={{
                 ...pageData.themeConfig,
-                position: isPositioning && draggedIconPageId === pageData.id ? dragPosition : pageData.themeConfig.position
+                position: getDisplayModePosition
             }}/>
         }
 
@@ -132,21 +133,21 @@ const Index = () => {
                         <StyledDisplayModeWrapper 
                             key={pageData.id} 
                             onClick={() => {
-                                if (!isPositioning) {
+                                if (!isBuildMode) {
                                     setCurrentPageId(pageData.id);
                                 } else {
+                                    // TODO: Atm I'd need to click first to be able to then drag but drag should be possible once I click the icon/hotspot etc
                                     setDraggedIconPageId(pageData.id)
                                     setDragPosition(pageData.themeConfig.position || { x: 0, y: 0 });
-                                    setIsPositioning(true);
                                 }
                             }}
+                            style={{cursor: isBuildMode ? 'move' : 'pointer'}}
                         >
-                            { isPositioning && draggedIconPageId === pageData.id ? 
+                            { isBuildMode && draggedIconPageId === pageData.id ? 
                                 <DragIconToPosition
                                     containerRef={containerRef}
                                     showGrid={true}
                                     pageData={pageData}
-                                    setIsPositioning={setIsPositioning}
                                     dragPosition={dragPosition}
                                     setDragPosition={setDragPosition}
                                     setDraggedIconPageId={setDraggedIconPageId}
