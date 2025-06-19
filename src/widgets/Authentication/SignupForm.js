@@ -12,7 +12,9 @@ const SignupForm = ({ onClose, isAuthPage }) => {
     const [username, setUsername] = useState('');
     const [message, setMessage] = useState('');
     const { setUser } = useAuth()
-    const { space, setIsCurrentUserSpaceOwner } = useSpace()
+    const spaceContext = useSpace()
+    const space = spaceContext?.space
+    const setIsCurrentUserSpaceOwner = spaceContext?.setIsCurrentUserSpaceOwner
 
     const router = useRouter()
 
@@ -30,7 +32,7 @@ const SignupForm = ({ onClose, isAuthPage }) => {
           setTimeout(async() => {
             if(data.user){
               setUser(data.user);
-              setIsCurrentUserSpaceOwner && setIsCurrentUserSpaceOwner(space.owner.id === data.user.id)
+              setIsCurrentUserSpaceOwner && setIsCurrentUserSpaceOwner(space?.owner?.id === data.user.id)
               // Different behaviours depending on where the user is signing in from
               if(!isAuthPage){
                 onClose();
