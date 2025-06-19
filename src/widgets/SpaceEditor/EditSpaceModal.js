@@ -21,9 +21,6 @@ import { handleMediaUpload } from '@/utils/helpers';
 const EditSpaceModal = ({ setIsModalOpen }) => {
 
     const { space, settings, setSettings } = useSpace()
-
-    console.log(settings?.backgroundImage);
-    
     
   const [formData, setFormData] = useState(settings?.theme.style || themeSettings.style);
   const [backgroundImage, setBackgroundImage] = useState({ file: settings?.backgroundImage || null, isSet: false })
