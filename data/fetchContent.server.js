@@ -6,7 +6,7 @@ import { headers } from 'next/headers'
 
 const payload = await getPayload({ config })
 
-const getCurrentSpace = async (spaceName) => {
+export const getCurrentSpace = async (spaceName) => {
     try {
         const space = await payload.find({
             collection: 'spaces',
@@ -28,7 +28,7 @@ const getCurrentSpace = async (spaceName) => {
     }
 }
 
-const getSpaces = async () => {
+export const getSpaces = async () => {
     try {
         const spaces = await payload.find({
             collection: 'spaces',
@@ -41,7 +41,7 @@ const getSpaces = async () => {
     }
 }
 
-const fetchPages = async (spaceId) => {
+export const fetchPages = async (spaceId) => {
     const result = await payload.find({
         collection: 'pages',
         where: {
@@ -53,21 +53,21 @@ const fetchPages = async (spaceId) => {
     return result
 }
 
-const getContent = async (type, spaceId, sortFn='-createdAt', limit=10) => {
+export const getContent = async (type, contentTypeId, sortFn='-createdAt', limit=10) => {
     const result = await payload.find({
         collection: type,
         sort: sortFn,
         limit,
         where: {
-            space: {
-                equals: spaceId
+            id: {
+                equals: contentTypeId
             }
         }
     })
     return result
 }
 
-const getSiteSettings = async () => {
+export const getSiteSettings = async () => {
     return await payload.find({
         collection: 'siteSettings'
     })
@@ -75,7 +75,7 @@ const getSiteSettings = async () => {
     return settings[0]
 }
 
-const getPostsByUpdate = async(updateId) => {
+export const getPostsByUpdate = async(updateId) => {
     const results = await payload.find({
         collection: 'posts',
         where: {
@@ -89,4 +89,16 @@ const getPostsByUpdate = async(updateId) => {
     return results;
 }
 
-export { getCurrentSpace, fetchPages, getContent, getSiteSettings, getPostsByUpdate, getSpaces }
+export const getMessagesInSpace = async (spaceId, sortFn='-createdAt', limit=10) => {
+    const result = await payload.find({
+        collection: 'chat-messages',
+        sort: sortFn,
+        limit,
+        where: {
+            space: {
+                equals: spaceId
+            }
+        }
+    })
+    return result
+}

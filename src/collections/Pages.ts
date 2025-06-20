@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import { generateSlug } from '../utils/helpers';
+import themeSettings from '../../themeSettings.json';
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -27,15 +29,13 @@ export const Pages: CollectionConfig = {
         name: 'contentType',
         type: 'select',
         options: [
+            { label: 'Page', value: 'page' },
             { label: 'Blog', value: 'blog' },
             { label: 'Files', value: 'files' },
             { label: 'Chatbot', value: 'chatbot' },
             { label: 'Chat', value: 'chat-messages' },
             { label: 'Shop', value: 'products' },
         ],
-        admin: {
-          description: 'Leave blank for default Page content type',
-        },
     },
     {
       name: 'chatbot',
@@ -43,6 +43,14 @@ export const Pages: CollectionConfig = {
       relationTo: 'chatbot',
       admin: {
         condition: (_, { contentType }) => contentType === 'chatbot',
+      },
+    },
+    {
+      name: 'messages',
+      type: 'relationship',
+      relationTo: 'chat-messages',
+      admin: {
+        condition: (_, { contentType }) => contentType === 'chat-messages',
       },
     },
     {
@@ -75,30 +83,85 @@ export const Pages: CollectionConfig = {
           type: 'group',
           fields: [
             {
-              name: 'x',
-              type: 'number',
-              required: true,
-              min: 0,
-              max: 100,
-              admin: {
-                description: 'X coordinate (0-100)',
-              },
-            },
+              type: 'row',
+                fields: [
+                {
+                  name: 'x',
+                  type: 'number',
+                  required: true,
+                  min: 0,
+                  max: 100,
+                  defaultValue: 50,
+                  admin: {
+                    description: 'X coordinate (0-100)',
+                    width: '50%'
+                  },
+                },
+                {
+                  name: 'y',
+                  type: 'number',
+                  required: true,
+                  min: 0,
+                  max: 100,
+                  defaultValue: 50,
+                  admin: {
+                    description: 'Y coordinate (0-100)',
+                    width: '50%'
+                  },
+                },
+              ],
+            }
+          ]
+        },
+        {
+          name: 'size',
+          type: 'group',
+          fields: [
             {
-              name: 'y',
-              type: 'number',
-              required: true,
-              min: 0,
-              max: 100,
-              admin: {
-                description: 'Y coordinate (0-100)',
-              },
-            },
+              type: 'row',
+                fields: [
+                  {
+                    name: 'width',
+                    type: 'number',
+                    required: true,
+                    defaultValue: 600,
+                    admin: {
+                      description: 'Page width in px',
+                      width: '50%'
+                    },
+                  },
+                  {
+                    name: 'height',
+                    type: 'number',
+                    required: true,
+                    defaultValue: 500,
+                    admin: {
+                      description: 'Page height in px',
+                      width: '50%'
+                    },
+                  },
+                ],
+              }
+            ]
+        },
+        {
+          name: 'displayMode',
+          type: 'select',
+          options: [
+            { label: 'Icon', value: 'icon' },
+            { label: 'Hotspot', value: 'hotspot' },
+            { label: 'List', value: 'list' },
+            { label: 'Island', value: 'island' },
+            { label: 'Window', value: 'windows' },
           ],
+          admin: {
+            description: 'Choose how the page will show up in your space',
+          },
+          defaultValue: themeSettings.style.defaultPageDisplayMode
         },
         {
           name: 'icon',
-        type: 'upload',
+          type: 'upload',
           relationTo: 'icons',
           admin: {
             description: 'Optional icon image for the page',
@@ -111,6 +174,14 @@ export const Pages: CollectionConfig = {
             description: 'Optional name to display on the hotspot',
           },
         },
+        {
+          name: 'style',
+          type: 'json',
+          defaultValue: {
+            ...themeSettings.style.defaultPageStyles,
+            "backgroundImage": null,
+          }
+        }
   ],
     },
   ],
@@ -119,17 +190,8 @@ export const Pages: CollectionConfig = {
       async ({ data, req, operation }) => {
         // Only generate slug if title exists and it's a create operation or title is being updated
         if (data.title && (operation === 'create' || (req.body && 'title' in req.body))) {
-          // Convert title to lowercase and replace spaces with hyphens
-          let slug = data.title.toLowerCase().replace(/\s+/g, '-');
-          
-          // Remove special characters
-          slug = slug.replace(/[^a-z0-9-]/g, '');
-          
-          // Remove consecutive hyphens
-          slug = slug.replace(/-+/g, '-');
-          
-          // Remove leading and trailing hyphens
-          slug = slug.replace(/^-+|-+$/g, '');
+          // Generate base slug from title
+          let slug = generateSlug(data.title);
           
           // If it's an update operation, check if the slug already exists
           if (operation === 'update') {

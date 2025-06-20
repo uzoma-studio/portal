@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import Single from './single'
 import Image from 'next/image'
 import { parseDate } from '@/utils/helpers'
+import AddPostModal from '@/widgets/SpaceEditor/AddPostModal'
+import { useSpace } from '@/context/SpaceProvider'
 
 const StyledBlogPostsList = styled.ul`
     li {
@@ -27,31 +29,44 @@ const StyledBlogPostsList = styled.ul`
     }
 `
 
-const Blog = ({ data, setIsPageIndex }) => {
+const Blog = ({ setIsPageIndex, updateId }) => {
   
-  const [currentPost, setCurrentPost] = useState(null)
+  const [currentPostId, setCurrentPostId] = useState(null)
+  const [showAddPostModal, setShowAddPostModal] = useState(false)
+  const { posts, setPosts, isCurrentUserSpaceOwner } = useSpace()
 
   return (
     <div>
       {
-        !currentPost ?
-          data && 
-            <StyledBlogPostsList>
-                {
-                    data.map((blogPost) => {
-                      const { id, title, date } = blogPost
-                      return <li key={id} onClick={() => setCurrentPost(blogPost)}>
-                          {blogPost.coverImage && <Image src={blogPost.coverImage.url} width={100} height={150} alt={blogPost.coverImage.alt} /> }
-                          <div className='text'>
-                            <h4>{title}</h4>
-                            <p>{parseDate(date)}</p>
-                          </div>
-                      </li>
-                    })
-                }
-            </StyledBlogPostsList>
+        !currentPostId ?
+            showAddPostModal ? 
+              <AddPostModal
+                setIsModalOpen={setShowAddPostModal}
+                isCreatePostMode={true}
+                postData={null}
+                setPosts={setPosts}
+                updateId={updateId}
+              />
+              :
+              <>
+                {isCurrentUserSpaceOwner && <button className='text-button' onClick={() => setShowAddPostModal(true)}>Add Post</button>}
+                <StyledBlogPostsList>
+                    {
+                        posts.map((blogPost) => {
+                          const { id, title, date } = blogPost
+                          return <li key={id} onClick={() => setCurrentPostId(id)}>
+                              {blogPost.coverImage && <Image src={blogPost.coverImage.url} width={100} height={150} alt={blogPost.coverImage.alt} /> }
+                              <div className='text'>
+                                <h4>{title}</h4>
+                                <p>{parseDate(date)}</p>
+                              </div>
+                          </li>
+                        })
+                    }
+                </StyledBlogPostsList>
+              </>
           :
-          <Single currentPost={currentPost} setCurrentPost={setCurrentPost} setIsPageIndex={setIsPageIndex} />
+          <Single currentPostId={currentPostId} setCurrentPostId={setCurrentPostId} setIsPageIndex={setIsPageIndex} />
       }
   </div>
   )

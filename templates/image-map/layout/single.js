@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { SpaceContext } from '@/context/SpaceProvider'
 import Image from 'next/image'
 
@@ -6,12 +6,10 @@ import RenderSinglePageContent from '@/utils/renderSinglePageContent'
 
 import { StyledPage } from '../styles'
 
-const SinglePage = ({ pageData, pageConfig, pageDisplayStyle }) => {
-    const [showPage, setShowPage] = useState(false)
-    const pagePosition = pageConfig?.position
-    const settings = useContext(SpaceContext)
-    const displayMode = settings.theme.style?.displayMode || 'hotspots'
+const SinglePage = ({ pageData, pageConfig, pageDisplayStyle, showPage, setShowPage }) => {
     const pageRef = useRef(null)
+
+    // TODO: If this is a blog page (Updates), show description
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -32,96 +30,18 @@ const SinglePage = ({ pageData, pageConfig, pageDisplayStyle }) => {
     const calculatePagePosition = (pagePosition) => {
         const x = pagePosition.x
         const y = pagePosition.y < 40 ? pagePosition.y + 10 : pagePosition.y - 10
-        return { x, y }
-    }
-
-
-    const renderPageTrigger = () => {
-        if (displayMode === 'icons') {
-            return (
-                <div style={{
-                    position: 'absolute',
-                    left: `${pagePosition.x}%`,
-                    top: `${pagePosition.y}%`,
-                    cursor: 'pointer',
-                }}
-                    onClick={() => setShowPage(true)}
-                >
-                    <div 
-                        className='page-icon' 
-                        style={{
-                            zIndex: '-1',
-                            backgroundColor: settings.theme.style?.accentColor || '#9333ea',
-                            padding: '12px',
-                            borderRadius: '8px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: '8px'
-                        }}
-                    >
-                        <Image 
-                            src={process.env.NODE_ENV === 'production' 
-                                ? pageConfig.icon?.url 
-                                : `/icons/${pageConfig.icon?.filename}`
-                                || '/icons/default.svg'}
-                            alt={pageConfig.hotspotName || pageData.title}
-                            width={36}
-                            height={36}
-                            style={{
-                                filter: 'brightness(0) invert(1)',
-                                opacity: 0.9
-                            }}
-                        />
-                    </div>
-                    <p style={{
-                        color: '#fff',
-                        marginTop: '0.25rem',
-                        fontSize: '0.875rem',
-                        textAlign: 'center',
-                        maxWidth: '120px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                    }}>
-                        {pageConfig.hotspotName || pageData.title}
-                    </p>
-                </div>
-            )
-        }
-
-        return (
-            <div 
-                className='hotspot' 
-                style={{
-                    left: `${pagePosition.x}%`,
-                    top: `${pagePosition.y}%`,
-                }}
-                onClick={() => setShowPage(true)}
-            >
-                <div className="hotspot-icon" />
-                <div className='hotspot-tooltip'>
-                    <div className="tooltip-arrow" />
-                    <p className='tooltip-text'>{pageConfig.hotspotName || pageData.title}</p>
-                </div>
-            </div>
-        )
+        return { x, y}
     }
 
     return (
         <>
-            {pagePosition && showPage ? (
-                <StyledPage 
-                    ref={pageRef}
-                    $position={calculatePagePosition(pagePosition)} 
-                    $pageDisplayStyle={pageDisplayStyle} 
-                    $settings={settings.theme}
-                >
-                    <RenderSinglePageContent pageData={pageData} setCurrentPage={setShowPage} />
-                </StyledPage>
-            ) : (
-                renderPageTrigger()
-            )}
+            <StyledPage 
+                ref={pageRef}
+                $pageDisplayStyle={pageDisplayStyle} 
+                $settings={pageConfig}
+            >
+                <RenderSinglePageContent pageData={pageData} setCurrentPage={setShowPage} />
+            </StyledPage>
         </>
     )
 }

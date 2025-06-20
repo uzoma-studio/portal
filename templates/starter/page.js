@@ -6,7 +6,7 @@ import { renderCurrentPage } from '../../src/utils/helpers';
 
 import Index from './layout/index'
 import SinglePage from './layout/single'
-import { SpaceContext } from '@/context/SpaceProvider'
+import { useSpace } from '@/context/SpaceProvider';
 
 const Page = ({ pages }) => {
 
@@ -14,9 +14,8 @@ const Page = ({ pages }) => {
 
 
     // Get site metadata from React Context
-    const context = useContext(SpaceContext)
-    const siteSettings = context.site
-    const { siteTitle, siteDescription } = siteSettings || {}
+    const { settings } = useSpace()
+    const { siteTitle, siteDescription } = settings || {}
 
     useEffect(() => {
         setCurrentPage(renderCurrentPage(pages))

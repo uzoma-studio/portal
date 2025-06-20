@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { getContent, getPostsByUpdate } from 'data/fetchContent.server'
-import { SpaceContext } from '@/context/SpaceProvider'
+import React, { useState, useEffect } from 'react'
+import { getContent, getPostsByUpdate, getMessagesInSpace } from 'data/fetchContent.server'
+import { useSpace } from '@/context/SpaceProvider'
 
 import Blog from './Blog'
 import Archive from './Archive'
@@ -21,9 +21,9 @@ import Shop from './Shop'
  * @returns {JSX.Element} The rendered content component based on the type prop
  */
 
-const ContentType = ({ pageData, setIsPageIndex }) => {
-    const context = useContext(SpaceContext)
-    const spaceId = context.space?.id
+const ContentType = ({ pageData, contentTypeId, setIsPageIndex }) => {
+    const { space, setPosts } = useSpace()
+    const spaceId = space?.id
 
     /**
      * Determines the API endpoint based on the content type
@@ -43,13 +43,12 @@ const ContentType = ({ pageData, setIsPageIndex }) => {
 
         switch (type) {
             case blog:
-                return getPostsByUpdate(pageData.updates[0].id)
-            case files:
-                return getContent('files', spaceId)
+                const posts = await getPostsByUpdate(pageData?.updates[0]?.id || 0 ) //TODO: This is a workaround bc no update is likely to have an id of 0. Confirm this but also find a better way
+                setPosts(posts.docs)
             case chatbot:
-                return getContent('chatbot', spaceId)
+                return getContent('chatbot', contentTypeId)
             case chat:
-                return getContent('chat-messages', spaceId, 'date', 50)
+                return getMessagesInSpace(spaceId, 'date', 50)
             case product:
                 return getContent('products', spaceId)
             default:
@@ -67,11 +66,12 @@ const ContentType = ({ pageData, setIsPageIndex }) => {
         const fetchData = async () => {
             const res = await fetchContentByType()
             const data = res.docs || []
+            
             try {
                 const passDataToTheRightComponent = () => {
                     switch (type) {
                         case blog:
-                            return <Blog data={data} setIsPageIndex={setIsPageIndex} />
+                            return <Blog setIsPageIndex={setIsPageIndex} updateId={pageData.updates[0].id} />
                         case files:
                             return <Archive data={data} />
                         case chatbot:

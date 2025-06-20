@@ -1,55 +1,28 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { SpaceContext } from '@/context/SpaceProvider'
+import { useSpace } from '@/context/SpaceProvider'
 import AuthButton from '../widgets/Authentication/AuthButton'
 import UserProfile from '../widgets/Authentication/UserProfile'
 import { useAuth } from '@/context/AuthProvider'
 import JoinSpaceButton from '../widgets/Spaces/JoinSpaceButton'
 import PagesSidebar from './PagesSidebar'
+import Link from 'next/link';
 
 const StyledHamburger = styled.button`
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 2rem;
-    height: 1.75rem;
-    z-index: 10;
-
     span {
-        display: block;
-        width: 100%;
-        height: 2px;
-        background-color: ${props => props.$theme?.style?.bodyTextColor || '#222'};
+        background-color: var(--body-text-color);
         transition: all 0.3s ease-in-out;
     }
 
     &:hover span {
-        background-color: ${props => props.$theme?.style?.menu?.hoverColor || '#666'};
+        background-color: var(--menu-hover-color);
     }
 `
 
 const StyledHeader = styled.div`
-    background: ${props => props.$theme?.style?.menu?.backgroundColor || '#ccc'};
-    height: ${props => props.$theme?.style?.menu?.defaultHeight || 'inherit'};
-    font-family: ${props => props.$theme?.style?.headerFont || 'inherit'};
-    color: ${props => props.$theme?.style?.bodyTextColor || 'inherit'};
-
-    display: flex;
-    padding: 0 2.5rem;
-    justify-content: space-between;
-    align-items: center;
-
-    .site-title {
-      margin-bottom: 0;
-    }
-
-    position: fixed;
-    width: 100%;
-    z-index: 99;
+    background: var(--menu-background);
+    color: var(--body-text-color);
+    font-family: var(--header-font);
 `
 
 /**
@@ -61,37 +34,76 @@ const StyledHeader = styled.div`
  * @param {object} [pages=false] - Pages to be passed to the Navbar component
  * @returns {JSX.Element} Header component
  */
-const Header = ({ background, height, pages, showPagesNav }) => {
-    const context = useContext(SpaceContext)
-    const siteSettings = context.site
-    const theme = context.theme
-    const { siteTitle } = siteSettings
-    const { user } = useAuth()
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-    
+const Header = ({ background, height, pages, isBuildMode, setIsBuildMode }) => {
+    const isSpace = typeof window !== 'undefined' && window.location.pathname !== '/jumping';
+
+    const spaceContext = useSpace();
+    const space = spaceContext?.space
+    const settings = spaceContext?.settings
+    const isCurrentUserSpaceOwner = spaceContext?.isCurrentUserSpaceOwner
+
+    const { user } = useAuth();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const theme = isSpace && settings?.theme ? settings.theme : {};
+
     return (
         <>
             <StyledHeader
                 $background={background}
-                $height={height}
-                $showPagesNav={showPagesNav}
                 $theme={theme}
+                className="w-full z-50 flex items-center justify-between px-10 py-4"
+                style={{ height: theme?.style?.menu?.defaultHeight || '3.5rem' }}
             >
-                <StyledHamburger 
-                    onClick={() => setIsSidebarOpen(true)}
-                    $theme={theme}
-                >
-                    <span />
-                    <span />
-                    <span />
-                </StyledHamburger>
-                <p style={{textTransform: 'uppercase', fontSize: '1.75rem', color: '#222'}}>
-                    {siteTitle}
-                </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', zIndex: 10 }}>
-                    {user ? <UserProfile /> : <AuthButton />}
-                    <JoinSpaceButton spaceId={context.spaceId} theme={theme} />
-                </div>
+                {isSpace ? (
+                    <>
+                        <StyledHamburger 
+                            onClick={() => setIsSidebarOpen(true)}
+                            $theme={theme}
+                            className="bg-transparent border-none cursor-pointer p-2 flex flex-col justify-between w-8 h-7 z-10"
+                        >
+                            <span className="block w-full h-0.5" />
+                            <span className="block w-full h-0.5" />
+                            <span className="block w-full h-0.5" />
+                        </StyledHamburger>
+                        <p className="uppercase text-2xl m-0">
+                            {space.name}
+                        </p>
+                        <div className="flex items-center gap-4 z-10">
+                            {isCurrentUserSpaceOwner && 
+                                <div>
+                                    <span className="mr-2 text-sm">Build Mode</span>
+                                    <input
+                                        type="checkbox"
+                                        checked={isBuildMode}
+                                        onChange={() => setIsBuildMode(!isBuildMode)}
+                                        className="toggle-checkbox"
+                                    />
+                                </div>
+                            }
+                            {user ? <UserProfile /> : <AuthButton />}
+                            {space?.id && <JoinSpaceButton spaceId={space.id} theme={theme} />}
+                        </div>
+                    </>
+                ) : (
+                    <StyledHeader className="w-full z-50 flex items-center justify-between px-10 py-4">
+                        <div>{` `}</div>
+                        <div>{` `}</div>
+                        <div className="flex items-center gap-4 z-10">
+                            {
+                                user ? 
+                                    <>
+                                        <Link href="/create" className="default-button font-mono p-2">
+                                            Create Space +
+                                        </Link>
+                                        <UserProfile />
+                                    </>
+                                    :
+                                    <AuthButton />
+                            }
+                        </div>
+                    </StyledHeader>
+                )}
             </StyledHeader>
             <PagesSidebar 
                 isOpen={isSidebarOpen}

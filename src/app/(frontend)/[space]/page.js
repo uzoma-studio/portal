@@ -1,47 +1,22 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { getCurrentSpace, fetchPages } from '../../../../data/fetchContent.server'
-import { SpaceContext } from '../../../context/SpaceProvider'
-import ActiveTemplate from '../../../../templates/activeTemplate'
+import React from 'react'
+import { SpaceProvider, useSpace } from '../../../context/SpaceProvider'
+import { GlobalStyle } from '@/styles/rootStyles'
+import Index from 'templates/image-map/layout'
 
 const SpacePage = () => {
+    return (
+        <SpaceProvider>
+            <SpacePageContent />
+        </SpaceProvider>
+    )
+}
 
-    const [settings, setSettings] = useState(null)
-    const [data, setData] = useState(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState(null)
-        
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                setIsLoading(true)
-                setError(null)
-                
-                const spaceDomain = window.location.pathname.split('/')[1]
-                const space = await getCurrentSpace(spaceDomain)
+const SpacePageContent = () => {
+    const { space, settings, loadingState } = useSpace()
 
-                const data = await fetchPages(space.id)
-                setData(data)
-
-                const { siteTitle, siteDescription, backgroundImage } = space.settings
-                const settings = {
-                    space,
-                    spaceId: space.id,
-                    site: {siteTitle, siteDescription, backgroundImage},
-                    theme: space.settings.theme
-                }
-                setSettings(settings)
-            } catch (err) {
-                setError(err.message || 'Failed to load space data')
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        fetchData();
-    }, []) // Removed data from dependencies to prevent infinite loop
-
-    if (isLoading) {
+    if (loadingState.isLoading) {
         return (
             <div className="fixed inset-0 flex items-center justify-center">
                 <p className="text-2xl font-display animate-pulse">
@@ -51,26 +26,23 @@ const SpacePage = () => {
         )
     }
 
-    if (error) {
+    if (loadingState.error) {
         return (
-            <p>{error}</p>
+            <p>{loadingState.error}</p>
         )
     }
 
-    if (!settings || !data) {
+    if (!space) {
         return (
             <p>No data available</p>
         )
     }
     
     return (
-        <SpaceContext.Provider value={settings}>
-            <ActiveTemplate 
-                pages={data.docs} 
-                currentSpace={settings.space.domain} 
-                theme={settings.theme}
-            />
-        </SpaceContext.Provider>
+        <>
+            <GlobalStyle $theme={settings.theme} />
+            <Index />
+        </>
     )
 }
 

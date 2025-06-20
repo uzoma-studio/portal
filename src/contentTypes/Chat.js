@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect, useContext } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components'
-import { SpaceContext } from '@/context/SpaceProvider'
+import { useSpace } from '@/context/SpaceProvider';
 
 import AuthButton from '@/widgets/Authentication/AuthButton'
 import { useAuth } from '../context/AuthProvider';
@@ -41,7 +41,7 @@ const Chat = ({ data }) => {
     const [message, setMessage] = useState('');
     const [buttonText, setButtonText] = useState('Send')
     const { user } = useAuth()
-    const settings = useContext(SpaceContext)
+    const { settings, space } = useSpace()
 
     const username = user ? user.username : 'Guest'
 
@@ -61,7 +61,7 @@ const Chat = ({ data }) => {
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user: username, message, space: settings.space }),
+                body: JSON.stringify({ user: username, message, space }),
             });
 
             const newMessage = await res.json();

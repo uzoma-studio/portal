@@ -181,11 +181,9 @@ export interface Page {
     [k: string]: unknown;
   } | null;
   slug: string;
-  /**
-   * Leave blank for default Page content type
-   */
-  contentType?: ('blog' | 'files' | 'chatbot' | 'chat-messages' | 'products') | null;
+  contentType?: ('page' | 'blog' | 'files' | 'chatbot' | 'chat-messages' | 'products') | null;
   chatbot?: (number | null) | Chatbot;
+  messages?: (number | null) | ChatMessage;
   /**
    * Updates for this blog page
    */
@@ -205,6 +203,20 @@ export interface Page {
        */
       y: number;
     };
+    size: {
+      /**
+       * Page width in px
+       */
+      width: number;
+      /**
+       * Page height in px
+       */
+      height: number;
+    };
+    /**
+     * Choose how the page will show up in your space
+     */
+    displayMode?: ('icon' | 'hotspot' | 'list' | 'island' | 'windows') | null;
     /**
      * Optional icon image for the page
      */
@@ -213,6 +225,15 @@ export interface Page {
      * Optional name to display on the hotspot
      */
     hotspotName?: string | null;
+    style?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -237,6 +258,75 @@ export interface Chatbot {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-messages".
+ */
+export interface ChatMessage {
+  id: number;
+  user: string;
+  message: string;
+  timestamp?: string | null;
+  space: number | Space;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spaces".
+ */
+export interface Space {
+  id: number;
+  name: string;
+  domain: string;
+  settings?: {
+    siteTitle?: string | null;
+    siteDescription?: string | null;
+    backgroundImage?: (number | null) | Media;
+    theme?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  /**
+   * Select the user who owns this space
+   */
+  owner: number | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  username: string;
+  avatar?: (number | null) | Media;
+  /**
+   * Spaces this user is a member of
+   */
+  spaces?: (number | Space)[] | null;
+  /**
+   * The last space the user visited
+   */
+  lastVisitedSpace?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -288,31 +378,6 @@ export interface Post {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "spaces".
- */
-export interface Space {
-  id: number;
-  name: string;
-  domain: string;
-  settings?: {
-    siteTitle?: string | null;
-    siteDescription?: string | null;
-    backgroundImage?: (number | null) | Media;
-    theme?:
-      | {
-          [k: string]: unknown;
-        }
-      | unknown[]
-      | string
-      | number
-      | boolean
-      | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "icons".
  */
 export interface Icon {
@@ -355,19 +420,6 @@ export interface Icon {
       filename?: string | null;
     };
   };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "chat-messages".
- */
-export interface ChatMessage {
-  id: number;
-  user: string;
-  message: string;
-  timestamp?: string | null;
-  space: number | Space;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -453,33 +505,6 @@ export interface Subscription {
   status?: ('active' | 'cancelled' | 'expired') | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  username: string;
-  avatar?: (number | null) | Media;
-  /**
-   * Spaces this user is a member of
-   */
-  spaces?: (number | Space)[] | null;
-  /**
-   * The last space the user visited
-   */
-  lastVisitedSpace?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -642,6 +667,7 @@ export interface PagesSelect<T extends boolean = true> {
   slug?: T;
   contentType?: T;
   chatbot?: T;
+  messages?: T;
   updates?: T;
   space?: T;
   themeConfig?:
@@ -653,8 +679,16 @@ export interface PagesSelect<T extends boolean = true> {
               x?: T;
               y?: T;
             };
+        size?:
+          | T
+          | {
+              width?: T;
+              height?: T;
+            };
+        displayMode?: T;
         icon?: T;
         hotspotName?: T;
+        style?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -792,6 +826,7 @@ export interface SpacesSelect<T extends boolean = true> {
         backgroundImage?: T;
         theme?: T;
       };
+  owner?: T;
   updatedAt?: T;
   createdAt?: T;
 }

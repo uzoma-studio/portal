@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useContext } from 'react'
 import Link from 'next/link'
 import styled from 'styled-components'
 import Image from 'next/image';
-import { SpaceContext } from '@/context/SpaceProvider'
+import { useSpace } from '@/context/SpaceProvider';
 
 const ChatWrapper = styled.div`
     margin: 2rem ${props => props.$sideMargins ? props.$sideMargins : 'auto'};
@@ -127,7 +127,7 @@ const ChatWrapper = styled.div`
 
 export default function Chatbot ({ data, sideMargins }) {
     const [chat, setChat] = useState({})
-    const settings = useContext(SpaceContext)
+    const { settings } = useSpace()
 
     useEffect(() => {
         setChat(data[0])

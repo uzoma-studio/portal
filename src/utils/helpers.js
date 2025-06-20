@@ -54,4 +54,59 @@ export const getImageUrl = (url, filename, imagesDir) => {
     return process.env.NODE_ENV === 'production' 
       ? url 
       : `/${imagesDir}/${filename}`;
-  }; 
+}
+
+/**
+ * Generates a URL-friendly slug from a title
+ * @param {string} title - The title to convert to a slug
+ * @returns {string} The generated slug
+ */
+export const generateSlug = (title) => {
+    if (!title) return '';
+
+    // Convert title to lowercase and replace spaces with hyphens
+    let slug = title.toLowerCase().replace(/\s+/g, '-');
+    
+    // Remove special characters
+    slug = slug.replace(/[^a-z0-9-]/g, '');
+    
+    // Remove consecutive hyphens
+    slug = slug.replace(/-+/g, '-');
+    
+    // Remove leading and trailing hyphens
+    slug = slug.replace(/^-+|-+$/g, '');
+    
+    return slug;
+}; 
+
+export const handleMediaUpload = async (formImage) => {
+    if (formImage instanceof File) {
+        try {
+
+            const uploadFormData = new FormData();
+            uploadFormData.append('file', formImage);
+            uploadFormData.append(
+                '_payload',
+                JSON.stringify({
+                    alt: formImage.name,
+                }),
+            )
+
+            const response = await fetch(`/api/media`, {
+                method: 'POST',
+                body: uploadFormData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to upload media');
+            }
+
+            const media = await response.json();
+            
+            return media?.doc?.id;
+        } catch (error) {
+            console.error('Error uploading media:', error);
+            return;
+        }
+    }
+}

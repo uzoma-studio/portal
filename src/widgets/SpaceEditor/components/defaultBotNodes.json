@@ -1,0 +1,52 @@
+[
+  {
+    "id": "intro",
+    "replies": [
+      {
+        "id": "good",
+        "text": "Doing good!"
+      },
+      {
+        "id": "ok",
+        "text": "Just getting by"
+      }
+    ],
+    "messages": [
+      "Hey hey",
+      "How are you doing today?"
+    ]
+  },
+  {
+    "id": "good",
+    "replies": [
+      {
+        "id": "thanks",
+        "text": "Thank you"
+      }
+    ],
+    "messages": [
+      "That's good to hear",
+      "Welcome to my website"
+    ]
+  },
+  {
+    "id": "ok",
+    "replies": [
+      {
+        "id": "thanks",
+        "text": "Thank you"
+      }
+    ],
+    "messages": [
+      "Hang in there buddy",
+      "It's almost the weekend"
+    ]
+  },
+  {
+    "id": "thanks",
+    "replies": [],
+    "messages": [
+      "Enjoy!"
+    ]
+  }
+]
