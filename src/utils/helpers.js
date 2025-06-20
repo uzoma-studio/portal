@@ -106,11 +106,6 @@ export const handleMediaUpload = async (formImage) => {
             return media?.doc?.id;
         } catch (error) {
             console.error('Error uploading media:', error);
-            setMessage({
-                type: 'error',
-                text: 'Failed to upload cover image. Please try again.'
-            });
-            setIsSubmitting(false);
             return;
         }
     }

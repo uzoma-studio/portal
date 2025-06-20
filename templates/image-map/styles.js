@@ -20,110 +20,6 @@ export const StyledBackgroundContainer = styled.div`
             : props.$settings?.style?.backgroundColor || '#fff'
         };
     }
-
-    .hotspot {
-        position: absolute;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        z-index: 1;
-        
-        .hotspot-icon {
-            background: ${props => props.$settings?.style?.hotspotColor};
-            width: ${props => props.$settings?.style?.hotspotSize}px;
-            height: ${props => props.$settings?.style?.hotspotSize}px;
-            border-radius: 100%;
-            z-index: -1;
-            animation: pulse 1.5s infinite ease-in-out;
-
-            &:hover {
-                width: ${props => `${Number(props.$settings?.style?.hotspotSize) + 2.5}px`};
-                height: ${props => `${Number(props.$settings?.style?.hotspotSize) + 2.5}px`};
-                transition: ease-in .2s;
-                animation-play-state: paused;
-            }
-        }
-
-        .hotspot-tooltip {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: .25em;
-            opacity: 0;
-            transition: opacity 0.3s;
-
-            .tooltip-arrow {
-                border-left: 6px solid transparent;
-                border-right: 6px solid transparent;
-                border-bottom: 6px solid ${props => props.$settings?.style?.hotspotColor};
-            }
-
-            .tooltip-text {
-                font-family: ${props => props.$settings?.style?.bodyFont};
-                background: ${props => props.$settings?.style?.hotspotColor};
-                color: ${props => props.$settings?.style?.bodyTextColor};
-                padding: 2.5px;
-                border-radius: 5px;
-            }
-        }
-
-        &:hover .hotspot-tooltip {
-            opacity: 1;
-        }
-    }
-
-    .page-icon {
-
-        .icon-tooltip {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 0.5em;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-
-            .tooltip-arrow {
-                border-left: 6px solid transparent;
-                border-right: 6px solid transparent;
-                border-bottom: 6px solid ${props => props.$settings?.style?.hotspotColor || '#9333ea'};
-            }
-
-            .tooltip-text {
-                font-family: ${props => props.$settings?.style?.bodyFont};
-                background: ${props => props.$settings?.style?.hotspotColor || '#9333ea'};
-                color: #fff;
-                padding: 4px 8px;
-                border-radius: 4px;
-                white-space: nowrap;
-                font-size: 0.875rem;
-            }
-        }
-
-        &:hover .icon-tooltip {
-            opacity: 1;
-        }
-    }
-
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-            opacity: 1;
-        }
-        50% {
-            transform: scale(1.5);
-            opacity: 0.6;
-        }
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
 `
 
 export const StyledPage = styled.div`
@@ -152,7 +48,7 @@ export const StyledPage = styled.div`
         max-width: 500px;
     `}
 `
-
+// Currently unused but could be useful
 export const StyledDisplayModeLayout = styled.div`
     ${props => {
         switch(props.$displayMode) {

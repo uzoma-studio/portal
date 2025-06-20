@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import { createEntry } from '../../../data/createContent.server';
 import {
@@ -11,6 +11,8 @@ import {
 import { StyledMessage, StyledModalOverlay, StyledModalContent } from '@/styles/rootStyles';
 import CloseButton from '@/components/closeButton';
 import { handleMediaUpload } from '@/utils/helpers';
+import { useAuth } from '@/context/AuthProvider';
+import { getCurrentUser } from '@/utils/auth';
 
 const CreateSpaceModal = ({ spaceData }) => {
 
@@ -29,6 +31,16 @@ const CreateSpaceModal = ({ spaceData }) => {
 
     const buttonText = { default: 'Create', active: 'Creating'}
 
+    const [currentUser, setCurrentUser] = useState(null)
+    const { user } = useAuth()
+    useEffect(() => {
+        const initialiseUser = async() => {
+            const userData = user ? user : await getCurrentUser();
+            setCurrentUser(userData)
+        }
+        initialiseUser()
+    }, [])
+    
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         if (name === 'name' && !isDomainFieldEntered) {
@@ -75,7 +87,7 @@ const CreateSpaceModal = ({ spaceData }) => {
         setMessage({ type: '', text: '' });
 
         try {
-            let newSpaceData = { ...formData }
+            let newSpaceData = { ...formData, owner: currentUser.id }
             newSpaceData.settings.backgroundImage = await handleMediaUpload(formData.settings.backgroundImage)
 
             const newSpace = await createEntry('spaces', newSpaceData);
@@ -97,10 +109,17 @@ const CreateSpaceModal = ({ spaceData }) => {
             }
         } catch (error) {
             console.error('Error creating space:', error);
-            setMessage({ 
-                type: 'error', 
-                text: error.message || 'An error occurred while creating the space.' 
-            });
+            if(!currentUser){
+                setMessage({ 
+                    type: 'error', 
+                    text: 'You need to be logged in to create a space.' 
+                });
+            } else {
+                setMessage({ 
+                    type: 'error', 
+                    text: error.message || 'An error occurred while creating the space.' 
+                });
+            }
         }
     }
     

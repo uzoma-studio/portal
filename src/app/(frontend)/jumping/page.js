@@ -25,7 +25,11 @@ const Page = () => {
     }, [])
 
     if (loading) {
-        return <div>Loading spaces...</div>
+        return <div className="fixed inset-0 flex items-center justify-center">
+                    <p className="text-2xl font-display animate-pulse">
+                        Loading Spaces...
+                    </p>
+                </div>
     }
 
     return (

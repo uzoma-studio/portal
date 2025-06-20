@@ -21,7 +21,7 @@ const StyledModalOverlay = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--background-color);
+    background: ${props => props.$settings ? `var(--background-color)` : `white`};
     box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
     border-radius: 8px;
     padding: 20px;
@@ -84,12 +84,13 @@ const StyledModalOverlay = styled.div`
 
 const AuthModal = ({ isOpen, onClose }) => {
     const [formType, setFormType] = useState('login');
-    const { settings } = useSpace()
+    const spaceContext = useSpace()
+    const settings = spaceContext?.settings
 
     if (!isOpen) return null;
 
     return (
-        <StyledModalOverlay onClick={onClose} $isOpen={isOpen} $theme={settings.theme}>
+        <StyledModalOverlay onClick={onClose} $isOpen={isOpen} $settings={settings}>
             <div
                 className="modal-content"
                 onClick={e => e.stopPropagation()}
