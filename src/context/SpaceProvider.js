@@ -38,7 +38,7 @@ export const SpaceProvider = ({ children }) => {
         const userData = user ? user : await getCurrentUser();
         setSpaceUser(userData)
 
-        setIsCurrentUserSpaceOwner(space?.owner?.id === userData?.id)
+        setIsCurrentUserSpaceOwner(space?.owner ? space.owner.id === userData?.id : false)
 
       } catch (err) {
         setError(err.message || 'Failed to load space data');
