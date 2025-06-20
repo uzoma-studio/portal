@@ -28,7 +28,7 @@ const Index = () => {
     const imageRenderMode = theme?.style?.backgroundImageRenderMode
     const environment = theme?.style?.environment
     const showEnvironment = theme?.style?.showEnvironment
-    const showFooter = theme?.style?.showFooter
+    const showFooter = theme?.style?.menu?.showFooter
 
     const [currentPageId, setCurrentPageId] = useState(null)
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
