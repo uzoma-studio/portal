@@ -15,7 +15,6 @@ import Icon from '../../displayModes/icon'
 import Hotspot from '../../displayModes/hotspot'
 import DragIconToPosition from '@/widgets/SpaceEditor/components/DragIconToPosition'
 
-import BuildMode from '@/widgets/SpaceEditor'
 import Toolbar from '@/widgets/SpaceEditor/Toolbar'
 import ModalWrapper from '@/widgets/SpaceEditor/ModalWrapper';
 import AddPageModal from '@/widgets/SpaceEditor/AddPageModal';
