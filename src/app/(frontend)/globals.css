@@ -28,9 +28,6 @@
 h1, h2, h3, h4, h5, h6 {
   color: #222;
   margin: 0 0 15px;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: normal !important;
-  text-transform: uppercase;
 }
 
 /* Specific styles for each heading */

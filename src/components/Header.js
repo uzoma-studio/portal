@@ -21,7 +21,7 @@ const StyledHamburger = styled.button`
 
 const StyledHeader = styled.div`
     background: var(--menu-background);
-    color: var(--body-text-color);
+    color: var(--header-text-color);
     font-family: var(--header-font);
 `
 
@@ -66,9 +66,9 @@ const Header = ({ background, height, pages, isBuildMode, setIsBuildMode }) => {
                             <span className="block w-full h-0.5" />
                             <span className="block w-full h-0.5" />
                         </StyledHamburger>
-                        <p className="uppercase text-2xl m-0">
+                        <h1 className="uppercase text-2xl m-0 font-bold">
                             {space.name}
-                        </p>
+                        </h1>
                         <div className="flex items-center gap-4 z-10">
                             {isCurrentUserSpaceOwner && 
                                 <div>

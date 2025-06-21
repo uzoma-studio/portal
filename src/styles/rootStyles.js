@@ -7,6 +7,7 @@ export const GlobalStyle = createGlobalStyle`
         --primary-color: ${props => props.$theme?.style?.primaryColor || '#222'};
         --accent-color: ${props => props.$theme?.style?.accentColor || '#fff'};
         --body-text-color: ${props => props.$theme?.style?.bodyTextColor || '#222'};
+        --header-text-color: ${props => props.$theme?.style?.headerTextColor || '#222'};
         --background-color: ${props => props.$theme?.style?.backgroundColor || '#fff'};
         --menu-background: ${props => props.$theme?.style?.menu?.backgroundColor || '#ccc'};
         --menu-hover-color: ${props => props.$theme?.style?.menu?.hoverColor || '#666'};

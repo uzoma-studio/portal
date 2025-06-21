@@ -160,7 +160,7 @@ export const StyledColorPreview = styled.div`
 `;
 
 const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
-    const { space, setPages } = useSpace()
+    const { space, settings, setPages } = useSpace()
 
     const [pageBodyField, setPageBodyField] = useState(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -189,7 +189,7 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
                 width: 600,
                 height: 500
             },
-            displayMode: pageData?.themeConfig?.displayMode || themeSettings.style.defaultPageDisplayMode,
+            displayMode: pageData?.themeConfig?.displayMode || settings?.theme?.style?.defaultPageDisplayMode,
             hotspotName: pageData?.themeConfig?.hotspotName || '',
             style: {
                 ...themeSettings.style.defaultPageStyles,
@@ -394,22 +394,20 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
                     />
                 )}
 
-                <StyledToggle
-                    style={{ background: 'rgba(184, 186, 188, 0.6)', cursor: 'pointer', borderColor: '#ddd', textAlign: 'left' }}
-                    onClick={() => setShowSettings(!showSettings)}
-                >
-                    <StyledLabel>
-                        Page Settings <span className='text-sm'>{`[`}Advanced{`]`}</span> {!showSettings ? `>` : `v`}
-                    </StyledLabel>
-                </StyledToggle>
-                {
-                    showSettings &&
-                        <StyledSettingsSection>
-                            <StyledLabel className="block mb-4">
-                                Page Settings
-                            </StyledLabel>
-
-                            <div className="mb-4">
+                
+                <StyledSettingsSection>
+                    <StyledToggle
+                        style={{ background: 'rgba(184, 186, 188, 0.1)', cursor: 'pointer', borderColor: '#ddd', textAlign: 'left' }}
+                        onClick={() => setShowSettings(!showSettings)}
+                    >
+                        <StyledLabel>
+                            Page Settings <span className='text-sm'>{`[`}Advanced{`]`}</span> {!showSettings ? `>` : `v`}
+                        </StyledLabel>
+                    </StyledToggle>
+                    
+                    { showSettings &&
+                        <>
+                            <div className="mt-4 mb-4">
                                 <StyledLabel className="block mb-2">
                                     Display Mode
                                 </StyledLabel>
@@ -428,7 +426,7 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
 
                             <div className="mb-4">
                                 <StyledLabel className="block mb-2">
-                                    Position
+                                    Page Position
                                 </StyledLabel>
                                 <StyledSettingsGrid>
                                     <div>
@@ -460,7 +458,7 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
 
                             <div className="mb-4">
                                 <StyledLabel className="block mb-2">
-                                    Size
+                                    Page Size
                                 </StyledLabel>
                                 <StyledSettingsGrid>
                                     <div>
@@ -490,7 +488,7 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
 
                             <div className="mb-4">
                                 <StyledLabel className="block mb-2">
-                                    Colors
+                                    Page Colors
                                 </StyledLabel>
                                 <StyledSettingsGrid>
                                     <div>
@@ -536,8 +534,9 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
                                     />
                                 </div>
                             )}
-                        </StyledSettingsSection>
-                }
+                        </>
+                    }
+                </StyledSettingsSection>
 
                 {message.text && (
                     <StyledMessage className={message.type}>

@@ -25,7 +25,7 @@
     "backgroundMode": "image",
     "secondaryColor": "#c084fc",
     "backgroundColor": "#ffffff",
-    "headerFontColor": "#222222",
+    "headerTextColor": "#222222",
     "contentTextColor": "#222222",
     "backgroundImageRenderMode": "background",
     "environment": "park",

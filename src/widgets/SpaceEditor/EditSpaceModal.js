@@ -298,6 +298,19 @@ const EditSpaceModal = ({ setIsModalOpen }) => {
                 onChange={handleInputChange}
               />
             </div>
+            <div>
+              <StyledLabel>Header Text Color</StyledLabel>
+              <StyledColorLabel>
+                <StyledColorPreview style={{ backgroundColor: formData.headerTextColor || '#222' }} />
+                <StyledLabel className="block text-sm">Header Text Color</StyledLabel>
+              </StyledColorLabel>
+              <StyledColorInput
+                type="color"
+                name="headerTextColor"
+                value={formData.headerTextColor || '#222'}
+                onChange={handleInputChange}
+              />
+            </div>
           </StyledSettingsGrid>
         </StyledSettingsSection>
 
