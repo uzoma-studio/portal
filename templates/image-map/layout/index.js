@@ -16,6 +16,7 @@ import Hotspot from '../../displayModes/hotspot'
 import DragIconToPosition from '@/widgets/SpaceEditor/components/DragIconToPosition'
 
 import BuildMode from '@/widgets/SpaceEditor'
+import Toolbar from '@/widgets/SpaceEditor/Toolbar'
 
 const Index = () => {
     const { pages, settings, isCurrentUserSpaceOwner } = useSpace()
@@ -34,7 +35,7 @@ const Index = () => {
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
     const [draggedIconPageId, setDraggedIconPageId] = useState(null)
     
-    const [isBuildMode, setIsBuildMode] = useState(false)
+    const [isBuildMode, setIsBuildMode] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
 
@@ -62,7 +63,7 @@ const Index = () => {
         
         setIsModalOpen(true)
             
-        // Calculate the coordinates of the to-be-created page display mode
+        // Calculate the coordinates of the to-be-created page display
         const rect = currentTarget.getBoundingClientRect();
         
         const x = clientX - rect.left;
@@ -198,6 +199,10 @@ const Index = () => {
                         }
                         <StyledGrid />
                     </>
+                }
+                {
+                    isCurrentUserSpaceOwner && 
+                        <Toolbar />
                 }
                 {showFooter && <Footer /> }
             </StyledBackgroundContainer>
