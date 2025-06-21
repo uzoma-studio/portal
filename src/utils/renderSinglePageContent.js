@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import ContentType from '@/contentTypes/contentType'
 import RichText from './richTextRenderer'
 import CloseButton from '../components/closeButton'
-import BuildMode from '@/widgets/SpaceEditor'
+import ModalWrapper from '@/widgets/SpaceEditor/ModalWrapper'
+import AddPageModal from '@/widgets/SpaceEditor/AddPageModal'
 import { useSpace } from '@/context/SpaceProvider'
 
 /**
@@ -50,7 +51,11 @@ const RenderSinglePageContent = ({ children, pageData, setCurrentPage }) => {
           { setCurrentPage && <CloseButton closeFn={() => setCurrentPage(null)} position={{x: 95, y: 0}} /> }
         </div>
 
-        { isModalOpen && <BuildMode isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} isCreatePageMode={false} pageData={pageData} /> }
+        { isModalOpen && 
+          <ModalWrapper tabName='Edit Page' modalCloseFn={() => setIsModalOpen(false)} isCreatePageMode={false}>
+            <AddPageModal isCreatePageMode={false} setIsModalOpen={setIsModalOpen} pageData={pageData} />
+          </ModalWrapper>
+        }
         
         {isPageIndex && (
           <>

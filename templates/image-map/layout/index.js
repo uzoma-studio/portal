@@ -17,6 +17,8 @@ import DragIconToPosition from '@/widgets/SpaceEditor/components/DragIconToPosit
 
 import BuildMode from '@/widgets/SpaceEditor'
 import Toolbar from '@/widgets/SpaceEditor/Toolbar'
+import ModalWrapper from '@/widgets/SpaceEditor/ModalWrapper';
+import AddPageModal from '@/widgets/SpaceEditor/AddPageModal';
 
 const Index = () => {
     const { pages, settings, isCurrentUserSpaceOwner } = useSpace()
@@ -190,12 +192,13 @@ const Index = () => {
                 { isBuildMode && 
                     <>
                         { isModalOpen && 
-                                <BuildMode 
-                                    isCreatePageMode={true}
-                                    isModalOpen={isModalOpen}
+                            <ModalWrapper tabName={'Add Page'} modalCloseFn={() => setIsModalOpen(false)}>
+                                <AddPageModal
                                     setIsModalOpen={setIsModalOpen} 
-                                    pageCoords={pageCoords} 
+                                    isCreatePageMode={true}  
+                                    pageCoords={pageCoords}
                                 />
+                            </ModalWrapper>
                         }
                         <StyledGrid />
                     </>

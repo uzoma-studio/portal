@@ -4,13 +4,13 @@ import styled from 'styled-components'
 export const GlobalStyle = createGlobalStyle`
     :root {
         /* Theme Colors */
-        --primary-color: ${props => props.$theme?.style?.primaryColor || '#222'};
-        --accent-color: ${props => props.$theme?.style?.accentColor || '#fff'};
-        --body-text-color: ${props => props.$theme?.style?.bodyTextColor || '#222'};
-        --header-text-color: ${props => props.$theme?.style?.headerTextColor || '#222'};
-        --background-color: ${props => props.$theme?.style?.backgroundColor || '#fff'};
-        --menu-background: ${props => props.$theme?.style?.menu?.backgroundColor || '#ccc'};
-        --menu-hover-color: ${props => props.$theme?.style?.menu?.hoverColor || '#666'};
+        --primary-color: ${props => props.$theme?.style?.primaryColor || '#222222'};
+        --accent-color: ${props => props.$theme?.style?.accentColor || '#ffffff'};
+        --body-text-color: ${props => props.$theme?.style?.bodyTextColor || '#222222'};
+        --header-text-color: ${props => props.$theme?.style?.headerTextColor || '#222222'};
+        --background-color: ${props => props.$theme?.style?.backgroundColor || '#ffffff'};
+        --menu-background: ${props => props.$theme?.style?.menu?.backgroundColor || '#cccccc'};
+        --menu-hover-color: ${props => props.$theme?.style?.menu?.hoverColor || '#666666'};
         
         /* Typography */
         --header-font: ${props => props.$theme?.style?.headerFont || 'monospace'};
@@ -131,34 +131,3 @@ export const StyledMessage = styled.div`
         border: 1px solid #93c5fd;
     }
 `;
-
-export const StyledModalOverlay = styled.div`
-    background: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 50;
-    background-color: rgba(0, 0, 0, 0.5);
-`
-
-export const StyledModalContent = styled.div`
-    background: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 0.5rem;
-    padding: 1.25rem;
-    min-width: 300px;
-    width: 60%;
-    height: 50vh;
-    max-width: 800px;
-    z-index: 51;
-    overflow-y: auto;
-    background-color: white;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                0 4px 6px -4px rgba(0, 0, 0, 0.1);
-`

@@ -159,7 +159,7 @@ export const StyledColorPreview = styled.div`
     border: 1px solid #ddd;
 `;
 
-const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
+const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
     const { space, settings, setPages } = useSpace()
 
     const [pageBodyField, setPageBodyField] = useState(null)
@@ -556,4 +556,4 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
     );
 };
 
-export default AddPage;
+export default AddPageModal;

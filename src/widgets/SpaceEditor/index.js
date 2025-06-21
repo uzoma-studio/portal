@@ -48,7 +48,7 @@ const StyledTabButton = styled.button`
     }
 `;
 
-const BuildMode = ({ theme, isModalOpen, setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
+const BuildMode = ({ theme, setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
 
     const [activeTab, setActiveTab] = useState('addPage');
 
@@ -94,7 +94,7 @@ const BuildMode = ({ theme, isModalOpen, setIsModalOpen, isCreatePageMode, pageD
             }
             {
                 activeTab === 'editSpace' &&
-                    <EditSpaceModal setIsModalOpen={setIsModalOpen} />
+                    <EditSpaceModal modalCloseFn={() => setIsModalOpen(false)} />
             }
             </StyledModalContent>
         </StyledModalOverlay>

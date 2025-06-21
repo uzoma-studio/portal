@@ -32,3 +32,21 @@ export const StyledModalContent = styled.div`
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
                 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 `
+
+export const StyledTabButton = styled.button`
+    color: var(--body-text-color);
+    
+    &.active {
+        color: var(--primary-color);
+        
+        &:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-color);
+        }
+    }
+`;

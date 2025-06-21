@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthProvider'
 import JoinSpaceButton from '../widgets/Spaces/JoinSpaceButton'
 import PagesSidebar from './PagesSidebar'
 import Link from 'next/link';
+import EditSpaceModal from '@/widgets/SpaceEditor/EditSpaceModal'
 
 const StyledHamburger = styled.button`
     span {
@@ -24,6 +25,18 @@ const StyledHeader = styled.div`
     color: var(--header-text-color);
     font-family: var(--header-font);
 `
+
+const StyledGearIcon = styled.svg`
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  
+  &:hover {
+    transform: rotate(90deg);
+  }
+`;
 
 /**
  * Header component
@@ -44,6 +57,8 @@ const Header = ({ background, height, pages, isBuildMode, setIsBuildMode }) => {
 
     const { user } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const [showEditSpaceModal, setShowEditSpaceModal] = useState(false)
 
     const theme = isSpace && settings?.theme ? settings.theme : {};
 
@@ -83,6 +98,9 @@ const Header = ({ background, height, pages, isBuildMode, setIsBuildMode }) => {
                             }
                             {user ? <UserProfile /> : <AuthButton />}
                             {space?.id && <JoinSpaceButton spaceId={space.id} theme={theme} />}
+                            <StyledGearIcon viewBox="0 0 24 24" onClick={() => setShowEditSpaceModal(!showEditSpaceModal)}>
+                                <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.22-.08-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98c0 .33.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65z"/>
+                            </StyledGearIcon>
                         </div>
                     </>
                 ) : (
@@ -111,6 +129,7 @@ const Header = ({ background, height, pages, isBuildMode, setIsBuildMode }) => {
                 pages={pages}
                 theme={theme}
             />
+            { showEditSpaceModal && <EditSpaceModal modalCloseFn={() => setShowEditSpaceModal(false)} />}
         </>
     )
 }

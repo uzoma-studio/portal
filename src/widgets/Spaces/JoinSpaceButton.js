@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { isUserSpaceMember, joinSpace } from '@/utils/spaces'
 import { useAuth } from '@/context/AuthProvider'
+import { useSpace } from '@/context/SpaceProvider'
 
 const StyledButton = styled.button`
     background: ${props => props.$theme?.style?.primaryColor || '#ecf0f1'};
@@ -48,6 +49,7 @@ const StyledSuccessMessage = styled.div`
 
 const JoinSpaceButton = ({ spaceId, theme }) => {
     const { user } = useAuth()
+    const { isCurrentUserSpaceOwner } = useSpace()
     const [isMember, setIsMember] = useState(false)
     const [isChecking, setIsChecking] = useState(true)
     const [isJoining, setIsJoining] = useState(false)
@@ -93,7 +95,7 @@ const JoinSpaceButton = ({ spaceId, theme }) => {
         }
     }
     
-    if (!user || isChecking || isMember) {
+    if (!user || isChecking || isMember || isCurrentUserSpaceOwner) {
         return null
     }
 

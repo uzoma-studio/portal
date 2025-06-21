@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import AddPageModal from './AddPageModal'
-import CloseButton from '@/components/closeButton'
-import { StyledModalOverlay, StyledModalContent } from './styles'
+import ModalWrapper from './ModalWrapper'
 
 const Toolbar = ({ pageData }) => {
     const [ isAddPageModalOpen, setIsAddPageModalOpen ] = useState(false)
@@ -18,19 +17,13 @@ const Toolbar = ({ pageData }) => {
             <>
                 { 
                     isAddPageModalOpen && 
-                        <StyledModalOverlay onClick={() => setIsAddPageModalOpen(false)}>
-                            <StyledModalContent
-                            $isCreatePageMode={true}
-                            onClick={e => e.stopPropagation()}
-                            >
-                                <CloseButton closeFn={() => setIsAddPageModalOpen(false)} position={{ x: '95', y: '0' }} />
-                                <AddPageModal
-                                    isCreatePageMode={true}
-                                    setIsModalOpen={setIsAddPageModalOpen}
-                                    pageData={pageData}
-                                />
-                            </StyledModalContent>
-                        </StyledModalOverlay>
+                        <ModalWrapper tabName='Add Page' modalCloseFn={() => setIsAddPageModalOpen(false)}>
+                            <AddPageModal
+                                isCreatePageMode={true}
+                                setIsModalOpen={setIsAddPageModalOpen}
+                                pageData={pageData}
+                            />
+                        </ModalWrapper>
                 }
             </>
         </>
