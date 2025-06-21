@@ -6,7 +6,7 @@ import RenderSinglePageContent from '@/utils/renderSinglePageContent'
 
 import { StyledPage } from '../styles'
 
-const SinglePage = ({ pageData, pageConfig, pageDisplayStyle, showPage, setShowPage }) => {
+const SinglePage = ({ pageData, pageConfig, spaceTheme, showPage, setShowPage }) => {
     const pageRef = useRef(null)
 
     // TODO: If this is a blog page (Updates), show description
@@ -37,8 +37,8 @@ const SinglePage = ({ pageData, pageConfig, pageDisplayStyle, showPage, setShowP
         <>
             <StyledPage 
                 ref={pageRef}
-                $pageDisplayStyle={pageDisplayStyle} 
                 $settings={pageConfig}
+                $spaceTheme={spaceTheme}
             >
                 <RenderSinglePageContent pageData={pageData} setCurrentPage={setShowPage} />
             </StyledPage>

@@ -9,12 +9,10 @@
     "bodyFont": "Courier New",
     "headerFont": "Courier New",
     "defaultPageStyles": {
-      "borderColor": "#82007f",
       "borderWidth": "3px",
       "backgroundColor": "#ffffff",
       "textColor": "#222222",
-      "font": "Courier New",
-      "pageDisplayStyle": "page-position-modal"
+      "pageDisplayStyle": "center-modal"
     },
     "accentColor": "#ffffff",
     "defaultPageDisplayMode": "icon",

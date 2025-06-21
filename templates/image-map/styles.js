@@ -16,26 +16,26 @@ export const StyledBackgroundContainer = styled.div`
             ? `linear-gradient(180deg, 
                 ${props.$settings?.style?.primaryColor || '#9333ea'}, 
                 ${props.$settings?.style?.secondaryColor || '#c084fc'}, 
-                ${props.$settings?.style?.backgroundColor || '#fff'})`
-            : props.$settings?.style?.backgroundColor || '#fff'
+                ${props.$settings?.style?.backgroundColor || '#ffffff'})`
+            : props.$settings?.style?.backgroundColor || '#ffffff'
         };
     }
 `
 
 export const StyledPage = styled.div`
     position: absolute;
-    top: ${props => `${props.$settings?.style?.displayStyle === 'center-modal' ? '50%' : `${props.$settings?.position?.y}%`}`};
-    left: ${props => `${props.$settings?.style?.displayStyle === 'center-modal' ? '50%' : `${props.$settings?.position?.x}%`}`};
+    top: ${props => `${props.$settings?.style?.pageDisplayStyle === 'center-modal' ? '50%' : `${props.$settings?.position?.y}%`}`};
+    left: ${props => `${props.$settings?.style?.pageDisplayStyle === 'center-modal' ? '50%' : `${props.$settings?.position?.x}%`}`};
     width: ${props => `${props.$settings?.size?.width}px`};
     height: ${props => `${props.$settings?.size?.height}px`};
     background-color: ${props => props.$settings?.style?.backgroundColor};
     color: ${props => props.$settings?.style?.textColor};
-    border-color: ${props => props.$settings?.style?.borderColor};
+    border-color: ${props => props.$spaceTheme?.style?.menu?.backgroundColor};
     border-width: ${props => props.$settings?.style?.borderWidth};
     padding: 20px;
     box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.5);
     overflow: scroll;
-    transform: ${props => `${props.$settings?.style?.displayStyle === 'center-modal' ? `translate(-50%, -50%)` : ``}`};
+    transform: ${props => `${props.$settings?.style?.pageDisplayStyle === 'center-modal' ? `translate(-50%, -50%)` : ``}`};
     z-index: 99;
 
      ${props => props.$settings?.style?.backgroundImageRenderMode === 'center' && `

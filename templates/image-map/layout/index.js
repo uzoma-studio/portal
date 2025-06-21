@@ -182,7 +182,7 @@ const Index = () => {
                             <SinglePage
                                 pageData={currentPage}
                                 pageConfig={currentPage.themeConfig}
-                                pageDisplayStyle='center-modal'
+                                spaceTheme={theme}
                                 showPage={currentPage}
                                 setShowPage={setCurrentPageId}
                             />
