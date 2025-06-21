@@ -67,6 +67,20 @@ export const getContent = async (type, contentTypeId, sortFn='-createdAt', limit
     return result
 }
 
+export const getContentBySpaceId = async (type, spaceId, sortFn='-createdAt', limit=10) => {
+    const result = await payload.find({
+        collection: type,
+        sort: sortFn,
+        limit,
+        where: {
+            space: {
+                equals: spaceId
+            }
+        }
+    })
+    return result
+}
+
 export const getSiteSettings = async () => {
     return await payload.find({
         collection: 'siteSettings'
