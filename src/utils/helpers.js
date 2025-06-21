@@ -110,3 +110,14 @@ export const handleMediaUpload = async (formImage) => {
         }
     }
 }
+
+export const handleServerResponse = (response, contentType='Entry', action='updated') => {
+    
+    if(response.id){
+        return { type: 'success', message: `${contentType} ${action} successfully!`}
+    } else if(response.title === 'error'){
+        return { type: 'error', message: response.message}
+    } else {
+        return { type: 'error', message: `${contentType} could not be ${action}. Please contact enter@portal8.space`}
+    }
+}

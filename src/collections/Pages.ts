@@ -193,45 +193,37 @@ export const Pages: CollectionConfig = {
           // Generate base slug from title
           let slug = generateSlug(data.title);
           
-          // If it's an update operation, check if the slug already exists
-          if (operation === 'update') {
-            const existingPages = await req.payload.find({
-              collection: 'pages',
-              where: {
-                slug: {
-                  equals: slug,
-                },
-                id: {
-                  not_equals: data.id,
-                },
+          // Check if the slug already exists
+          const existingPages = await req.payload.find({
+            collection: 'pages',
+            where: {
+              slug: {
+                equals: slug,
               },
-            });
+            },
+          });
+          
+          // If slug exists, append a number
+          if (existingPages.totalDocs > 0) {
+            let counter = 1;
+            let newSlug = `${slug}-${counter}`;
             
-            // If slug exists, append a number
-            if (existingPages.totalDocs > 0) {
-              let counter = 1;
-              let newSlug = `${slug}-${counter}`;
+            while (true) {
+              const checkSlug = await req.payload.find({
+                collection: 'pages',
+                where: {
+                  slug: {
+                    equals: newSlug,
+                  }
+                },
+              });
               
-              while (true) {
-                const checkSlug = await req.payload.find({
-                  collection: 'pages',
-                  where: {
-                    slug: {
-                      equals: newSlug,
-                    },
-                    id: {
-                      not_equals: data.id,
-                    },
-                  },
-                });
-                
-                if (checkSlug.totalDocs === 0) break;
-                counter++;
-                newSlug = `${slug}-${counter}`;
-              }
-              
-              slug = newSlug;
+              if (checkSlug.totalDocs === 0) break;
+              counter++;
+              newSlug = `${slug}-${counter}`;
             }
+            
+            slug = newSlug;
           }
           
           data.slug = slug;

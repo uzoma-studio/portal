@@ -17,7 +17,7 @@ export const createEntry = async (entryType, data) => {
         return entry
     } catch (error) {
         console.error('Error creating page:', error)
-        return null
+        return {title: 'error', message: error.message}
     }
 }
 

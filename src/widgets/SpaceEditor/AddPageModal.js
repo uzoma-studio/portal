@@ -12,6 +12,8 @@ import CreateStaticPageSection from './components/CreateStaticPageSection'
 import CreateChatbotSection from './components/CreateChatbotSection'
 import defaultBotNodes from './components/defaultBotNodes.json';
 
+import { handleServerResponse } from '@/utils/helpers';
+
 // TODO: Move all styled components to a dedicated style.js file and import them from there
 export const StyledForm = styled.form`
     display: flex;
@@ -262,22 +264,18 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
                 }
 
                 const createdPage = await createEntry('pages', pageData);
+
+                const { type, message } = handleServerResponse(createdPage, 'Page', 'created')
                 
-                if (createdPage?.id) {
+                if (type === 'success') {
                     setPages(prevPages => [...prevPages, createdPage]);
 
-                    setMessage({ 
-                        type: 'success', 
-                        text: 'Page created successfully!' 
-                    });
-                    setTimeout(() => {
-                        handleClose();
+                    setMessage({ type, text: message });
+                        setTimeout(() => {
+                            handleClose();
                     }, 1500);
                 } else {
-                    setMessage({ 
-                        type: 'error', 
-                        text: 'Failed to create page. Please try again.' 
-                    });
+                    setMessage({ type, text: message });
                 }
             } catch (error) {
                 console.error('Error creating page:', error);
@@ -289,8 +287,10 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
         } else {
             try {
                 const updatedPage = await updatePage(pageData.id, formData);
+
+                const { type, message } = handleServerResponse(updatedPage, 'Page', 'edited')
                 
-                if (updatedPage?.id) {
+                if (type === 'success') {
                     setPages(prevPages => 
                         prevPages.map(page => 
                           page.id === updatedPage.id ? updatedPage : page
@@ -298,16 +298,16 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
                     );
 
                     setMessage({ 
-                        type: 'success', 
-                        text: 'Page edited successfully!' 
+                        type, 
+                        text: message
                     });
                     setTimeout(() => {
                         handleClose();
                     }, 1500);
                 } else {
                     setMessage({ 
-                        type: 'error', 
-                        text: 'Failed to edit page. Please try again.' 
+                        type, 
+                        text: message
                     });
                 }
             } catch (error) {
