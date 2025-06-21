@@ -38,6 +38,18 @@ export const StyledInput = styled.input`
     }
 `;
 
+export const StyledToggle = styled.div`
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    font-family: var(--body-font);
+    
+    &:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+`;
+
 export const StyledSelect = styled.select`
     padding: 0.5rem;
     border: 1px solid #ddd;
@@ -153,7 +165,7 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
     const [pageBodyField, setPageBodyField] = useState(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [message, setMessage] = useState({ type: '', text: '' })
-    const [contentType, setContentType] = useState(null)
+    const [showSettings, setShowSettings] = useState(false)
 
     const buttonText = isCreatePageMode ? { default: 'Create', active: 'Creating'} : { default: 'Edit', active: 'Editing'}
 
@@ -200,7 +212,6 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
             ...prev,
             [name]: value
         }));
-        setContentType(value)
     };
 
     const handleThemeConfigChange = (section, field, value) => {
@@ -383,139 +394,150 @@ const AddPage = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => 
                     />
                 )}
 
-                <StyledSettingsSection>
-                    <StyledLabel className="block mb-4">
-                        Page Settings
+                <StyledToggle
+                    style={{ background: 'rgba(184, 186, 188, 0.6)', cursor: 'pointer', borderColor: '#ddd', textAlign: 'left' }}
+                    onClick={() => setShowSettings(!showSettings)}
+                >
+                    <StyledLabel>
+                        Page Settings <span className='text-sm'>{`[`}Advanced{`]`}</span> {!showSettings ? `>` : `v`}
                     </StyledLabel>
-
-                    <div className="mb-4">
-                        <StyledLabel className="block mb-2">
-                            Display Mode
-                        </StyledLabel>
-                        <StyledSelect
-                            value={formData.themeConfig.displayMode}
-                            onChange={(e) => handleThemeConfigChange('displayMode', null, e.target.value)}
-                            className="w-full"
-                        >
-                            <option value="icon">Icon</option>
-                            <option value="hotspot">Hotspot</option>
-                            <option value="list">List</option>
-                            <option value="island">Island</option>
-                            <option value="windows">Window</option>
-                        </StyledSelect>
-                    </div>
-
-                    <div className="mb-4">
-                        <StyledLabel className="block mb-2">
-                            Position
-                        </StyledLabel>
-                        <StyledSettingsGrid>
-                            <div>
-                                <StyledLabel className="block text-sm mb-1">
-                                    X Position (0-100)
-                                </StyledLabel>
-                                <StyledNumberInput
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value={formData.themeConfig.position.x || 0}
-                                    onChange={(e) => handleThemeConfigChange('position', 'x', parseInt(e.target.value) || 0)}
-                                />
-                            </div>
-                            <div>
-                                <StyledLabel className="block text-sm mb-1">
-                                    Y Position (0-100)
-                                </StyledLabel>
-                                <StyledNumberInput
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value={formData.themeConfig.position.y || 0}
-                                    onChange={(e) => handleThemeConfigChange('position', 'y', parseInt(e.target.value) || 0)}
-                                />
-                            </div>
-                        </StyledSettingsGrid>
-                    </div>
-
-                    <div className="mb-4">
-                        <StyledLabel className="block mb-2">
-                            Size
-                        </StyledLabel>
-                        <StyledSettingsGrid>
-                            <div>
-                                <StyledLabel className="block text-sm mb-1">
-                                    Width (px)
-                                </StyledLabel>
-                                <StyledNumberInput
-                                    type="number"
-                                    min="100"
-                                    value={formData.themeConfig.size.width || 600}
-                                    onChange={(e) => handleThemeConfigChange('size', 'width', parseInt(e.target.value) || 600)}
-                                />
-                            </div>
-                            <div>
-                                <StyledLabel className="block text-sm mb-1">
-                                    Height (px)
-                                </StyledLabel>
-                                <StyledNumberInput
-                                    type="number"
-                                    min="100"
-                                    value={formData.themeConfig.size.height || 500}
-                                    onChange={(e) => handleThemeConfigChange('size', 'height', parseInt(e.target.value) || 500)}
-                                />
-                            </div>
-                        </StyledSettingsGrid>
-                    </div>
-
-                    <div className="mb-4">
-                        <StyledLabel className="block mb-2">
-                            Colors
-                        </StyledLabel>
-                        <StyledSettingsGrid>
-                            <div>
-                                <StyledColorLabel>
-                                    <StyledColorPreview style={{ backgroundColor: formData.themeConfig.style.backgroundColor }} />
-                                    <StyledLabel className="block text-sm">
-                                        Background Color
-                                    </StyledLabel>
-                                </StyledColorLabel>
-                                <StyledColorInput
-                                    type="color"
-                                    value={formData.themeConfig.style.backgroundColor}
-                                    onChange={(e) => handleThemeConfigChange('style', 'backgroundColor', e.target.value)}
-                                />
-                            </div>
-                            <div>
-                                <StyledColorLabel>
-                                    <StyledColorPreview style={{ backgroundColor: formData.themeConfig.style.textColor }} />
-                                    <StyledLabel className="block text-sm">
-                                        Text Color
-                                    </StyledLabel>
-                                </StyledColorLabel>
-                                <StyledColorInput
-                                    type="color"
-                                    value={formData.themeConfig.style.textColor}
-                                    onChange={(e) => handleThemeConfigChange('style', 'textColor', e.target.value)}
-                                />
-                            </div>
-                        </StyledSettingsGrid>
-                    </div>
-
-                    {formData.themeConfig.displayMode === 'hotspot' && (
-                        <div className="mb-4">
-                            <StyledLabel className="block mb-2">
-                                Hotspot Name
+                </StyledToggle>
+                {
+                    showSettings &&
+                        <StyledSettingsSection>
+                            <StyledLabel className="block mb-4">
+                                Page Settings
                             </StyledLabel>
-                            <StyledInput
-                                type="text"
-                                value={formData.themeConfig.hotspotName}
-                                onChange={(e) => handleThemeConfigChange('hotspotName', null, e.target.value)}
-                                className="w-full"
-                                placeholder="Enter hotspot name"
-                            />
-                        </div>
-                    )}
-                </StyledSettingsSection>
+
+                            <div className="mb-4">
+                                <StyledLabel className="block mb-2">
+                                    Display Mode
+                                </StyledLabel>
+                                <StyledSelect
+                                    value={formData.themeConfig.displayMode}
+                                    onChange={(e) => handleThemeConfigChange('displayMode', null, e.target.value)}
+                                    className="w-full"
+                                >
+                                    <option value="icon">Icon</option>
+                                    <option value="hotspot">Hotspot</option>
+                                    <option value="list">List</option>
+                                    <option value="island">Island</option>
+                                    <option value="windows">Window</option>
+                                </StyledSelect>
+                            </div>
+
+                            <div className="mb-4">
+                                <StyledLabel className="block mb-2">
+                                    Position
+                                </StyledLabel>
+                                <StyledSettingsGrid>
+                                    <div>
+                                        <StyledLabel className="block text-sm mb-1">
+                                            X Position (0-100)
+                                        </StyledLabel>
+                                        <StyledNumberInput
+                                            type="number"
+                                            min="0"
+                                            max="100"
+                                            value={formData.themeConfig.position.x || 0}
+                                            onChange={(e) => handleThemeConfigChange('position', 'x', parseInt(e.target.value) || 0)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <StyledLabel className="block text-sm mb-1">
+                                            Y Position (0-100)
+                                        </StyledLabel>
+                                        <StyledNumberInput
+                                            type="number"
+                                            min="0"
+                                            max="100"
+                                            value={formData.themeConfig.position.y || 0}
+                                            onChange={(e) => handleThemeConfigChange('position', 'y', parseInt(e.target.value) || 0)}
+                                        />
+                                    </div>
+                                </StyledSettingsGrid>
+                            </div>
+
+                            <div className="mb-4">
+                                <StyledLabel className="block mb-2">
+                                    Size
+                                </StyledLabel>
+                                <StyledSettingsGrid>
+                                    <div>
+                                        <StyledLabel className="block text-sm mb-1">
+                                            Width (px)
+                                        </StyledLabel>
+                                        <StyledNumberInput
+                                            type="number"
+                                            min="100"
+                                            value={formData.themeConfig.size.width || 600}
+                                            onChange={(e) => handleThemeConfigChange('size', 'width', parseInt(e.target.value) || 600)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <StyledLabel className="block text-sm mb-1">
+                                            Height (px)
+                                        </StyledLabel>
+                                        <StyledNumberInput
+                                            type="number"
+                                            min="100"
+                                            value={formData.themeConfig.size.height || 500}
+                                            onChange={(e) => handleThemeConfigChange('size', 'height', parseInt(e.target.value) || 500)}
+                                        />
+                                    </div>
+                                </StyledSettingsGrid>
+                            </div>
+
+                            <div className="mb-4">
+                                <StyledLabel className="block mb-2">
+                                    Colors
+                                </StyledLabel>
+                                <StyledSettingsGrid>
+                                    <div>
+                                        <StyledColorLabel>
+                                            <StyledColorPreview style={{ backgroundColor: formData.themeConfig.style.backgroundColor }} />
+                                            <StyledLabel className="block text-sm">
+                                                Background Color
+                                            </StyledLabel>
+                                        </StyledColorLabel>
+                                        <StyledColorInput
+                                            type="color"
+                                            value={formData.themeConfig.style.backgroundColor}
+                                            onChange={(e) => handleThemeConfigChange('style', 'backgroundColor', e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <StyledColorLabel>
+                                            <StyledColorPreview style={{ backgroundColor: formData.themeConfig.style.textColor }} />
+                                            <StyledLabel className="block text-sm">
+                                                Text Color
+                                            </StyledLabel>
+                                        </StyledColorLabel>
+                                        <StyledColorInput
+                                            type="color"
+                                            value={formData.themeConfig.style.textColor}
+                                            onChange={(e) => handleThemeConfigChange('style', 'textColor', e.target.value)}
+                                        />
+                                    </div>
+                                </StyledSettingsGrid>
+                            </div>
+
+                            {formData.themeConfig.displayMode === 'hotspot' && (
+                                <div className="mb-4">
+                                    <StyledLabel className="block mb-2">
+                                        Hotspot Name
+                                    </StyledLabel>
+                                    <StyledInput
+                                        type="text"
+                                        value={formData.themeConfig.hotspotName}
+                                        onChange={(e) => handleThemeConfigChange('hotspotName', null, e.target.value)}
+                                        className="w-full"
+                                        placeholder="Enter hotspot name"
+                                    />
+                                </div>
+                            )}
+                        </StyledSettingsSection>
+                }
 
                 {message.text && (
                     <StyledMessage className={message.type}>
