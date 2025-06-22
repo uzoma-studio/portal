@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getContent, getPostsByUpdate, getMessagesInSpace } from 'data/fetchContent.server'
+import { getContentByPageContentType, getPostsByUpdate, getMessagesInSpace, getContentBySpaceId } from 'data/fetchContent.server'
 import { useSpace } from '@/context/SpaceProvider'
 
 import Blog from './Blog'
@@ -46,11 +46,11 @@ const ContentType = ({ pageData, contentTypeId, setIsPageIndex }) => {
                 const posts = await getPostsByUpdate(pageData?.updates[0]?.id || 0 ) //TODO: This is a workaround bc no update is likely to have an id of 0. Confirm this but also find a better way
                 setPosts(posts.docs)
             case chatbot:
-                return getContent('chatbot', contentTypeId)
+                return getContentByPageContentType('chatbot', contentTypeId)
             case chat:
-                return getMessagesInSpace(spaceId, 'date', 50)
+                return getContentBySpaceId('chat-messages', spaceId, 'date', 50)
             case product:
-                return getContent('products', spaceId)
+                return getContentBySpaceId('products', spaceId)
             default:
                 return null
         }

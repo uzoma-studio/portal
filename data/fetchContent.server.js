@@ -53,7 +53,15 @@ export const fetchPages = async (spaceId) => {
     return result
 }
 
-export const getContent = async (type, contentTypeId, sortFn='-createdAt', limit=10) => {
+export const getContent = async (type, limit=10) => {
+    const result = await payload.find({
+        collection: type,
+        limit
+    })
+    return result
+}
+
+export const getContentByPageContentType = async (type, contentTypeId, sortFn='-createdAt', limit=10) => {
     const result = await payload.find({
         collection: type,
         sort: sortFn,
@@ -81,14 +89,6 @@ export const getContentBySpaceId = async (type, spaceId, sortFn='-createdAt', li
     return result
 }
 
-export const getSiteSettings = async () => {
-    return await payload.find({
-        collection: 'siteSettings'
-    })
-
-    return settings[0]
-}
-
 export const getPostsByUpdate = async(updateId) => {
     const results = await payload.find({
         collection: 'posts',
@@ -101,18 +101,4 @@ export const getPostsByUpdate = async(updateId) => {
     });
 
     return results;
-}
-
-export const getMessagesInSpace = async (spaceId, sortFn='-createdAt', limit=10) => {
-    const result = await payload.find({
-        collection: 'chat-messages',
-        sort: sortFn,
-        limit,
-        where: {
-            space: {
-                equals: spaceId
-            }
-        }
-    })
-    return result
 }

@@ -39,6 +39,7 @@ const SinglePage = ({ pageData, pageConfig, spaceTheme, showPage, setShowPage, i
                 ref={pageRef}
                 $settings={pageConfig}
                 $spaceTheme={spaceTheme}
+                $isDisplayMode={isDisplayMode}
             >
                 <RenderSinglePageContent pageData={pageData} setCurrentPage={setShowPage} isDisplayMode={isDisplayMode} />
             </StyledPage>

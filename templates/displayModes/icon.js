@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import styled from 'styled-components'
 import { StyledDisplayModeText } from './styles'
+import { getContent } from 'data/fetchContent.server'
 
 const StyledIconWrapper = styled.div`
     position: absolute;
@@ -13,7 +14,7 @@ const StyledIconWrapper = styled.div`
 `
 
 const StyledIcon = styled.div`
-    background-color: rgba(221, 221, 221, 0.7);
+    background-color: #cccccc;
     border-radius: 8px;
     border: 1px solid #222;
     display: flex;
@@ -25,6 +26,7 @@ const StyledIcon = styled.div`
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
     width: 80px;
     height: 80px;
+    padding: 10px;
 
     &:hover {
         background-color: rgba(221, 221, 221, 0.9);
@@ -33,23 +35,31 @@ const StyledIcon = styled.div`
     }
 `
 
-const Icon = ({ pageData, pageConfig }) => {    
+const Icon = ({ pageData, pageConfig }) => {  
+    
+    const [defaultIcon, setDefaultIcon] = useState([])
+
+    useEffect(() => {
+      const getIcons = async() => {
+        const icons = await getContent('icons', 20)
+        setDefaultIcon(icons.docs.find((icon) => icon.name.includes('default')))
+      }
+      getIcons()
+
+    }, [])
     
   return (
     <StyledIconWrapper $config={pageConfig}>
         <StyledIcon>
             <Image 
-                src={process.env.NODE_ENV === 'production' 
-                    ? pageConfig.icon?.url 
-                    : `/icons/${pageConfig.icon?.filename}`
-                    || '/icons/default.svg'}
+                src={pageConfig.icon?.url || defaultIcon.url}
                 alt={pageConfig.hotspotName || pageData.title}
-                width={36}
-                height={36}
+                width={80}
+                height={80}
                 style={{
-                    filter: 'brightness(0) invert(1)',
-                    opacity: 0.9,
-                    transition: 'opacity 0.2s ease'
+                    transition: 'opacity 0.2s ease',
+                    zIndex: 1,
+                    color: `var(--background-color)`
                 }}
             />
         </StyledIcon>

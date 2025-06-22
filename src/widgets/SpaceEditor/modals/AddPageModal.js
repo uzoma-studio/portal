@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { createEntry, updatePage } from '../../../../data/createContent.server'
+import { getContent } from 'data/fetchContent.server';
 import { useSpace } from '@/context/SpaceProvider';
 import { generateSlug } from '@/utils/helpers';
 import RichTextEditor from '../RichTextEditor'
@@ -14,6 +14,7 @@ import defaultBotNodes from '../components/defaultBotNodes.json';
 
 import { handleServerResponse, handleMediaUpload } from '@/utils/helpers';
 
+import Image from 'next/image';
 
 import {
     StyledForm,
@@ -27,7 +28,9 @@ import {
     StyledColorInput,
     StyledColorLabel,
     StyledColorPreview,
-    StyledToggle
+    StyledToggle,
+    StyledIconList,
+    StyledIconButton
 } from '../styles';
 
 const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
@@ -78,6 +81,18 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
         }));
     }, [pageBodyField]);
 
+    const [icons, setIcons] = useState([])
+    useEffect(() => {
+      const getIcons = async() => {
+        const icons = await getContent('icons', 20)
+        setIcons(icons.docs)
+      }
+      getIcons()
+
+    // TODO: Set page icon to default to begin with
+
+    }, [])
+    
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -108,7 +123,11 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                 } : value
             }
         }));
+
+        console.log(formData);
+        
     };
+    
 
     const handleClose = () => {
         setIsModalOpen(false)
@@ -442,6 +461,29 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                                         className="w-full"
                                         placeholder="Enter hotspot name"
                                     />
+                                </div>
+                            )}
+
+                            {formData.themeConfig.displayMode === 'icon' && (
+                                <div className="mb-4">
+                                    <StyledLabel className="block mb-2">
+                                        Select Icon
+                                    </StyledLabel>
+                                    <StyledIconList>
+                                        {
+                                            icons && icons.map((icon) => 
+                                                <StyledIconButton key={icon.id} onClick={(e) => e.preventDefault()}>
+                                                    <Image
+                                                        src={icon.url}
+                                                        alt={icon.name}
+                                                        width={60}
+                                                        height={60}
+                                                        onClick={() => handleThemeConfigChange('icon', null, icon)}
+                                                    />
+                                                </StyledIconButton>
+                                            )
+                                        }
+                                    </StyledIconList>
                                 </div>
                             )}
                         </>

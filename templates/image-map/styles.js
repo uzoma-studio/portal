@@ -36,7 +36,7 @@ export const StyledPage = styled.div`
     box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.5);
     overflow: scroll;
     transform: ${props => `${props.$settings?.style?.pageDisplayStyle === 'center-modal' ? `translate(-50%, -50%)` : ``}`};
-    z-index: 99;
+    z-index: ${props => props.$isDisplayMode ? 'unset' : '99'};
     resize: both;
     overflow: auto;
 

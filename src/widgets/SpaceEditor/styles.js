@@ -202,3 +202,27 @@ export const StyledDragContainer = styled.div`
     z-index: 1000;
     cursor: move;
 `;
+
+export const StyledIconList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+`;
+
+export const StyledIconButton = styled.button`
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover, &:focus {
+    border-color: var(--accent-color, #0070f3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    outline: none;
+    transform: scale(1.05);
+  }
+`;
