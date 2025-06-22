@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import RichText from '@/utils/richTextRenderer'
 import { parseDate } from '@/utils/helpers'
 import Image from 'next/image'
-import AddPostModal from '@/widgets/SpaceEditor/AddPostModal'
+import AddPostModal from '@/widgets/SpaceEditor/modals/AddPostModal'
 import { useSpace } from '@/context/SpaceProvider'
 
 const Single = ({ currentPostId, setCurrentPostId, setIsPageIndex }) => {

@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthProvider'
 import JoinSpaceButton from '../widgets/Spaces/JoinSpaceButton'
 import PagesSidebar from './PagesSidebar'
 import Link from 'next/link';
-import EditSpaceModal from '@/widgets/SpaceEditor/EditSpaceModal'
+import EditSpaceModal from '@/widgets/SpaceEditor/modals/EditSpaceModal'
 
 const StyledHamburger = styled.button`
     span {

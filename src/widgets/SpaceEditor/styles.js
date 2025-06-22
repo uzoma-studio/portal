@@ -50,3 +50,155 @@ export const StyledTabButton = styled.button`
         }
     }
 `;
+
+export const StyledForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+`;
+
+export const StyledLabel = styled.label`
+    color: var(--body-text-color);
+    font-weight: 500;
+`;
+
+export const StyledInput = styled.input`
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    font-family: var(--body-font);
+    
+    &:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+`;
+
+export const StyledToggle = styled.div`
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    font-family: var(--body-font);
+    
+    &:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+`;
+
+export const StyledSelect = styled.select`
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    font-family: var(--body-font);
+    
+    &:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+`;
+
+export const StyledTextArea = styled.textarea`
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    font-family: var(--body-font);
+    min-height: 150px;
+    resize: vertical;
+    
+    &:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+`;
+
+export const StyledSubmitButton = styled.button`
+    background: var(--primary-color);
+    color: var(--accent-color);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+    
+    &:hover:not(:disabled) {
+        opacity: 0.9;
+    }
+    
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+`;
+
+export const StyledNumberInput = styled.input`
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    font-family: var(--body-font);
+    width: 100%;
+    
+    &:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+`;
+
+export const StyledSettingsGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+`;
+
+export const StyledSettingsSection = styled.div`
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+`;
+
+export const StyledColorInput = styled.input`
+    padding: 0.25rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    font-family: var(--body-font);
+    width: 100%;
+    height: 2.5rem;
+    
+    &::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+    
+    &::-webkit-color-swatch {
+        border: none;
+        border-radius: 0.25rem;
+    }
+    
+    &:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+`;
+
+export const StyledColorLabel = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+`;
+
+export const StyledColorPreview = styled.div`
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ddd;
+`;
+
+export const StyledDragContainer = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    cursor: move;
+`;

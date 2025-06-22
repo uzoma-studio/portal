@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Single from './single'
 import Image from 'next/image'
 import { parseDate } from '@/utils/helpers'
-import AddPostModal from '@/widgets/SpaceEditor/AddPostModal'
+import AddPostModal from '@/widgets/SpaceEditor/modals/AddPostModal'
 import { useSpace } from '@/context/SpaceProvider'
 
 const StyledBlogPostsList = styled.ul`

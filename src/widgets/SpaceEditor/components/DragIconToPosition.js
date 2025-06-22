@@ -4,13 +4,7 @@ import { StyledMessage } from '@/styles/rootStyles';
 import { updatePage } from 'data/createContent.server';
 import { useSpace } from '@/context/SpaceProvider';
 
-const StyledDragContainer = styled.div`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    cursor: move;
-`;
+import { StyledDragContainer } from '../styles';
 
 const DragIconToPosition = ({ 
     children,

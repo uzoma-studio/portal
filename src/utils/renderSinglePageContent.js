@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import ContentType from '@/contentTypes/contentType'
 import RichText from './richTextRenderer'
 import CloseButton from '../components/closeButton'
-import ModalWrapper from '@/widgets/SpaceEditor/ModalWrapper'
-import AddPageModal from '@/widgets/SpaceEditor/AddPageModal'
+import ModalWrapper from '@/widgets/SpaceEditor/modals/ModalWrapper'
+import AddPageModal from '@/widgets/SpaceEditor/modals/AddPageModal'
 import { useSpace } from '@/context/SpaceProvider'
 
 /**

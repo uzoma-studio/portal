@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyledInput, StyledLabel, StyledTextArea } from '../AddPageModal'
+import { StyledInput, StyledLabel, StyledTextArea } from '../styles'
 import { StyledMessage } from '@/styles/rootStyles';
 import defaultBotNodes from './defaultBotNodes.json';
 import styled from 'styled-components';

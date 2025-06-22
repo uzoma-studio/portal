@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledInput, StyledLabel, StyledTextArea } from '../AddPageModal'
+import { StyledInput, StyledLabel, StyledTextArea } from '../styles'
 
 const CreateStaticPageSection = ({ formData, onFormChange }) => {
     return (
