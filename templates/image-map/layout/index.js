@@ -16,11 +16,8 @@ import Hotspot from '../../displayModes/hotspot'
 import DragIconToPosition from '@/widgets/SpaceEditor/components/DragIconToPosition'
 
 import Toolbar from '@/widgets/SpaceEditor/Toolbar'
-import ModalWrapper from '@/widgets/SpaceEditor/ModalWrapper';
-import AddPageModal from '@/widgets/SpaceEditor/AddPageModal';
-
-import { DndContext } from '@dnd-kit/core';
-import { useDroppable } from '@dnd-kit/core';
+import ModalWrapper from '@/widgets/SpaceEditor/modals/ModalWrapper';
+import AddPageModal from '@/widgets/SpaceEditor/modals/AddPageModal';
 
 const Index = () => {
     const { pages, settings, isCurrentUserSpaceOwner } = useSpace()
@@ -100,32 +97,11 @@ const Index = () => {
         setIsBuildMode(!isBuildMode)
     };
     
-    const { isOver, setNodeRef } = useDroppable({
-        id: 'droppable',
-    })
-    const style = {
-        color: isOver ? 'green' : undefined
-    }
-
-    const [isDropped, setIsDropped] = useState(false)
-    const draggableMarkup = (
-        <Draggable>Drag me</Draggable>
-    );
-    
-    function handleDragEnd(event) {
-        if (event.over && event.over.id === 'droppable') {
-          setIsDropped(true);
-        }
-      }
-    
     return (
         <>
             { showEnvironment && <Environment environment={environment} /> }
             <Header isBuildMode={isBuildMode} setIsBuildMode={setIsBuildMode} />
-            {!isDropped ? draggableMarkup : null}
-            <DndContext onDragEnd={handleDragEnd}>
-                <StyledBackgroundContainer $settings={theme} ref={setNodeRef} style={style}>
-                    {isDropped ? draggableMarkup : 'Drop here'}
+                <StyledBackgroundContainer $settings={theme}>
                     { backgroundImage && theme.style.backgroundMode === 'image' ?
                         imageRenderMode === 'background' ? (
                             <Image 
@@ -230,27 +206,8 @@ const Index = () => {
                             <Toolbar />
                     }
                 </StyledBackgroundContainer>
-            </DndContext>
             {showFooter && <Footer /> }
         </>
-    )
-}
-
-import { useDraggable } from '@dnd-kit/core'
-
-const {attributes, listeners, setNodeRef, transform} = useDraggable({
-    id: 'draggable',
-  });
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-  } : undefined;
-
-export const Draggable = () => {
-
-    return (
-        <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
-            {props.children}
-        </button>
     )
 }
 
