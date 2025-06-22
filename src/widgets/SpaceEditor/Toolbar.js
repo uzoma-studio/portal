@@ -1,35 +1,45 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import AddPageModal from './AddPageModal'
-import ModalWrapper from './ModalWrapper'
+import ModalWrapper from './modals/ModalWrapper'
+import AddPageModal from './modals/AddPageModal'
+import UploadImageModal from './modals/UploadImageModal'
 
 const Toolbar = ({ pageData }) => {
-    const [ isAddPageModalOpen, setIsAddPageModalOpen ] = useState(false)
+    const [ currentOpenModal, setCurrentOpenModal ] = useState(null)
+
+    const modals = {
+        page: <AddPageModal
+                    isCreatePageMode={true}
+                    setIsModalOpen={setCurrentOpenModal}
+                    pageData={pageData}
+                />,
+        image: <UploadImageModal
+                    setIsModalOpen={setCurrentOpenModal}
+                />
+    }
 
     return (
         <>
             <StyledToolbarContainer>
-                <StyledToolbarButton onClick={() => setIsAddPageModalOpen(true)}>
+                <StyledToolbarButton onClick={() => setCurrentOpenModal('image')}>
+                    i
+                </StyledToolbarButton>
+                <StyledToolbarButton onClick={() => setCurrentOpenModal('page')}>
                     +
                 </StyledToolbarButton>
             </StyledToolbarContainer>
 
-            <>
-                { 
-                    isAddPageModalOpen && 
-                        <ModalWrapper tabName='Add Page' modalCloseFn={() => setIsAddPageModalOpen(false)}>
-                            <AddPageModal
-                                isCreatePageMode={true}
-                                setIsModalOpen={setIsAddPageModalOpen}
-                                pageData={pageData}
-                            />
-                        </ModalWrapper>
-                }
-            </>
+           { 
+                currentOpenModal && 
+                    <ModalWrapper tabName={`Add ${currentOpenModal}`} modalCloseFn={() => setCurrentOpenModal(null)}>
+                        { modals[currentOpenModal] }
+                    </ModalWrapper>
+            }
         </>
     )
 }
 
+// TODO: Modals should actually be able to stand alone and not need <ModalWrapper />
 export default Toolbar
 
 export const StyledToolbarContainer = styled.div`
