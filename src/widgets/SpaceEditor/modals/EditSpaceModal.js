@@ -383,7 +383,7 @@ const EditSpaceModal = ({ modalCloseFn }) => {
                   <option value="icon">Icon</option>
                   <option value="hotspot">Hotspot</option>
                   <option value="list">List</option>
-                  <option value="island">Island</option>
+                  <option value="image">Image</option>
                   <option value="windows">Window</option>
                 </StyledSelect>
               </div>

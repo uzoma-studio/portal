@@ -1,11 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
+import { StyledDisplayModeText } from './styles'
 
-const StyledImageWrapper = styled.div`
+const StyledContainer = styled.div`
     position: absolute;
     left: ${props => `${props.$config.position.x}%`};
     top: ${props => `${props.$config.position.y}%`};
+`
+
+const StyledImageWrapper = styled.div`
     width: 200px;
     height: 200px;
     border-radius: 10px;
@@ -24,14 +28,17 @@ const StyledImageWrapper = styled.div`
 
 const ImageDisplayMode = ({ pageData, pageConfig }) => {
   return (
-    <StyledImageWrapper $config={pageConfig}>
-        <Image 
-            src={pageData.coverImage?.url}
-            alt={pageData.title}
-            width={200}
-            height={200}
-        />
-    </StyledImageWrapper>
+    <StyledContainer $config={pageConfig}>
+        <StyledImageWrapper>
+            <Image 
+                src={pageData.coverImage?.url}
+                alt={pageData.title}
+                width={200}
+                height={200}
+            />
+        </StyledImageWrapper>
+        <StyledDisplayModeText>{pageData.title}</StyledDisplayModeText>
+    </StyledContainer>
   )
 }
 
