@@ -7,7 +7,8 @@ import {
     StyledInput,
     StyledSubmitButton,
 } from '../styles';
-import { StyledMessage, StyledModalOverlay, StyledModalContent } from '@/styles/rootStyles';
+import { StyledModalOverlay, StyledModalContent } from '../styles';
+import { StyledMessage } from '@/styles/rootStyles';
 import CloseButton from '@/components/closeButton';
 import { handleMediaUpload } from '@/utils/helpers';
 import { useAuth } from '@/context/AuthProvider';

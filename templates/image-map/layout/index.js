@@ -13,6 +13,7 @@ import Environment from './environment'
 
 import Icon from '../../displayModes/icon'
 import Hotspot from '../../displayModes/hotspot'
+import ImageDisplay from '../../displayModes/image'
 import DragIconToPosition from '@/widgets/SpaceEditor/components/DragIconToPosition'
 
 import Toolbar from '@/widgets/SpaceEditor/Toolbar'
@@ -52,6 +53,7 @@ const Index = () => {
         const displayModes = {
             icon: <Icon pageData={pageData} pageConfig={pageConfig} />,
             hotspot: <Hotspot pageData={pageData} pageConfig={pageConfig} spaceTheme={theme} />,
+            image: <ImageDisplay pageData={pageData} pageConfig={pageConfig} />
         }
 
         //use the display mode set in the page theme

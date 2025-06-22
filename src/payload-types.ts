@@ -180,6 +180,7 @@ export interface Page {
     };
     [k: string]: unknown;
   } | null;
+  coverImage?: (number | null) | Media;
   slug: string;
   contentType?: ('page' | 'blog' | 'files' | 'chatbot' | 'chat-messages' | 'products') | null;
   chatbot?: (number | null) | Chatbot;
@@ -216,7 +217,7 @@ export interface Page {
     /**
      * Choose how the page will show up in your space
      */
-    displayMode?: ('icon' | 'hotspot' | 'list' | 'island' | 'windows') | null;
+    displayMode?: ('icon' | 'hotspot' | 'list' | 'image' | 'windows') | null;
     /**
      * Optional icon image for the page
      */
@@ -664,6 +665,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
   body?: T;
+  coverImage?: T;
   slug?: T;
   contentType?: T;
   chatbot?: T;

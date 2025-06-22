@@ -77,7 +77,9 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, setPosts, postData, up
                 };
 
                 // Handle cover image upload if present
-                newPostData.coverImage = await handleMediaUpload(formData.coverImage)
+                if(formData.coverImage){
+                    newPostData.coverImage = await handleMediaUpload(formData.coverImage)
+                }
 
                 const createdPost = await createEntry('posts', newPostData);
 
@@ -110,7 +112,9 @@ const AddPostModal = ({ setIsModalOpen, isCreatePostMode, setPosts, postData, up
                 let updateData = { ...formData };
 
                 // Handle cover image upload if present
-                updateData.coverImage = await handleMediaUpload(formData.coverImage)
+                if(formData.coverImage){
+                    updateData.coverImage = await handleMediaUpload(formData.coverImage)
+                }
 
                 const updatedPost = await updateEntry('posts', postData.id, updateData);
 

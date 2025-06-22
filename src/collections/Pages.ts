@@ -17,6 +17,11 @@ export const Pages: CollectionConfig = {
         editor: lexicalEditor()
     },
     {
+      name: 'coverImage',
+      type: 'relationship',
+      relationTo: 'media',
+    },
+    {
         name: 'slug',
         type: 'text',
         required: true,
@@ -151,7 +156,7 @@ export const Pages: CollectionConfig = {
             { label: 'Icon', value: 'icon' },
             { label: 'Hotspot', value: 'hotspot' },
             { label: 'List', value: 'list' },
-            { label: 'Island', value: 'island' },
+            { label: 'Image', value: 'image' },
             { label: 'Window', value: 'windows' },
           ],
           admin: {
@@ -182,7 +187,7 @@ export const Pages: CollectionConfig = {
             "backgroundImage": null,
           }
         }
-  ],
+      ],
     },
   ],
   hooks: {

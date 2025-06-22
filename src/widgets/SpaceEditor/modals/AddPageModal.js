@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { createEntry, updatePage } from '../../../../data/createContent.server'
 import { useSpace } from '@/context/SpaceProvider';
@@ -12,7 +12,8 @@ import CreateStaticPageSection from '../components/CreateStaticPageSection'
 import CreateChatbotSection from '../components/CreateChatbotSection'
 import defaultBotNodes from '../components/defaultBotNodes.json';
 
-import { handleServerResponse } from '@/utils/helpers';
+import { handleServerResponse, handleMediaUpload } from '@/utils/helpers';
+
 
 import {
     StyledForm,
@@ -43,6 +44,7 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
         title: pageData?.title || '',
         contentType: pageData?.contentType || '',
         body: pageData?.body || null,
+        coverImage: pageData?.coverImage || null,
         space,
         updates: pageData?.updates || null,
         blogTitle: pageData?.title || '',
@@ -84,6 +86,16 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
         }));
     };
 
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setFormData(prev => ({
+                ...prev,
+                coverImage: file
+            }));
+        }
+    };
+
     const handleThemeConfigChange = (section, field, value) => {
         setFormData(prev => ({
             ...prev,
@@ -114,6 +126,11 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                     ...formData,
                     slug
                 };
+
+                // Handle media upload if cover image present
+                if(formData.coverImage){
+                    pageData.coverImage = await handleMediaUpload(formData.coverImage)
+                }
 
                 // If content type is blog, create an update first
                 if (formData.contentType === 'blog') {
@@ -167,7 +184,15 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
             } 
         } else {
             try {
-                const updatedPage = await updatePage(pageData.id, formData);
+
+                let updateData = { ...formData };
+
+                // Handle cover image upload if present
+                if(formData.coverImage){
+                    updateData.coverImage = await handleMediaUpload(formData.coverImage)
+                }
+
+                const updatedPage = await updatePage(pageData.id, updateData);
 
                 const { type, message } = handleServerResponse(updatedPage, 'Page', 'edited')
                 
@@ -264,6 +289,21 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                     />
                 )}
 
+                {formData.contentType &&
+                    <div>
+                        <StyledLabel htmlFor="coverImage" className="block mb-2">
+                            Cover Image
+                        </StyledLabel>
+                        <StyledInput
+                            id="coverImage"
+                            name="coverImage"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="w-full"
+                        />
+                    </div>
+                }
                 
                 <StyledSettingsSection>
                     <StyledToggle
@@ -289,7 +329,7 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                                     <option value="icon">Icon</option>
                                     <option value="hotspot">Hotspot</option>
                                     <option value="list">List</option>
-                                    <option value="island">Island</option>
+                                    <option value="image">Image</option>
                                     <option value="windows">Window</option>
                                 </StyledSelect>
                             </div>
