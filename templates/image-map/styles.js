@@ -37,6 +37,8 @@ export const StyledPage = styled.div`
     overflow: scroll;
     transform: ${props => `${props.$settings?.style?.pageDisplayStyle === 'center-modal' ? `translate(-50%, -50%)` : ``}`};
     z-index: 99;
+    resize: both;
+    overflow: auto;
 
      ${props => props.$settings?.style?.backgroundImageRenderMode === 'center' && `
         width: unset;

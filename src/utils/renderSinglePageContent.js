@@ -22,7 +22,7 @@ import { useSpace } from '@/context/SpaceProvider'
  * @returns {JSX.Element} The rendered page content
  */
 
-const RenderSinglePageContent = ({ children, pageData, setCurrentPage }) => {
+const RenderSinglePageContent = ({ children, pageData, setCurrentPage, isDisplayMode }) => {
   const { title, contentType } = pageData
   // Used to track whether a page is an index page or a sub-page
   const [ isPageIndex, setIsPageIndex ] = useState(true)
@@ -38,7 +38,7 @@ const RenderSinglePageContent = ({ children, pageData, setCurrentPage }) => {
 
         <div>
           {
-            isCurrentUserSpaceOwner &&
+            isCurrentUserSpaceOwner && !isDisplayMode &&
               <button 
                 // Button positioned to the left of close button
                 className='text-button' style={{position: 'absolute', top: '2%', left: '85%'}}

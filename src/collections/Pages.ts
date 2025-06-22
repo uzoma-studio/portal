@@ -157,7 +157,7 @@ export const Pages: CollectionConfig = {
             { label: 'Hotspot', value: 'hotspot' },
             { label: 'List', value: 'list' },
             { label: 'Image', value: 'image' },
-            { label: 'Window', value: 'windows' },
+            { label: 'Window', value: 'window' },
           ],
           admin: {
             description: 'Choose how the page will show up in your space',

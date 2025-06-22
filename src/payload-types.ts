@@ -217,7 +217,7 @@ export interface Page {
     /**
      * Choose how the page will show up in your space
      */
-    displayMode?: ('icon' | 'hotspot' | 'list' | 'image' | 'windows') | null;
+    displayMode?: ('icon' | 'hotspot' | 'list' | 'image' | 'window') | null;
     /**
      * Optional icon image for the page
      */
