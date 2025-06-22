@@ -19,6 +19,9 @@ import Toolbar from '@/widgets/SpaceEditor/Toolbar'
 import ModalWrapper from '@/widgets/SpaceEditor/ModalWrapper';
 import AddPageModal from '@/widgets/SpaceEditor/AddPageModal';
 
+import { DndContext } from '@dnd-kit/core';
+import { useDroppable } from '@dnd-kit/core';
+
 const Index = () => {
     const { pages, settings, isCurrentUserSpaceOwner } = useSpace()
     
@@ -97,118 +100,157 @@ const Index = () => {
         setIsBuildMode(!isBuildMode)
     };
     
+    const { isOver, setNodeRef } = useDroppable({
+        id: 'droppable',
+    })
+    const style = {
+        color: isOver ? 'green' : undefined
+    }
 
+    const [isDropped, setIsDropped] = useState(false)
+    const draggableMarkup = (
+        <Draggable>Drag me</Draggable>
+    );
+    
+    function handleDragEnd(event) {
+        if (event.over && event.over.id === 'droppable') {
+          setIsDropped(true);
+        }
+      }
+    
     return (
         <>
             { showEnvironment && <Environment environment={environment} /> }
             <Header isBuildMode={isBuildMode} setIsBuildMode={setIsBuildMode} />
-            <StyledBackgroundContainer $settings={theme} ref={containerRef}>
-                { backgroundImage && theme.style.backgroundMode === 'image' ?
-                    imageRenderMode === 'background' ? (
-                        <Image 
-                            src={backgroundImage.url}
-                            layout="fill"
-                            objectFit="cover"
-                            quality={100}
-                            style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
-                            alt={backgroundImage?.alt}
-                            onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
-                            onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
-                        />
-                    ) : (
-                        <div className="fixed inset-0 flex items-center justify-center">
+            {!isDropped ? draggableMarkup : null}
+            <DndContext onDragEnd={handleDragEnd}>
+                <StyledBackgroundContainer $settings={theme} ref={setNodeRef} style={style}>
+                    {isDropped ? draggableMarkup : 'Drop here'}
+                    { backgroundImage && theme.style.backgroundMode === 'image' ?
+                        imageRenderMode === 'background' ? (
                             <Image 
                                 src={backgroundImage.url}
-                                width={1200}
-                                height={800}
-                                style={{
-                                    objectFit: 'contain',
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    cursor: isBuildMode ? 'crosshair' : 'auto'
-                                }}
-                                className="md:w-[70%] lg:w-[60%] xl:w-[50%]"
+                                layout="fill"
+                                objectFit="cover"
                                 quality={100}
+                                style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
                                 alt={backgroundImage?.alt}
                                 onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
                                 onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
                             />
-                        </div>
-                    )
-                    :
-                    <div className='background'
-                        style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
-                        onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
-                        onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
-                    />
-                }
-                {
-                    theme && pages.map((pageData) =>
-                        <StyledDisplayModeWrapper 
-                            key={pageData.id} 
-                            onClick={() => {
-                                if (!isBuildMode) {
-                                    setCurrentPageId(pageData.id);
-                                } else {
-                                    // TODO: Atm I'd need to click first to be able to then drag but drag should be possible once I click the icon/hotspot etc
-                                    setDraggedIconPageId(pageData.id)
-                                    setDragPosition(pageData.themeConfig.position || { x: 0, y: 0 });
-                                }
-                            }}
-                            style={{cursor: isBuildMode ? 'move' : 'pointer'}}
-                        >
-                            { isBuildMode && draggedIconPageId === pageData.id ? 
-                                <DragIconToPosition
-                                    containerRef={containerRef}
-                                    showGrid={true}
-                                    pageData={pageData}
-                                    dragPosition={dragPosition}
-                                    setDragPosition={setDragPosition}
-                                    setDraggedIconPageId={setDraggedIconPageId}
-                                >
-                                    {getDisplayMode(pageData)}
-                                </DragIconToPosition>
-                                :
-                                getDisplayMode(pageData)
-                            }
-                        </StyledDisplayModeWrapper>
-                    )
-                }
-                {
-                    currentPage && 
-                        <RenderPages>
-                            <SinglePage
-                                pageData={currentPage}
-                                pageConfig={currentPage.themeConfig}
-                                spaceTheme={theme}
-                                showPage={currentPage}
-                                setShowPage={setCurrentPageId}
-                            />
-                        </RenderPages>
-                }
-                { isBuildMode && 
-                    <>
-                        { isModalOpen && 
-                            <ModalWrapper tabName={'Add Page'} modalCloseFn={() => setIsModalOpen(false)}>
-                                <AddPageModal
-                                    setIsModalOpen={setIsModalOpen} 
-                                    isCreatePageMode={true}  
-                                    pageCoords={pageCoords}
+                        ) : (
+                            <div className="fixed inset-0 flex items-center justify-center">
+                                <Image 
+                                    src={backgroundImage.url}
+                                    width={1200}
+                                    height={800}
+                                    style={{
+                                        objectFit: 'contain',
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        cursor: isBuildMode ? 'crosshair' : 'auto'
+                                    }}
+                                    className="md:w-[70%] lg:w-[60%] xl:w-[50%]"
+                                    quality={100}
+                                    alt={backgroundImage?.alt}
+                                    onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
+                                    onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
                                 />
-                            </ModalWrapper>
-                        }
-                        <StyledGrid />
-                    </>
-                }
-                {
-                    isCurrentUserSpaceOwner && 
-                        <Toolbar />
-                }
-                {showFooter && <Footer /> }
-            </StyledBackgroundContainer>
+                            </div>
+                        )
+                        :
+                        <div className='background'
+                            style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
+                            onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
+                            onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
+                        />
+                    }
+                    {
+                        theme && pages.map((pageData) =>
+                            <StyledDisplayModeWrapper 
+                                key={pageData.id} 
+                                onClick={() => {
+                                    if (!isBuildMode) {
+                                        setCurrentPageId(pageData.id);
+                                    } else {
+                                        // TODO: Atm I'd need to click first to be able to then drag but drag should be possible once I click the icon/hotspot etc
+                                        setDraggedIconPageId(pageData.id)
+                                        setDragPosition(pageData.themeConfig.position || { x: 0, y: 0 });
+                                    }
+                                }}
+                                style={{cursor: isBuildMode ? 'move' : 'pointer'}}
+                            >
+                                { isBuildMode && draggedIconPageId === pageData.id ? 
+                                    <DragIconToPosition
+                                        containerRef={containerRef}
+                                        showGrid={true}
+                                        pageData={pageData}
+                                        dragPosition={dragPosition}
+                                        setDragPosition={setDragPosition}
+                                        setDraggedIconPageId={setDraggedIconPageId}
+                                    >
+                                        {getDisplayMode(pageData)}
+                                    </DragIconToPosition>
+                                    :
+                                    getDisplayMode(pageData)
+                                }
+                            </StyledDisplayModeWrapper>
+                        )
+                    }
+                    {
+                        currentPage && 
+                            <RenderPages>
+                                <SinglePage
+                                    pageData={currentPage}
+                                    pageConfig={currentPage.themeConfig}
+                                    spaceTheme={theme}
+                                    showPage={currentPage}
+                                    setShowPage={setCurrentPageId}
+                                />
+                            </RenderPages>
+                    }
+                    { isBuildMode && 
+                        <>
+                            { isModalOpen && 
+                                <ModalWrapper tabName={'Add Page'} modalCloseFn={() => setIsModalOpen(false)}>
+                                    <AddPageModal
+                                        setIsModalOpen={setIsModalOpen} 
+                                        isCreatePageMode={true}  
+                                        pageCoords={pageCoords}
+                                    />
+                                </ModalWrapper>
+                            }
+                            <StyledGrid />
+                        </>
+                    }
+                    {
+                        isCurrentUserSpaceOwner && 
+                            <Toolbar />
+                    }
+                </StyledBackgroundContainer>
+            </DndContext>
+            {showFooter && <Footer /> }
         </>
+    )
+}
+
+import { useDraggable } from '@dnd-kit/core'
+
+const {attributes, listeners, setNodeRef, transform} = useDraggable({
+    id: 'draggable',
+  });
+  const style = transform ? {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+  } : undefined;
+
+export const Draggable = () => {
+
+    return (
+        <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+            {props.children}
+        </button>
     )
 }
 
