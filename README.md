@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Portal Demo
+
+**Portal** is a modern, extensible webspace builder for creative people. It allows artists, designers, and creators to build interactive digital spaces that capture their creative essence. This project is built with [Next.js](https://nextjs.org/) and [Payload CMS](https://payloadcms.com/), and features a modular, multi-tenant architecture with customizable themes, content types, and a rich admin experience.
+
+## Features
+
+- **Customizable Spaces:** Users can create and manage their own virtual environments ("spaces") with unique themes, backgrounds, and layouts.
+- **Rich Content Types:** Support for blogs, shops, chatbots, static pages, and more.
+- **Drag-and-Drop Editor:** Visual editor for arranging and customizing content within spaces.
+- **Multi-Tenancy:** Each space is isolated, with its own members, content, and settings.
+- **Authentication:** User signup, login, and profile management.
+- **Payments:** Integration for product sales and subscriptions.
+- **Media Management:** Upload and manage images, icons, and other media assets.
+- **Responsive UI:** Built with Tailwind CSS and styled-components for a beautiful, modern look.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (v18+ recommended)
+- npm, yarn, pnpm, or bun
+- PostgreSQL database (for Payload CMS)
+- (Optional) AWS S3 or compatible storage for media
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-org/portal-demo.git
+   cd portal-demo
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-## Learn More
+3. **Configure environment variables:**
+   - Copy `.env.example` to `.env` and fill in your database, Payload, and storage credentials.
 
-To learn more about Next.js, take a look at the following resources:
+4. **Run database migrations (if needed):**
+   ```bash
+   npm run payload migrate
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+6. **Open your browser:**
+   - Visit [http://localhost:3000](http://localhost:3000) to see the frontend.
+   - Visit [http://localhost:3000/admin](http://localhost:3000/admin) for the Payload admin dashboard.
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `src/app/` — Next.js app directory (frontend, API routes, layouts)
+- `src/collections/` — Payload CMS collection configs (Spaces, Users, Posts, etc.)
+- `src/components/` — Shared React components (Header, Footer, etc.)
+- `src/widgets/` — Feature widgets (Space Editor, Authentication, etc.)
+- `src/context/` — React context providers (Auth, Space, etc.)
+- `src/utils/` — Utility functions and helpers
+- `public/` — Static assets (logo, icons, images)
+- `templates/` — Starter templates and display modes for spaces
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Customization
+
+- **Themes:** Spaces can be themed via `themeSettings.json` and per-space settings.
+- **Icons:** Add SVG or PNG icons to `public/icons/` for use in spaces and content types.
+- **Content Types:** Extend or add new types in `src/collections/` and `src/contentTypes/`.
+
+## Scripts
+
+- `npm run dev` — Start the Next.js development server
+- `npm run build` — Build for production
+- `npm run start` — Start the production server
+- `npm run payload` — Start Payload CMS admin panel
+- `npm run ci` — Run migrations and build (for CI/CD)
+
+## Deployment
+
+Deploy on [Vercel](https://vercel.com/). For Payload CMS, ensure your database and storage are accessible in production.
+
+For deployment there is a separate `portal-staging` repo. The current deployment pipeline is to push to the staging branch of this repo, navigate to the `portal-staging` project and pull the changes and deploy that to Vercel to test in a remote staging environment before deploying this repo (`portal-demo`) to production. This  workaround is temporarily being done to circumvent the charges on running branch deployments on Vercel.
+
+## License
+
+This project is licensed under the [Apache 2.0 License](LICENSE).
+
+---
+
+**Portal** is built and maintained by [uzoma.studio](https://uzoma.studio).
+For questions, issues, or contributions, please open an issue or pull request!
