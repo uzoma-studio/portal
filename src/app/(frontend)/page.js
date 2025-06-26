@@ -96,7 +96,7 @@ const Home = () => {
 
       {/* Footer Section */}
       <footer className="w-full py-8 flex flex-col items-center border-t border-gray-800 mt-auto">
-        <span className="text-white text-sm">&copy; {new Date().getFullYear()} Portal. All rights reserved.</span>
+        <span className="text-gray-400 text-sm">&copy; {new Date().getFullYear()} Portal. All rights reserved.</span>
       </footer>
     </div>
   );
