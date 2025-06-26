@@ -38,7 +38,7 @@ const Index = () => {
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
     const [draggedIconPageId, setDraggedIconPageId] = useState(null)
     
-    const [isBuildMode, setIsBuildMode] = useState(true)
+    const [isBuildMode, setIsBuildMode] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
 

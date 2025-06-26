@@ -21,9 +21,10 @@ const Toolbar = ({ pageData }) => {
     return (
         <>
             <StyledToolbarContainer>
-                <StyledToolbarButton onClick={() => setCurrentOpenModal('image')}>
+                {/* Button for image uploads */}
+                {/* <StyledToolbarButton onClick={() => setCurrentOpenModal('image')}>
                     i
-                </StyledToolbarButton>
+                </StyledToolbarButton> */}
                 <StyledToolbarButton onClick={() => setCurrentOpenModal('page')}>
                     +
                 </StyledToolbarButton>

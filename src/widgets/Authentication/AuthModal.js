@@ -77,7 +77,7 @@ const StyledModalOverlay = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: ${props => props.$settings ? `var(--background-color)` : `white`};
+    background: white;
     box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
     border-radius: 8px;
     padding: 20px;
@@ -109,12 +109,12 @@ const StyledModalOverlay = styled.div`
       align-items: flex-start;
 
       input {
-        border: 2px solid var(--primary-color);
+        border: 2px solid #222;
         border-radius: 5px;
         padding: 2%;
         width: 100%;
         color: var(--body-text-color);
-        background: var(--background-color);
+        background: inherit;
       }
 
       input, button {
@@ -123,15 +123,15 @@ const StyledModalOverlay = styled.div`
 
       button {
         padding: .5rem;
-        background: var(--primary-color);
+        background: #222;
         color: var(--accent-color);
         border: 2px solid var(--accent-color);
         border-radius: 5px;
 
         &:hover {
-          border: 2px solid var(--primary-color);
-          color: var(--primary-color);
-          background: var(--accent-color);
+          border: 2px solid #222;
+          color: #222;
+          background: #fff;
         }
       }
     }
