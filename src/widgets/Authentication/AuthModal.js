@@ -1,10 +1,66 @@
 // AuthModal.jsx
-import { useState, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import styled from 'styled-components';
 import CloseButton from '../../components/closeButton';
 import { useSpace } from '@/context/SpaceProvider';
+
+const AuthModal = ({ isOpen, onClose }) => {
+    const [formType, setFormType] = useState('login');
+    const [isPortalJumpingPage, setIsPortalJumpingPage] = useState(false) 
+    const spaceContext = useSpace()
+    const settings = spaceContext?.settings
+
+    useEffect(() => {
+      if(window.location.pathname.includes('jumping')){
+        setIsPortalJumpingPage(true)
+      } 
+    }, [])
+
+    if (!isOpen) return null;
+
+    return (
+        <StyledModalOverlay onClick={onClose} $isOpen={isOpen} $settings={settings}>
+            <div
+                className="modal-content"
+                onClick={e => e.stopPropagation()}
+            >
+                <div className="modal-header">
+                    <CloseButton closeFn={onClose} position={{x: '90', y: '5'}} />
+                </div>
+
+                {/* Toggle buttons to switch forms */}
+                <div className="modal-tabs">
+                    <button
+                        onClick={() => setFormType('login')}
+                        className={formType === 'login' ? 'active' : ''}
+                    >
+                        Login
+                    </button>
+                  {/* Temporary: Only show Sign Up tab if not Portal Jumping page */}
+                  {
+                    !isPortalJumpingPage &&
+                      <button
+                          onClick={() => setFormType('signup')}
+                          className={formType === 'signup' ? 'active' : ''}
+                      >
+                          Sign Up
+                      </button>
+                  }
+                </div>
+
+                {/* Render the appropriate form */}
+                <div className="modal-body">
+                    {formType === 'login' ? <LoginForm onClose={onClose} /> 
+                                            : <SignupForm onClose={onClose} />}
+                </div>
+            </div>
+        </StyledModalOverlay>
+    );
+};
+
+export default AuthModal;
 
 const StyledModalOverlay = styled.div`
   position: fixed;
@@ -81,48 +137,3 @@ const StyledModalOverlay = styled.div`
     }
   }
 `;
-
-const AuthModal = ({ isOpen, onClose }) => {
-    const [formType, setFormType] = useState('login');
-    const spaceContext = useSpace()
-    const settings = spaceContext?.settings
-
-    if (!isOpen) return null;
-
-    return (
-        <StyledModalOverlay onClick={onClose} $isOpen={isOpen} $settings={settings}>
-            <div
-                className="modal-content"
-                onClick={e => e.stopPropagation()}
-            >
-                <div className="modal-header">
-                    <CloseButton closeFn={onClose} position={{x: '90', y: '5'}} />
-                </div>
-
-                {/* Toggle buttons to switch forms */}
-                <div className="modal-tabs">
-                    <button
-                        onClick={() => setFormType('login')}
-                        className={formType === 'login' ? 'active' : ''}
-                    >
-                        Login
-                    </button>
-                    <button
-                        onClick={() => setFormType('signup')}
-                        className={formType === 'signup' ? 'active' : ''}
-                    >
-                        Sign Up
-                    </button>
-                </div>
-
-                {/* Render the appropriate form */}
-                <div className="modal-body">
-                    {formType === 'login' ? <LoginForm onClose={onClose} /> 
-                                            : <SignupForm onClose={onClose} />}
-                </div>
-            </div>
-        </StyledModalOverlay>
-    );
-};
-
-export default AuthModal;

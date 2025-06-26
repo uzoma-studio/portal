@@ -37,23 +37,12 @@ const StyledIcon = styled.div`
 
 const Icon = ({ pageData, pageConfig }) => {  
     
-    const [defaultIcon, setDefaultIcon] = useState([])
-
-    useEffect(() => {
-      const getIcons = async() => {
-        const icons = await getContent('icons', 20)
-        setDefaultIcon(icons.docs.find((icon) => icon.name.includes('default')))
-      }
-      getIcons()
-
-    }, [])
-    
   return (
     <StyledIconWrapper $config={pageConfig}>
         <StyledIcon>
             <Image 
-                src={pageConfig.icon?.url || defaultIcon.url}
-                alt={pageConfig.hotspotName || pageData.title}
+                src={pageConfig?.icon?.url || '/icons/default.svg'}
+                alt={pageConfig?.hotspotName || pageData?.title}
                 width={80}
                 height={80}
                 style={{
