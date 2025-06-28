@@ -37,7 +37,7 @@ const Page = () => {
     
 
     return (
-        <div className="min-h-screen flex flex-col text-indigo-900 bg-white">
+        <div className="min-h-screen flex flex-col text-indigo-900 bg-yellow-50">
           {/* Hero/Header Section */}
           <header className="w-full flex flex-col justify-center items-start px-4 max-w-7xl mx-auto">
             <Header />
