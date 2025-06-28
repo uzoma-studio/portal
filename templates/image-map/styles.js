@@ -22,16 +22,21 @@ export const StyledBackgroundContainer = styled.div`
     }
 `
 
+// Confused about a styling inconsistency between Space and Page? Check out the TODO written in the Pages.ts `style` field
 export const StyledPage = styled.div`
     position: absolute;
-    top: ${props => `${props.$settings?.style?.pageDisplayStyle === 'center-modal' ? '50%' : `${props.$settings?.position?.y}%`}`};
-    left: ${props => `${props.$settings?.style?.pageDisplayStyle === 'center-modal' ? '50%' : `${props.$settings?.position?.x}%`}`};
+    ${props => {
+        const isCenterModal = props.$spaceTheme?.style?.defaultPageStyles?.pageDisplayStyle === 'center-modal';
+        return `
+            top: ${isCenterModal ? '50%' : `${props.$settings?.position?.y}%`};
+            left: ${isCenterModal ? '50%' : `${props.$settings?.position?.x}%`};
+        `;
+    }}
     width: ${props => `${props.$settings?.size?.width}px`};
     height: ${props => `${props.$settings?.size?.height}px`};
     background-color: ${props => props.$settings?.style?.backgroundColor};
     color: ${props => props.$settings?.style?.textColor};
-    border-color: ${props => props.$spaceTheme?.style?.menu?.backgroundColor};
-    border-width: ${props => props.$settings?.style?.borderWidth};
+    border: ${props => props.$settings?.style?.borderWidth} solid ${props => props.$spaceTheme?.style?.menu?.backgroundColor};
     padding: 20px;
     box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.5);
     overflow: scroll;

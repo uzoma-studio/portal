@@ -24,7 +24,7 @@ const features = [
 
 const Home = () => {
   return (
-    <div className="min-h-screen flex flex-col text-indigo-900">
+    <div className="min-h-screen flex flex-col text-indigo-900 bg-yellow-50">
       {/* Hero Section */}
       <header className="w-full flex-1 flex flex-col justify-center items-start px-4 max-w-7xl mx-auto pt-44 pb-44">
         <div className="flex items-center absolute top-4">

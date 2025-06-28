@@ -266,10 +266,10 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                             <option value="">Select a content type</option>
                             <option value="page">Page</option>
                             <option value="blog">Blog</option>
-                            <option value="files">Files</option>
-                            <option value="chatbot">Chatbot</option>
-                            <option value="chat-messages">Chat</option>
-                            <option value="products">Shop</option>
+                            <option value="chat-messages">Messages</option>
+                            <option value="chatbot">Bot</option>
+                            {/* <option value="files">Files</option> */}
+                            {/* <option value="products">Shop</option> */}
                         </StyledSelect>
                     </div>
                 )}

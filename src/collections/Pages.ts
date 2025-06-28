@@ -183,6 +183,7 @@ export const Pages: CollectionConfig = {
           name: 'style',
           type: 'json',
           defaultValue: {
+            // TODO: Consider if we need this or we can just use space-wide page styles set in the Spaces collection. Because these two don't always match up and that can be confusing
             ...themeSettings.style.defaultPageStyles,
             "backgroundImage": null,
           }
