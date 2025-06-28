@@ -121,3 +121,88 @@ export const handleServerResponse = (response, contentType='Entry', action='upda
         return { type: 'error', message: `${contentType} could not be ${action}. Please contact enter@portal8.space`}
     }
 }
+
+/**
+ * Parse an ISO date string and return formatted time with timezone consideration
+ * @param {string} dateString - ISO date string (e.g., "2025-06-28T12:50:10.159Z")
+ * @param {string} timezone - Optional timezone (e.g., "America/New_York", "Europe/London")
+ * @param {string} format - Optional format ("12h" or "24h", defaults to "12h")
+ * @returns {object} Object containing various time representations
+ */
+export const parseTimeFromISO = (dateString, timezone = null, format = "12h") => {
+    try {
+      // Parse the ISO string
+      const date = new Date(dateString);
+      
+      if (isNaN(date.getTime())) {
+        throw new Error("Invalid date string");
+      }
+  
+      // Get timezone offset in minutes
+      const timezoneOffset = date.getTimezoneOffset();
+      
+      // Create options for formatting
+      const timeOptions = {
+        hour: format === "24h" ? "2-digit" : "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: format === "12h",
+        timeZone: timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+      };
+  
+      const dateOptions = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        ...timeOptions
+      };
+  
+      // Format the time
+      const timeFormatter = new Intl.DateTimeFormat("en-US", timeOptions);
+      const dateFormatter = new Intl.DateTimeFormat("en-US", dateOptions);
+      
+      const formattedTime = timeFormatter.format(date);
+      const formattedDate = dateFormatter.format(date);
+      
+      // Get individual components
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const seconds = date.getSeconds();
+      
+      // Convert to 12-hour format if needed
+      const hours12 = hours % 12 || 12;
+      const ampm = hours >= 12 ? "PM" : "AM";
+      
+      return {
+        // Formatted strings
+        time: formattedTime,
+        date: formattedDate,
+        dateTime: `${formattedDate} ${formattedTime}`,
+        
+        // Individual components
+        hours: format === "24h" ? hours : hours12,
+        minutes: minutes.toString().padStart(2, "0"),
+        seconds: seconds.toString().padStart(2, "0"),
+        ampm: format === "12h" ? ampm : null,
+        
+        // Raw values
+        rawHours: hours,
+        rawMinutes: minutes,
+        rawSeconds: seconds,
+        
+        // Timezone info
+        timezone: timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timezoneOffset: timezoneOffset,
+        isUTC: dateString.endsWith("Z"),
+        
+        // Original date object
+        dateObject: date,
+        
+        // Unix timestamp
+        timestamp: date.getTime()
+      };
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return null;
+    }
+  };
