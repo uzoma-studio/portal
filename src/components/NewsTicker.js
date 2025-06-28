@@ -42,7 +42,6 @@ const TickerItem = styled(Link)`
   display: inline-block;
   padding: 0 ${props => props.$itemSpacing || '3rem'};
   font-size: 1.25rem;
-  text-transform: uppercase;
   color: ${props => props.$theme?.style?.bodyTextColor || '#000'} !important;
   text-decoration: none;
   font-family: ${props => props.$theme?.style?.bodyFont}

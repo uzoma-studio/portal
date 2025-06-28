@@ -45,6 +45,12 @@ export const StyledPage = styled.div`
     resize: both;
     overflow: auto;
 
+    @media (max-width: 768px) {
+        top: 50%;
+        left: 50%;
+        max-width: 95%;
+    }
+
      ${props => props.$settings?.style?.backgroundImageRenderMode === 'center' && `
         width: unset;
         height: unset;
