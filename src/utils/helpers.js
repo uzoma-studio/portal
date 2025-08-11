@@ -102,6 +102,7 @@ export const handleMediaUpload = async (formImage) => {
             }
 
             const media = await response.json();
+            console.log(media?.doc)
             
             return media?.doc?.id;
         } catch (error) {

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 
-import { StyledBackgroundContainer, StyledGrid, StyledDisplayModeWrapper } from '../styles'
+import { StyledBackgroundContainer, StyledGrid, StyledDisplayModeWrapper, StyledImagePreview } from '../styles'
 
 import RenderPages from '@/utils/renderPages';
 import SinglePage from './single'
@@ -41,6 +41,8 @@ const Index = () => {
     const [isBuildMode, setIsBuildMode] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
+
+    const [previewImageUrls, setPreviewImageUrls] = useState([])
 
     const currentPage = pages.find(p => p.id === currentPageId)
 
@@ -100,116 +102,129 @@ const Index = () => {
         clearTimeout(clickTimeout.current);
         setIsBuildMode(!isBuildMode)
     };
+
+    const updatePreviewImageUrls = (url) => {
+        setPreviewImageUrls([...previewImageUrls, url])
+    }
     
     return (
         <>
             { showEnvironment && <Environment environment={environment} /> }
             <Header isBuildMode={isBuildMode} setIsBuildMode={setIsBuildMode} />
-                <StyledBackgroundContainer $settings={theme}>
-                    { backgroundImage && theme.style.backgroundMode === 'image' ?
-                        imageRenderMode === 'background' ? (
+            <StyledBackgroundContainer $settings={theme}>
+                { backgroundImage && theme.style.backgroundMode === 'image' ?
+                    imageRenderMode === 'background' ? (
+                        <Image 
+                            src={backgroundImage.url}
+                            layout="fill"
+                            objectFit="cover"
+                            quality={100}
+                            style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
+                            alt={backgroundImage?.alt}
+                            onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
+                            onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
+                        />
+                    ) : (
+                        <div className="fixed inset-0 flex items-center justify-center">
                             <Image 
                                 src={backgroundImage.url}
-                                layout="fill"
-                                objectFit="cover"
+                                width={1200}
+                                height={800}
+                                style={{
+                                    objectFit: 'contain',
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    cursor: isBuildMode ? 'crosshair' : 'auto'
+                                }}
+                                className="md:w-[70%] lg:w-[60%] xl:w-[50%]"
                                 quality={100}
-                                style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
                                 alt={backgroundImage?.alt}
                                 onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
                                 onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
                             />
-                        ) : (
-                            <div className="fixed inset-0 flex items-center justify-center">
-                                <Image 
-                                    src={backgroundImage.url}
-                                    width={1200}
-                                    height={800}
-                                    style={{
-                                        objectFit: 'contain',
-                                        position: 'absolute',
-                                        top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)',
-                                        cursor: isBuildMode ? 'crosshair' : 'auto'
-                                    }}
-                                    className="md:w-[70%] lg:w-[60%] xl:w-[50%]"
-                                    quality={100}
-                                    alt={backgroundImage?.alt}
-                                    onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
-                                    onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
-                                />
-                            </div>
-                        )
-                        :
-                        <div className='background'
-                            style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
-                            onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
-                            onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
-                        />
-                    }
-                    {
-                        theme && pages.map((pageData) =>
-                            <StyledDisplayModeWrapper 
-                                key={pageData.id} 
-                                onClick={() => {
-                                    if (!isBuildMode) {
-                                        setCurrentPageId(pageData.id);
-                                    } else {
-                                        // TODO: Atm I'd need to click first to be able to then drag but drag should be possible once I click the icon/hotspot etc
-                                        setDraggedIconPageId(pageData.id)
-                                        setDragPosition(pageData.themeConfig.position || { x: 0, y: 0 });
-                                    }
-                                }}
-                                style={{cursor: isBuildMode ? 'move' : 'pointer'}}
-                            >
-                                { isBuildMode && draggedIconPageId === pageData.id ? 
-                                    <DragIconToPosition
-                                        containerRef={containerRef}
-                                        showGrid={true}
-                                        pageData={pageData}
-                                        dragPosition={dragPosition}
-                                        setDragPosition={setDragPosition}
-                                        setDraggedIconPageId={setDraggedIconPageId}
-                                    >
-                                        {getDisplayMode(pageData)}
-                                    </DragIconToPosition>
-                                    :
-                                    getDisplayMode(pageData)
+                        </div>
+                    )
+                    :
+                    <div className='background'
+                        style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
+                        onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
+                        onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
+                    />
+                }
+
+                {/* Render Pages */}
+                {
+                    theme && pages.map((pageData) =>
+                        <StyledDisplayModeWrapper 
+                            key={pageData.id} 
+                            onClick={() => {
+                                if (!isBuildMode) {
+                                    setCurrentPageId(pageData.id);
+                                } else {
+                                    // TODO: Currently need to click first to be able to then drag but drag should be possible once I click the icon/hotspot etc
+                                    setDraggedIconPageId(pageData.id)
+                                    setDragPosition(pageData.themeConfig.position || { x: 0, y: 0 });
                                 }
-                            </StyledDisplayModeWrapper>
-                        )
-                    }
-                    {
-                        currentPage && 
-                            <RenderPages>
-                                <SinglePage
-                                    pageData={currentPage}
-                                    pageConfig={currentPage.themeConfig}
-                                    spaceTheme={theme}
-                                    showPage={currentPage}
-                                    setShowPage={setCurrentPageId}
-                                />
-                            </RenderPages>
-                    }
-                    { isBuildMode && 
-                        <>
-                            { isModalOpen && 
-                                <ModalWrapper tabName={'Add Page'} modalCloseFn={() => setIsModalOpen(false)}>
-                                    <AddPageModal
-                                        setIsModalOpen={setIsModalOpen} 
-                                        isCreatePageMode={true}  
-                                        pageCoords={pageCoords}
-                                    />
-                                </ModalWrapper>
+                            }}
+                            style={{cursor: isBuildMode ? 'move' : 'pointer'}}
+                        >
+                            { isBuildMode && draggedIconPageId === pageData.id ? 
+                                <DragIconToPosition
+                                    containerRef={containerRef}
+                                    showGrid={true}
+                                    pageData={pageData}
+                                    dragPosition={dragPosition}
+                                    setDragPosition={setDragPosition}
+                                    setDraggedIconPageId={setDraggedIconPageId}
+                                >
+                                    {getDisplayMode(pageData)}
+                                </DragIconToPosition>
+                                :
+                                getDisplayMode(pageData)
                             }
-                            <StyledGrid />
-                        </>
-                    }
-                    {
-                        isCurrentUserSpaceOwner && 
-                            <Toolbar />
-                    }
-                </StyledBackgroundContainer>
+                        </StyledDisplayModeWrapper>
+                    )
+                }
+                { 
+                    previewImageUrls && previewImageUrls.map((url) =>  
+                        <StyledImagePreview>
+                            <img src={url} alt='preview image' /> 
+                        </StyledImagePreview>
+                        /* TODO: Add proper image alt */ 
+                )}
+                {
+                    currentPage && 
+                        <RenderPages>
+                            <SinglePage
+                                pageData={currentPage}
+                                pageConfig={currentPage.themeConfig}
+                                spaceTheme={theme}
+                                showPage={currentPage}
+                                setShowPage={setCurrentPageId}
+                            />
+                        </RenderPages>
+                }
+                { isBuildMode && 
+                    <>
+                        { isModalOpen && 
+                            <ModalWrapper tabName={'Add Page'} modalCloseFn={() => setIsModalOpen(false)}>
+                                <AddPageModal
+                                    setIsModalOpen={setIsModalOpen} 
+                                    isCreatePageMode={true}  
+                                    pageCoords={pageCoords}
+                                />
+                            </ModalWrapper>
+                        }
+                        <StyledGrid />
+                    </>
+                }
+                {
+                    isCurrentUserSpaceOwner && 
+                        <Toolbar updatePreviewImageUrls={updatePreviewImageUrls}/>
+                }
+            </StyledBackgroundContainer>
             {showFooter && <Footer /> }
         </>
     )

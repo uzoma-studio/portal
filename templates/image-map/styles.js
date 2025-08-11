@@ -107,3 +107,16 @@ export const StyledGrid = styled.div`
     background-size: 20px 20px;
     pointer-events: none;
 `;
+
+export const StyledImagePreview = styled.div`
+    margin-top: 1rem;
+    text-align: center;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    
+    img {
+        max-width: 100%;
+        border-radius: 0.25rem;
+        border: 1px solid #ddd;
+    }
+`;
