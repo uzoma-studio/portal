@@ -33,19 +33,26 @@ const Home = () => {
             <span className="text-2xl font-mono font-normal tracking-wide">Portal</span>
           </Link>
         </div>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mt-10 mb-6 leading-tight text-indigo-900">
-          Design a webspace<br />that feels like you
-        </h1>
-        <p className="text-lg sm:text-xl font-normal text-gray-800 mb-10 max-w-xl text-left">
-          Portal allows artists, designers and creators build interactive digital spaces that capture their creative essence
-        </p>
-        <div className="flex gap-4 mb-8">
-          <Link href="/#cta" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
-            Get Started
-          </Link>
-          <Link href="/jumping" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
-            Explore
-          </Link>
+        <div className='flex items-center w-full'>
+          <div className="w-[70%]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mt-10 mb-6 leading-tight text-indigo-900">
+              Design a webspace<br />that feels like you
+            </h1>
+            <p className="text-lg sm:text-xl font-normal text-gray-800 mb-10 max-w-xl text-left">
+              Portal allows artists, designers and creators build interactive digital spaces that capture their creative essence
+            </p>
+            <div className="flex gap-4 mb-8">
+              <Link href="/#cta" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
+                Get Started
+              </Link>
+              <Link href="/jumping" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
+                Explore
+              </Link>
+            </div>
+          </div>
+          <div className="w-[30%]">
+            <Image src="/space.png" width={350} height={350} alt="Illustration of Portal space" />
+          </div>
         </div>
       </header>
 
