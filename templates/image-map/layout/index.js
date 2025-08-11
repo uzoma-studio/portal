@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
+import { Rnd } from 'react-rnd';
 
 import { StyledBackgroundContainer, StyledGrid, StyledDisplayModeWrapper, StyledImagePreview } from '../styles'
 
@@ -43,6 +44,7 @@ const Index = () => {
     const [pageCoords, setPageCoords] = useState(null)
 
     const [previewImageUrls, setPreviewImageUrls] = useState([])
+    const [currentEditImageUrl, setCurrentEditImageUrl] = useState(null)
 
     const currentPage = pages.find(p => p.id === currentPageId)
 
@@ -95,6 +97,9 @@ const Index = () => {
                 openAddPageModal(currentTarget, clientX, clientY);
             }, 250);
         }
+
+        // Complete editing any images that are currently being edited
+        currentEditImageUrl && setCurrentEditImageUrl(null)
     };
       
     const handleDoubleClick = () => {
@@ -188,11 +193,28 @@ const Index = () => {
                     )
                 }
                 { 
-                    previewImageUrls && previewImageUrls.map((url) =>  
-                        <StyledImagePreview>
-                            <img src={url} alt='preview image' /> 
-                        </StyledImagePreview>
+                    previewImageUrls && previewImageUrls.map((url, index) =>  
+                        <Rnd
+                            default={{
+                                x: 50,
+                                y: 50,
+                                width: 480,
+                                height: 360
+                            }}
+                            key={index}
+                            onClick={() => setCurrentEditImageUrl(url)}
+                        >
+                            { 
+                                currentEditImageUrl === url ? 
+                                    <StyledImagePreview>
+                                        <img src={url} alt='preview image' />
+                                    </StyledImagePreview>
+                                    :
+                                    <img src={url} alt='preview image' />
+                            }
+                        </Rnd>
                         /* TODO: Add proper image alt */ 
+                        /* TODO: Use Next Image tag */ 
                 )}
                 {
                     currentPage && 

@@ -109,14 +109,27 @@ export const StyledGrid = styled.div`
 `;
 
 export const StyledImagePreview = styled.div`
-    margin-top: 1rem;
-    text-align: center;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    
-    img {
-        max-width: 100%;
-        border-radius: 0.25rem;
-        border: 1px solid #ddd;
+    position: relative;
+    display: inline-block;
+    cursor: move; /* shows it's draggable */
+    border: 2px dashed #4a90e2; /* highlight the image boundaries */
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: border-color 0.2s ease;
+
+    &:hover {
+        border-color: #1e70bf;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        right: -5px;
+        bottom: -5px;
+        width: 10px;
+        height: 10px;
+        background: #4a90e2;
+        cursor: se-resize;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
     }
 `;
