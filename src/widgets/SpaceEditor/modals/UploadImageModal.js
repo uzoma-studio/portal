@@ -11,19 +11,23 @@ import {
     StyledSubmitButton,
 } from '../styles';
 
-const UploadImageModal = ({ setIsModalOpen, updatePreviewImageUrls, setDragObjectToPosition }) => {
+const UploadImageModal = ({ setIsModalOpen, updateSpacePreviewImages, setDragObjectToPosition }) => {
     const { space } = useSpace();
 
-    const [selectedFile, setSelectedFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
+
         if (file) {
         //   const uploadedImage = await handleMediaUpload(file, false)
-          const prevUrl = URL.createObjectURL(file);
-          updatePreviewImageUrls(prevUrl);
+          const previewUrl = URL.createObjectURL(file);
+          const imageData = {
+            file,
+            previewUrl
+          }
+          updateSpacePreviewImages(imageData);
           setIsModalOpen(false)
         //   Remember to revoke: URL.revokeObjectURL(prevUrl)
         }
@@ -54,6 +58,10 @@ const UploadImageModal = ({ setIsModalOpen, updatePreviewImageUrls, setDragObjec
                     {message.text}
                 </StyledMessage>
             )}
+
+            <div className=''>
+
+            </div>
         </>
 
         /* <StyledSubmitButton 

@@ -146,6 +146,28 @@ export interface UserAuthOperations {
 export interface Media {
   id: number;
   alt: string;
+  mediaType?: string | null;
+  imageType?: ('background' | 'spaceImage') | null;
+  position?: {
+    /**
+     * X coordinate (0-100)
+     */
+    x?: number | null;
+    /**
+     * Y coordinate (0-100)
+     */
+    y?: number | null;
+  };
+  size?: {
+    /**
+     * Page width in px
+     */
+    width?: number | null;
+    /**
+     * Page height in px
+     */
+    height?: number | null;
+  };
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -646,6 +668,20 @@ export interface PayloadMigration {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  mediaType?: T;
+  imageType?: T;
+  position?:
+    | T
+    | {
+        x?: T;
+        y?: T;
+      };
+  size?:
+    | T
+    | {
+        width?: T;
+        height?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   url?: T;

@@ -22,6 +22,8 @@ import Toolbar from '@/widgets/SpaceEditor/Toolbar'
 import ModalWrapper from '@/widgets/SpaceEditor/modals/ModalWrapper';
 import AddPageModal from '@/widgets/SpaceEditor/modals/AddPageModal';
 
+import { handleMediaUpload } from '@/utils/helpers';
+
 const Index = () => {
     const { pages, settings, isCurrentUserSpaceOwner } = useSpace()
     
@@ -43,8 +45,8 @@ const Index = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
 
-    const [previewImageUrls, setPreviewImageUrls] = useState([])
-    const [currentEditImageUrl, setCurrentEditImageUrl] = useState(null)
+    const [spacePreviewImages, setSpacePreviewImages] = useState([])
+    const [currentPreviewImageIndex, setCurrentPreviewImageIndex] = useState(null)
 
     const currentPage = pages.find(p => p.id === currentPageId)
 
@@ -83,7 +85,9 @@ const Index = () => {
         setPageCoords({ x: xPercent, y: yPercent})
     }
 
-    const handleClick = (e) => {
+    const handleClick = async (e) => {
+        console.log(currentPreviewImageIndex);
+        
 
         if(isBuildMode){
             // Always clear any previous timer before setting a new one
@@ -99,7 +103,11 @@ const Index = () => {
         }
 
         // Complete editing any images that are currently being edited
-        currentEditImageUrl && setCurrentEditImageUrl(null)
+        if(currentPreviewImageIndex !== null){
+            const previewImage = spacePreviewImages[currentPreviewImageIndex]
+            const uploadData = await handleMediaUpload(previewImage.file, 'image', 'spaceImage', { position: previewImage.position, size: previewImage.size })
+            setCurrentPreviewImageIndex(null)
+        }
     };
       
     const handleDoubleClick = () => {
@@ -108,8 +116,14 @@ const Index = () => {
         setIsBuildMode(!isBuildMode)
     };
 
-    const updatePreviewImageUrls = (url) => {
-        setPreviewImageUrls([...previewImageUrls, url])
+    const updateSpacePreviewImages = (imageData) => {
+        setSpacePreviewImages([...spacePreviewImages, {
+                file: imageData.file,
+                previewUrl: imageData.previewUrl,
+                size: {width: 0, height: 0},
+                position: {x: 0, y: 0}
+            }
+        ])
     }
     
     return (
@@ -192,29 +206,44 @@ const Index = () => {
                         </StyledDisplayModeWrapper>
                     )
                 }
-                { 
-                    previewImageUrls && previewImageUrls.map((url, index) =>  
-                        <Rnd
-                            default={{
-                                x: 50,
-                                y: 50,
-                                width: 480,
-                                height: 360
-                            }}
-                            key={index}
-                            onClick={() => setCurrentEditImageUrl(url)}
-                        >
-                            { 
-                                currentEditImageUrl === url ? 
+                {
+                    spacePreviewImages && spacePreviewImages.map((image, index) =>
+                            <Rnd
+                                key={index}
+                                default={{
+                                    x: 50,
+                                    y: 50,
+                                    width: 480,
+                                    height: 360
+                                }}
+                                onClick={() => setCurrentPreviewImageIndex(index)}
+                                onResizeStop={(e, direction, ref, delta) => {
+                                    // Save the new size dimensions of the preview image
+                                    const previewImage = spacePreviewImages[index]
+                                    previewImage.size.width = Number(ref.style.width.split('px')[0])
+                                    previewImage.size.height = Number(ref.style.height.split('px')[0])
+                                }}
+                                onDragStop={(e, direction) => {
+                                    const previewImage = spacePreviewImages[index]
+                                    previewImage.position.x = direction.x
+                                    previewImage.position.y = direction.y
+                                }}
+                            >
+                                { currentPreviewImageIndex === index ?
                                     <StyledImagePreview>
-                                        <img src={url} alt='preview image' />
+                                        <img src={image.previewUrl} alt="preview image" />
                                     </StyledImagePreview>
                                     :
-                                    <img src={url} alt='preview image' />
-                            }
-                        </Rnd>
-                        /* TODO: Add proper image alt */ 
-                        /* TODO: Use Next Image tag */ 
+                                    <img 
+                                        key={index} 
+                                        src={image.previewUrl} 
+                                        alt="preview image"
+                                        onClick={() => setCurrentPreviewImageIndex(index)}
+                                    />
+                                }
+                            </Rnd>
+                    /* TODO: Add proper image alt */ 
+                    /* TODO: Use Next Image tag */ 
                 )}
                 {
                     currentPage && 
@@ -244,7 +273,9 @@ const Index = () => {
                 }
                 {
                     isCurrentUserSpaceOwner && 
-                        <Toolbar updatePreviewImageUrls={updatePreviewImageUrls}/>
+                        <Toolbar 
+                            updateSpacePreviewImages={updateSpacePreviewImages}
+                        />
                 }
             </StyledBackgroundContainer>
             {showFooter && <Footer /> }
