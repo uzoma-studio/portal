@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { Rnd } from 'react-rnd';
 
-import { StyledBackgroundContainer, StyledGrid, StyledDisplayModeWrapper, StyledImagePreview } from '../styles'
+import { StyledBackgroundContainer, StyledGrid, StyledDisplayModeWrapper, StyledImagePreview, StyledSaveButton } from '../styles'
 
 import RenderPages from '@/utils/renderPages';
 import SinglePage from './single'
@@ -22,10 +22,12 @@ import Toolbar from '@/widgets/SpaceEditor/Toolbar'
 import ModalWrapper from '@/widgets/SpaceEditor/modals/ModalWrapper';
 import AddPageModal from '@/widgets/SpaceEditor/modals/AddPageModal';
 
+import { updateEntry } from '../../../data/createContent.server';
 import { handleMediaUpload } from '@/utils/helpers';
+import { StyledMessage } from '@/styles/rootStyles';
 
 const Index = () => {
-    const { pages, settings, isCurrentUserSpaceOwner, images: spaceImages } = useSpace()
+    const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages } = useSpace()
 
     const containerRef = useRef(null)
     
@@ -45,7 +47,8 @@ const Index = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
 
-    // const [currentPreviewImageIndex, setCurrentPreviewImageIndex] = useState(null)
+    const [currentEditImageId, setCurrentEditImageId] = useState(null)
+    const [message, setMessage] = useState({ type: '', text: '' });
 
     const currentPage = pages.find(p => p.id === currentPageId)
 
@@ -85,8 +88,6 @@ const Index = () => {
     }
 
     const handleClick = async (e) => {
-        console.log(currentPreviewImageIndex);
-        
 
         if(isBuildMode){
             // Always clear any previous timer before setting a new one
@@ -115,16 +116,58 @@ const Index = () => {
         setIsBuildMode(!isBuildMode)
     };
 
-    // const updateSpacePreviewImages = (imageData) => {
-    //     setSpacePreviewImages([...spacePreviewImages, {
-    //             file: imageData.file,
-    //             previewUrl: imageData.previewUrl,
-    //             size: {width: 0, height: 0},
-    //             position: {x: 0, y: 0}
-    //         }
-    //     ])
-    // }
-    
+    const saveSpaceEdits = async () => {
+        // Save images
+        const updatedImages = [...space.images]
+        
+        for (const image of spaceImages) {
+
+            if (image.isEdited) {
+
+                if (image.isPreview) {
+                    const imageUpload = await handleMediaUpload(image.file);
+          
+                    updatedImages.push({
+                        id: image.id,
+                        image: imageUpload,
+                        size: image.size,
+                        position: image.position
+                    });
+                } else {
+                    const idx = updatedImages.findIndex(existing => existing.id === image.id);
+                    if (idx !== -1) {
+                        updatedImages[idx] = {
+                            ...updatedImages[idx],
+                            size: image.size,
+                            position: image.position
+                        };
+                    }
+                }
+
+                image.isEdited = false
+            }
+        }
+
+        const spaceData = {
+            ...space,
+            images: updatedImages
+        };
+        
+        const updatedSpace = await updateEntry('spaces', space.id, spaceData);
+        
+        if (updatedSpace?.id) {
+            setMessage({ type: 'success', text: 'Space edited successfully!' });
+        } else {
+            setMessage({ type: 'error', text: 'Failed to edit space. Please try again' });
+        }
+        
+        setTimeout(() => {
+            setMessage({ type: '', text: '' });
+        }, 1500);
+
+        setIsBuildMode(false)
+    }
+
     return (
         <>
             { showEnvironment && <Environment environment={environment} /> }
@@ -206,61 +249,66 @@ const Index = () => {
                         </StyledDisplayModeWrapper>
                     )
                 }
+                {/* Render Images */}
                 {
-                    spaceImages && spaceImages.map(({ id, image, position, size}) => {
-                        return <img 
-                            key={id} 
-                            src={image.url} 
-                            alt={image.alt || `space image ${image.filename}`}
-                            style={{
-                                position: 'absolute',
-                                width: size.width,
-                                height: size.height,
-                                top: position.y,
-                                left: position.x
-                            }}
-                        />
-                    })
-                }
-                {/*
-                    spacePreviewImages && spacePreviewImages.map((image, index) =>
-                            <Rnd
-                                key={index}
-                                default={{
-                                    x: 50,
-                                    y: 50,
-                                    width: 480,
-                                    height: 360
+                    spaceImages && spaceImages.map(({ id, image, position, size }, index) => {
+                        if(!isBuildMode){
+                            return <img 
+                                key={id} 
+                                src={image.url} 
+                                alt={image.alt || `space image ${image.filename}`}
+                                style={{
+                                    position: 'absolute',
+                                    width: size.width,
+                                    height: size.height,
+                                    top: position.y,
+                                    left: position.x,
+                                    zIndex: index+1,
+                                    objectFit: 'contain'
                                 }}
-                                onClick={() => setCurrentPreviewImageIndex(index)}
+                            />
+                        } else {
+                            return <Rnd
+                                key={id}
+                                default={{
+                                    x: position.x,
+                                    y: position.y,
+                                    width: size.width,
+                                    height: size.height,
+                                }}
+                                onClick={() => setCurrentEditImageId(id)}
                                 onResizeStop={(e, direction, ref, delta) => {
                                     // Save the new size dimensions of the preview image
-                                    const previewImage = spacePreviewImages[index]
-                                    previewImage.size.width = Number(ref.style.width.split('px')[0])
-                                    previewImage.size.height = Number(ref.style.height.split('px')[0])
+                                    const image = spaceImages[index]
+                                    image.size.width = Number(ref.style.width.split('px')[0])
+                                    image.size.height = Number(ref.style.height.split('px')[0])
+                                    image.isEdited = true
                                 }}
                                 onDragStop={(e, direction) => {
-                                    const previewImage = spacePreviewImages[index]
-                                    previewImage.position.x = direction.x
-                                    previewImage.position.y = direction.y
+                                    const image = spaceImages[index]
+                                    image.position.x = direction.x
+                                    image.position.y = direction.y
+                                    image.isEdited = true
                                 }}
                             >
-                                { currentPreviewImageIndex === index ?
+                                { currentEditImageId === id ?
                                     <StyledImagePreview>
-                                        <img src={image.previewUrl} alt="preview image" />
+                                        <img 
+                                            src={image.url} 
+                                            alt={image.alt || `space image ${image.filename}`} 
+                                        />
                                     </StyledImagePreview>
                                     :
                                     <img 
-                                        key={index} 
-                                        src={image.previewUrl} 
-                                        alt="preview image"
-                                        onClick={() => setCurrentPreviewImageIndex(index)}
+                                        src={image.url} 
+                                        alt={image.alt || `space image ${image.filename}`} 
                                     />
                                 }
                             </Rnd>
-                    TODO: Add proper image alt
-                    TODO: Use Next Image tag
-                )} */}
+                        }
+                    })
+                }
+                {/* Render Currently Opened Page */}
                 {
                     currentPage && 
                         <RenderPages>
@@ -273,6 +321,7 @@ const Index = () => {
                             />
                         </RenderPages>
                 }
+                {/* Render Build Mode settings */}
                 { isBuildMode && 
                     <>
                         { isModalOpen && 
@@ -284,15 +333,14 @@ const Index = () => {
                                 />
                             </ModalWrapper>
                         }
+                        <Toolbar />
+                        <StyledSaveButton onClick={() => saveSpaceEdits()}>Save</StyledSaveButton>
+                        {message.text && (
+                            <StyledMessage className={message.type}>{message.text}</StyledMessage>
+                        )}
                         <StyledGrid />
                     </>
                 }
-                {/* {
-                    isCurrentUserSpaceOwner && 
-                        <Toolbar 
-                            updateSpacePreviewImages={updateSpacePreviewImages}
-                        />
-                } */}
             </StyledBackgroundContainer>
             {showFooter && <Footer /> }
         </>

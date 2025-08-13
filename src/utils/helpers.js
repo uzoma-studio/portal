@@ -79,7 +79,7 @@ export const generateSlug = (title) => {
     return slug;
 }; 
 
-export const handleMediaUpload = async (formImage, mediaType = 'image', imageType = 'spaceImage', imageData = null) => {
+export const handleMediaUpload = async (formImage) => {
     if (!formImage || !(formImage instanceof File)) {
       console.warn('Invalid file provided for upload.');
       return;
@@ -89,13 +89,7 @@ export const handleMediaUpload = async (formImage, mediaType = 'image', imageTyp
       const uploadFormData = new FormData();
       uploadFormData.append('file', formImage);
   
-      const payload = { alt: formImage.name, mediaType, imageType };
-      
-  
-      if (imageData?.size && imageData?.position) {
-        payload.size = { width: imageData.size.width, height: imageData.size.height };
-        payload.position = { x: imageData.position.x, y: imageData.position.y };
-      }
+      const payload = { alt: formImage.name };
   
       uploadFormData.append('_payload', JSON.stringify(payload));
   

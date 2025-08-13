@@ -11,23 +11,29 @@ import {
     StyledSubmitButton,
 } from '../styles';
 
-const UploadImageModal = ({ setIsModalOpen, updateSpacePreviewImages, setDragObjectToPosition }) => {
-    const { space } = useSpace();
+const UploadImageModal = ({ setIsModalOpen, setDragObjectToPosition }) => {
+    const { space, setImages, images } = useSpace();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
+        console.log(file);
+        
 
         if (file) {
         //   const uploadedImage = await handleMediaUpload(file, false)
           const previewUrl = URL.createObjectURL(file);
-          const imageData = {
+        //   create a preview image before uploading
+          setImages(prev => [...prev, {
+            id: `preview_${prev.length}_${file.lastModified}`,
             file,
-            previewUrl
-          }
-          updateSpacePreviewImages(imageData);
+            image: {alt: `preview of image ${file.name}`, url: previewUrl},
+            position: {x: 50, y: 50},
+            size: {width: 480, height: 360},
+            isPreview: true
+          }])
           setIsModalOpen(false)
         //   Remember to revoke: URL.revokeObjectURL(prevUrl)
         }

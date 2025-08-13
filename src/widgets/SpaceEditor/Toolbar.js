@@ -4,7 +4,7 @@ import ModalWrapper from './modals/ModalWrapper'
 import AddPageModal from './modals/AddPageModal'
 import UploadImageModal from './modals/UploadImageModal'
 
-const Toolbar = ({ pageData, updateSpacePreviewImages, setPreviewFile }) => {
+const Toolbar = ({ pageData }) => {
     const [ currentOpenModal, setCurrentOpenModal ] = useState(null)
 
     const modals = {
@@ -15,7 +15,6 @@ const Toolbar = ({ pageData, updateSpacePreviewImages, setPreviewFile }) => {
                 />,
         image: <UploadImageModal
                     setIsModalOpen={setCurrentOpenModal}
-                    updateSpacePreviewImages={updateSpacePreviewImages}
                 />
     }
 
