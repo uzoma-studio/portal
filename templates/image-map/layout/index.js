@@ -25,8 +25,8 @@ import AddPageModal from '@/widgets/SpaceEditor/modals/AddPageModal';
 import { handleMediaUpload } from '@/utils/helpers';
 
 const Index = () => {
-    const { pages, settings, isCurrentUserSpaceOwner } = useSpace()
-    
+    const { pages, settings, isCurrentUserSpaceOwner, images: spaceImages } = useSpace()
+
     const containerRef = useRef(null)
     
     const backgroundImage = settings?.backgroundImage
@@ -45,8 +45,7 @@ const Index = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
 
-    const [spacePreviewImages, setSpacePreviewImages] = useState([])
-    const [currentPreviewImageIndex, setCurrentPreviewImageIndex] = useState(null)
+    // const [currentPreviewImageIndex, setCurrentPreviewImageIndex] = useState(null)
 
     const currentPage = pages.find(p => p.id === currentPageId)
 
@@ -103,11 +102,11 @@ const Index = () => {
         }
 
         // Complete editing any images that are currently being edited
-        if(currentPreviewImageIndex !== null){
-            const previewImage = spacePreviewImages[currentPreviewImageIndex]
-            const uploadData = await handleMediaUpload(previewImage.file, 'image', 'spaceImage', { position: previewImage.position, size: previewImage.size })
-            setCurrentPreviewImageIndex(null)
-        }
+        // if(currentPreviewImageIndex !== null){
+        //     const previewImage = spacePreviewImages[currentPreviewImageIndex]
+        //     await handleMediaUpload(previewImage.file, 'image', 'spaceImage', { position: previewImage.position, size: previewImage.size })
+        //     setCurrentPreviewImageIndex(null)
+        // }
     };
       
     const handleDoubleClick = () => {
@@ -116,20 +115,21 @@ const Index = () => {
         setIsBuildMode(!isBuildMode)
     };
 
-    const updateSpacePreviewImages = (imageData) => {
-        setSpacePreviewImages([...spacePreviewImages, {
-                file: imageData.file,
-                previewUrl: imageData.previewUrl,
-                size: {width: 0, height: 0},
-                position: {x: 0, y: 0}
-            }
-        ])
-    }
+    // const updateSpacePreviewImages = (imageData) => {
+    //     setSpacePreviewImages([...spacePreviewImages, {
+    //             file: imageData.file,
+    //             previewUrl: imageData.previewUrl,
+    //             size: {width: 0, height: 0},
+    //             position: {x: 0, y: 0}
+    //         }
+    //     ])
+    // }
     
     return (
         <>
             { showEnvironment && <Environment environment={environment} /> }
             <Header isBuildMode={isBuildMode} setIsBuildMode={setIsBuildMode} />
+            {/* TODO: Move background code to its own component */}
             <StyledBackgroundContainer $settings={theme}>
                 { backgroundImage && theme.style.backgroundMode === 'image' ?
                     imageRenderMode === 'background' ? (
@@ -207,6 +207,22 @@ const Index = () => {
                     )
                 }
                 {
+                    spaceImages && spaceImages.map(({ id, image, position, size}) => {
+                        return <img 
+                            key={id} 
+                            src={image.url} 
+                            alt={image.alt || `space image ${image.filename}`}
+                            style={{
+                                position: 'absolute',
+                                width: size.width,
+                                height: size.height,
+                                top: position.y,
+                                left: position.x
+                            }}
+                        />
+                    })
+                }
+                {/*
                     spacePreviewImages && spacePreviewImages.map((image, index) =>
                             <Rnd
                                 key={index}
@@ -242,9 +258,9 @@ const Index = () => {
                                     />
                                 }
                             </Rnd>
-                    /* TODO: Add proper image alt */ 
-                    /* TODO: Use Next Image tag */ 
-                )}
+                    TODO: Add proper image alt
+                    TODO: Use Next Image tag
+                )} */}
                 {
                     currentPage && 
                         <RenderPages>
@@ -271,12 +287,12 @@ const Index = () => {
                         <StyledGrid />
                     </>
                 }
-                {
+                {/* {
                     isCurrentUserSpaceOwner && 
                         <Toolbar 
                             updateSpacePreviewImages={updateSpacePreviewImages}
                         />
-                }
+                } */}
             </StyledBackgroundContainer>
             {showFooter && <Footer /> }
         </>

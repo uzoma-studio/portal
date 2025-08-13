@@ -96,9 +96,6 @@ export const handleMediaUpload = async (formImage, mediaType = 'image', imageTyp
         payload.size = { width: imageData.size.width, height: imageData.size.height };
         payload.position = { x: imageData.position.x, y: imageData.position.y };
       }
-
-      console.log(payload);
-      
   
       uploadFormData.append('_payload', JSON.stringify(payload));
   
