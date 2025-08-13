@@ -19,8 +19,6 @@ const UploadImageModal = ({ setIsModalOpen, setDragObjectToPosition }) => {
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
-        console.log(file);
-        
 
         if (file) {
         //   const uploadedImage = await handleMediaUpload(file, false)
