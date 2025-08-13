@@ -217,7 +217,7 @@ export interface Page {
     /**
      * Choose how the page will show up in your space
      */
-    displayMode?: ('icon' | 'hotspot' | 'list' | 'image' | 'window') | null;
+    displayMode?: ('none' | 'icon' | 'hotspot' | 'list' | 'image' | 'window') | null;
     /**
      * Optional icon image for the page
      */
@@ -310,6 +310,7 @@ export interface Space {
           x?: number | null;
           y?: number | null;
         };
+        linkToPage?: (number | null) | Page;
         id?: string | null;
       }[]
     | null;
@@ -859,6 +860,7 @@ export interface SpacesSelect<T extends boolean = true> {
               x?: T;
               y?: T;
             };
+        linkToPage?: T;
         id?: T;
       };
   updatedAt?: T;

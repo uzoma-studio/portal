@@ -160,3 +160,19 @@ export const StyledSaveButton = styled.button`
         transform: translateY(1px);
     }
 `
+
+export const StyledSpaceImage = styled.div`
+    position: absolute;
+    top: ${props => props.$position?.y}px;
+    left: ${props => props.$position?.x}px;
+    z-index: ${props => props.$zIndex};
+    object-fit: contain;
+    cursor: ${props => props.$hasLink ? 'pointer' : 'default'};
+    transition: transform 0.2s ease;
+
+    ${props => props.$hasLink && `
+        &:hover {
+            transform: scale(1.05);
+        }
+    `}
+`

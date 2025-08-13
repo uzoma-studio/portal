@@ -345,6 +345,7 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                                     onChange={(e) => handleThemeConfigChange('displayMode', null, e.target.value)}
                                     className="w-full"
                                 >
+                                    <option value="none">None</option>
                                     <option value="icon">Icon</option>
                                     <option value="hotspot">Hotspot</option>
                                     <option value="list">List</option>

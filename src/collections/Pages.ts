@@ -153,6 +153,7 @@ export const Pages: CollectionConfig = {
           name: 'displayMode',
           type: 'select',
           options: [
+            { label: 'None', value: 'none' },
             { label: 'Icon', value: 'icon' },
             { label: 'Hotspot', value: 'hotspot' },
             { label: 'List', value: 'list' },

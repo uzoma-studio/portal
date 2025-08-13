@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { Rnd } from 'react-rnd';
 
-import { StyledBackgroundContainer, StyledGrid, StyledDisplayModeWrapper, StyledImagePreview, StyledSaveButton } from '../styles'
+import { StyledBackgroundContainer, StyledGrid, StyledDisplayModeWrapper, StyledImagePreview, StyledSaveButton, StyledSpaceImage } from '../styles'
 
 import RenderPages from '@/utils/renderPages';
 import SinglePage from './single'
@@ -49,6 +49,7 @@ const Index = () => {
 
     const [currentEditImageId, setCurrentEditImageId] = useState(null)
     const [message, setMessage] = useState({ type: '', text: '' });
+    // const [showImageDialogModal, setShowImageDialogModal] = useState(false)
 
     const currentPage = pages.find(p => p.id === currentPageId)
 
@@ -58,6 +59,8 @@ const Index = () => {
             ...pageData.themeConfig,
             position: getDisplayModePosition
         }
+
+
         
         const displayModes = {
             icon: <Icon pageData={pageData} pageConfig={pageConfig} />,
@@ -216,57 +219,63 @@ const Index = () => {
                     />
                 }
 
-                {/* Render Pages */}
+                {/* Render Pages in their display modes */}
                 {
-                    theme && pages.map((pageData) =>
-                        <StyledDisplayModeWrapper 
-                            key={pageData.id} 
-                            onClick={() => {
-                                if (!isBuildMode) {
-                                    setCurrentPageId(pageData.id);
-                                } else {
-                                    // TODO: Currently need to click first to be able to then drag but drag should be possible once I click the icon/hotspot etc
-                                    setDraggedIconPageId(pageData.id)
-                                    setDragPosition(pageData.themeConfig.position || { x: 0, y: 0 });
+                    theme && pages.map((pageData) => {
+                        if(pageData.themeConfig.displayMode === 'none'){
+                            return 
+                        } else {
+                            return <StyledDisplayModeWrapper 
+                                key={pageData.id} 
+                                onClick={() => {
+                                    if (!isBuildMode) {
+                                        setCurrentPageId(pageData.id);
+                                    } else {
+                                        // TODO: Currently need to click first to be able to then drag but drag should be possible once I click the icon/hotspot etc
+                                        setDraggedIconPageId(pageData.id)
+                                        setDragPosition(pageData.themeConfig.position || { x: 0, y: 0 });
+                                    }
+                                }}
+                                style={{cursor: isBuildMode ? 'move' : 'pointer'}}
+                            >
+                                { isBuildMode && draggedIconPageId === pageData.id ? 
+                                    <DragIconToPosition
+                                        containerRef={containerRef}
+                                        showGrid={true}
+                                        pageData={pageData}
+                                        dragPosition={dragPosition}
+                                        setDragPosition={setDragPosition}
+                                        setDraggedIconPageId={setDraggedIconPageId}
+                                    >
+                                        {getDisplayMode(pageData)}
+                                    </DragIconToPosition>
+                                    :
+                                    getDisplayMode(pageData)
                                 }
-                            }}
-                            style={{cursor: isBuildMode ? 'move' : 'pointer'}}
-                        >
-                            { isBuildMode && draggedIconPageId === pageData.id ? 
-                                <DragIconToPosition
-                                    containerRef={containerRef}
-                                    showGrid={true}
-                                    pageData={pageData}
-                                    dragPosition={dragPosition}
-                                    setDragPosition={setDragPosition}
-                                    setDraggedIconPageId={setDraggedIconPageId}
-                                >
-                                    {getDisplayMode(pageData)}
-                                </DragIconToPosition>
-                                :
-                                getDisplayMode(pageData)
-                            }
-                        </StyledDisplayModeWrapper>
-                    )
+                            </StyledDisplayModeWrapper>
+                        }
+                    })
                 }
                 {/* Render Images */}
                 {
-                    spaceImages && spaceImages.map(({ id, image, position, size }, index) => {
+                    spaceImages && spaceImages.map(({ id, image, position, size, linkToPage }, index) => {
                         if(!isBuildMode){
-                            return <img 
-                                key={id} 
-                                src={image.url} 
-                                alt={image.alt || `space image ${image.filename}`}
-                                style={{
-                                    position: 'absolute',
-                                    width: size.width,
-                                    height: size.height,
-                                    top: position.y,
-                                    left: position.x,
-                                    zIndex: index+1,
-                                    objectFit: 'contain'
-                                }}
-                            />
+                            return (
+                                <StyledSpaceImage
+                                    key={id}
+                                    $position={position}
+                                    $zIndex={index+1}
+                                    $hasLink={!!linkToPage}
+                                    onClick={() => {linkToPage && setCurrentPageId(linkToPage.id)}}
+                                >
+                                    <Image
+                                        src={image.url} 
+                                        alt={image.alt || `space image ${image.filename}`}
+                                        width={size.width}
+                                        height={size.height}
+                                    />
+                                </StyledSpaceImage>
+                            )
                         } else {
                             return <Rnd
                                 key={id}
@@ -308,6 +317,13 @@ const Index = () => {
                         }
                     })
                 }
+                {/* {
+                    showImageDialogModal && 
+                        <div>
+                            <button onClick={() => setIsMoveImage(true)}>Move</button>
+                            <button onClick={() => }>Link</button>
+                        </div>
+                } */}
                 {/* Render Currently Opened Page */}
                 {
                     currentPage && 

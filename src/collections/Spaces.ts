@@ -82,6 +82,22 @@ export const Spaces: CollectionConfig = {
             { name: 'y', type: 'number' },
           ],
         },
+        {
+          name: 'linkToPage',
+          type: 'relationship',
+          relationTo: 'pages',
+          filterOptions: ({ data: spaceData }) => {
+            // Only show pages that belong to this space
+            if (spaceData?.id) {
+              return {
+                space: {
+                  equals: spaceData.id,
+                },
+              };
+            }
+            return {};
+          },
+        },
       ],
     },
   ],
