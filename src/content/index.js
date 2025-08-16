@@ -1,11 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react'
-import Image from 'next/image'
+import React, { useState, useRef } from 'react'
 
 import { StyledGrid, StyledDisplayModeWrapper } from './styles'
+import { StyledMessage } from '@/styles/rootStyles';
 
 import RenderPages from '@/utils/renderPages';
 import SinglePage from '@/content/singlePage'
 import BackgroundContainer from '@/content/layout/BackgroundContainer'
+
 import { useSpace } from '@/context/SpaceProvider';
 
 import Icon from '@/content/displayModes/icon'
@@ -20,14 +21,15 @@ import ModalWrapper from '@/editor/modals/ModalWrapper';
 import AddPageModal from '@/editor/modals/AddPageModal';
 import EditSpaceModal from '@/editor/modals/EditSpaceModal'
 
-import ImageBlock from '@/content/blocks/ImageBlock'
+import RenderSpaceImages from '@/content/renderers/RenderSpaceImages'
+
+import AuthButton from '@/widgets/Authentication/AuthButton';
 
 import { updateEntry } from '@root/data/createContent.server';
 import { handleMediaUpload } from '@/utils/helpers';
-import { StyledMessage } from '@/styles/rootStyles';
 
 const Index = () => {
-    const { space, pages, settings, images: spaceImages } = useSpace()
+    const { space, pages, settings, isCurrentUserSpaceOwner } = useSpace()
 
     const containerRef = useRef(null)
 
@@ -145,13 +147,20 @@ const Index = () => {
             openAddPageModal={openAddPageModal}
         >
 
-
-            <ActionControls 
-                isBuildMode={isBuildMode} 
-                setIsBuildMode={setIsBuildMode} 
-                setShowEditSpaceModal={setShowEditSpaceModal}
-                saveSpaceEdits={saveSpaceEdits}
-            />
+            {
+                isCurrentUserSpaceOwner ?
+                    <ActionControls 
+                        isBuildMode={isBuildMode} 
+                        setIsBuildMode={setIsBuildMode} 
+                        setShowEditSpaceModal={setShowEditSpaceModal}
+                        saveSpaceEdits={saveSpaceEdits}
+                    />
+                    :
+                    // TODO: Only show button when space is not in publish mode
+                    <div className='absolute' style={{top: '1rem', right: '2rem'}}>
+                        <AuthButton />
+                    </div>
+            }
 
 
             {/* Render Pages in their display modes TODO: Move to RenderPages component */}
@@ -192,28 +201,12 @@ const Index = () => {
                 })
             }
             {/* Render Images */}
-            {
-                spaceImages && spaceImages.map(({ id, image, position, size, linkToPage }, index) => 
-                    <ImageBlock
-                        key={id}
-                        id={id}
-                        image={image}
-                        position={position}
-                        size={size}
-                        linkToPage={linkToPage}
-                        index={index}
-                        isBuildMode={isBuildMode}
-                        isCurrentEditImage={currentEditImageId === id}
-                    />
-                )
-            }
-            {/* {
-                showImageDialogModal && 
-                    <div>
-                        <button onClick={() => setIsMoveImage(true)}>Move</button>
-                        <button onClick={() => }>Link</button>
-                    </div>
-            } */}
+            <RenderSpaceImages 
+                isBuildMode={isBuildMode}
+                setCurrentEditImageId={setCurrentEditImageId}
+                currentEditImageId={currentEditImageId}
+            />
+
             {/* Render Currently Opened Page */}
             {
                 currentPage && 
@@ -227,7 +220,8 @@ const Index = () => {
                         />
                     </RenderPages>
             }
-            {/* Render Build Mode settings */}
+
+            {/* Render Build Mode */}
             { isBuildMode && 
                 <>
                     { isModalOpen && 
