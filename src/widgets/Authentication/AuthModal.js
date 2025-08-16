@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import styled from 'styled-components';
-import CloseButton from '../../components/closeButton';
+import CloseButton from '@/uiComponents/closeButton';
 import { useSpace } from '@/context/SpaceProvider';
 
 const AuthModal = ({ isOpen, onClose }) => {

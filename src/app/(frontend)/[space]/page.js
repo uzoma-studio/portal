@@ -3,7 +3,7 @@
 import React from 'react'
 import { SpaceProvider, useSpace } from '../../../context/SpaceProvider'
 import { GlobalStyle } from '@/styles/rootStyles'
-import Index from 'templates/image-map/layout'
+import Index from '@/content/index'
 
 const SpacePage = () => {
     return (
