@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useSpace } from '@/context/SpaceProvider';
 import { StyledMessage } from '@/styles/rootStyles';
-import { handleMediaUpload } from '@/utils/helpers';
+import { getImageDimensions } from '@/utils/helpers';
 
 import {
     StyledForm,
@@ -21,19 +21,20 @@ const UploadImageModal = ({ setIsModalOpen, setDragObjectToPosition }) => {
         const file = event.target.files[0];
 
         if (file) {
-        //   const uploadedImage = await handleMediaUpload(file, false)
-          const previewUrl = URL.createObjectURL(file);
-        //   create a preview image before uploading
-          setImages(prev => [...prev, {
-            id: `preview_${prev.length}_${file.lastModified}`,
-            file,
-            image: {alt: `preview of image ${file.name}`, url: previewUrl},
-            position: {x: 50, y: 50},
-            size: {width: 480, height: 360},
-            isPreview: true
-          }])
-          setIsModalOpen(false)
-        //   Remember to revoke: URL.revokeObjectURL(prevUrl)
+            const { width, height } = await getImageDimensions(file);
+            //   const uploadedImage = await handleMediaUpload(file, false)
+            const previewUrl = URL.createObjectURL(file);
+            //   create a preview image before uploading
+            setImages(prev => [...prev, {
+                id: `preview_${prev.length}_${file.lastModified}`,
+                file,
+                image: {alt: `preview of image ${file.name}`, url: previewUrl},
+                position: {x: 50, y: 50},
+                size: {width, height},
+                isPreview: true
+            }])
+            setIsModalOpen(false)
+            //   Remember to revoke: URL.revokeObjectURL(prevUrl)
         }
     }
 

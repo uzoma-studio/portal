@@ -112,6 +112,25 @@ export const handleMediaUpload = async (formImage) => {
     }
 };
 
+export const getImageDimensions = (file) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+  
+      // Create a temporary local URL for the file
+      img.src = URL.createObjectURL(file);
+  
+      img.onload = () => {
+        resolve({ width: img.width, height: img.height });
+        URL.revokeObjectURL(img.src); // cleanup
+      };
+  
+      img.onerror = (err) => {
+        reject(err);
+        URL.revokeObjectURL(img.src);
+      };
+    });
+};
+
 export const handleServerResponse = (response, contentType='Entry', action='updated') => {
     
     if(response.id){

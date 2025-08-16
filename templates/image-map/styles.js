@@ -96,7 +96,7 @@ export const StyledDisplayModeWrapper = styled.div`
 `
 
 export const StyledGrid = styled.div`
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100vw;
@@ -106,32 +106,6 @@ export const StyledGrid = styled.div`
         linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
     background-size: 20px 20px;
     pointer-events: none;
-`;
-
-export const StyledImagePreview = styled.div`
-    position: relative;
-    display: inline-block;
-    cursor: move; /* shows it's draggable */
-    border: 2px dashed #4a90e2; /* highlight the image boundaries */
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    transition: border-color 0.2s ease;
-
-    &:hover {
-        border-color: #1e70bf;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        right: -5px;
-        bottom: -5px;
-        width: 10px;
-        height: 10px;
-        background: #4a90e2;
-        cursor: se-resize;
-        box-shadow: 0 0 3px rgba(0,0,0,0.3);
-    }
 `;
 
 export const StyledSaveButton = styled.button`
@@ -163,11 +137,8 @@ export const StyledSaveButton = styled.button`
 
 export const StyledSpaceImage = styled.div`
     position: absolute;
-    top: ${props => props.$position?.y}px;
-    left: ${props => props.$position?.x}px;
-    z-index: ${props => props.$zIndex};
     object-fit: contain;
-    cursor: ${props => props.$hasLink ? 'pointer' : 'default'};
+    cursor: ${props => props.$hasLink ? 'pointer' : (props.$currentEditImage ? 'move' : 'default')};
     transition: transform 0.2s ease;
 
     ${props => props.$hasLink && `

@@ -93,6 +93,13 @@ const Index = () => {
     const handleClick = async (e) => {
 
         if(isBuildMode){
+
+            // Exit image edit mode when background is clicked
+            if(currentEditImageId) {
+                setCurrentEditImageId(null)
+                return
+            }
+
             // Always clear any previous timer before setting a new one
             clearTimeout(clickTimeout.current);
             // Start a timer for single click
@@ -105,12 +112,7 @@ const Index = () => {
             }, 250);
         }
 
-        // Complete editing any images that are currently being edited
-        // if(currentPreviewImageIndex !== null){
-        //     const previewImage = spacePreviewImages[currentPreviewImageIndex]
-        //     await handleMediaUpload(previewImage.file, 'image', 'spaceImage', { position: previewImage.position, size: previewImage.size })
-        //     setCurrentPreviewImageIndex(null)
-        // }
+        
     };
       
     const handleDoubleClick = () => {
@@ -259,62 +261,50 @@ const Index = () => {
                 {/* Render Images */}
                 {
                     spaceImages && spaceImages.map(({ id, image, position, size, linkToPage }, index) => {
-                        if(!isBuildMode){
-                            return (
-                                <StyledSpaceImage
+                        return <Rnd
                                     key={id}
-                                    $position={position}
-                                    $zIndex={index+1}
-                                    $hasLink={!!linkToPage}
-                                    onClick={() => {linkToPage && setCurrentPageId(linkToPage.id)}}
+                                    default={{
+                                        x: position.x,
+                                        y: position.y,
+                                        width: size.width,
+                                        height: size.height,
+                                    }}
+                                    maxWidth={size.width}
+                                    maxHeight={size.height}
+                                    onClick={() => { isBuildMode && setCurrentEditImageId(id) }}
+                                    onResizeStop={(e, direction, ref, delta) => {
+                                        // Save the new size dimensions of the preview image
+                                        const image = spaceImages[index]
+                                        image.size.width = Number(ref.style.width.split('px')[0])
+                                        image.size.height = Number(ref.style.height.split('px')[0])
+                                        image.isEdited = true
+                                    }}
+                                    onDragStop={(e, direction) => {
+                                        const image = spaceImages[index]
+                                        image.position.x = direction.x
+                                        image.position.y = direction.y
+                                        image.isEdited = true
+                                    }}
+                                    disableDragging={!isBuildMode || !isCurrentUserSpaceOwner}
+                                    enableResizing={isBuildMode && isCurrentUserSpaceOwner}
+                                    className={isBuildMode && currentEditImageId === id ? 'active-edit-image' : ''}
                                 >
-                                    <Image
-                                        src={image.url} 
-                                        alt={image.alt || `space image ${image.filename}`}
-                                        width={size.width}
-                                        height={size.height}
-                                    />
-                                </StyledSpaceImage>
-                            )
-                        } else {
-                            return <Rnd
-                                key={id}
-                                default={{
-                                    x: position.x,
-                                    y: position.y,
-                                    width: size.width,
-                                    height: size.height,
-                                }}
-                                onClick={() => setCurrentEditImageId(id)}
-                                onResizeStop={(e, direction, ref, delta) => {
-                                    // Save the new size dimensions of the preview image
-                                    const image = spaceImages[index]
-                                    image.size.width = Number(ref.style.width.split('px')[0])
-                                    image.size.height = Number(ref.style.height.split('px')[0])
-                                    image.isEdited = true
-                                }}
-                                onDragStop={(e, direction) => {
-                                    const image = spaceImages[index]
-                                    image.position.x = direction.x
-                                    image.position.y = direction.y
-                                    image.isEdited = true
-                                }}
-                            >
-                                { currentEditImageId === id ?
-                                    <StyledImagePreview>
-                                        <img 
+                                    <StyledSpaceImage
+                                        $zIndex={index+1}
+                                        $hasLink={!!linkToPage}
+                                        $currentEditImage={currentEditImageId === id}
+                                        onClick={() => {linkToPage && setCurrentPageId(linkToPage.id)}}
+                                        onDragStart={(e) => e.preventDefault()}
+                                    >
+                                        <Image
                                             src={image.url} 
-                                            alt={image.alt || `space image ${image.filename}`} 
+                                            alt={image.alt || `space image ${image.filename}`}
+                                            width={size.width}
+                                            height={size.height}
+                                            draggable={false}
                                         />
-                                    </StyledImagePreview>
-                                    :
-                                    <img 
-                                        src={image.url} 
-                                        alt={image.alt || `space image ${image.filename}`} 
-                                    />
-                                }
-                            </Rnd>
-                        }
+                                    </StyledSpaceImage>
+                                </Rnd>
                     })
                 }
                 {/* {

@@ -121,3 +121,23 @@ h6 {
 .text-button:hover {
     opacity: 0.8;
 }
+
+.active-edit-image {
+    cursor: move;
+    border: 2px dashed #4a90e2;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: border-color 0.2s ease;
+}
+
+.active-edit-image::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    bottom: -5px;
+    width: 10px;
+    height: 10px;
+    background: #4a90e2;
+    cursor: se-resize;
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
