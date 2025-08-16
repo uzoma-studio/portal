@@ -3,7 +3,7 @@ import { createEntry, updatePage } from '../../../data/createContent.server'
 import { getContent } from 'data/fetchContent.server';
 import { useSpace } from '@/context/SpaceProvider';
 import { generateSlug } from '@/utils/helpers';
-import RichTextEditor from '../rich-text/RichTextEditor'
+import RichTextEditor from '../richText/RichTextEditor'
 import themeSettings from '@root/themeSettings.json';
 import { StyledMessage } from '@/styles/rootStyles';
 

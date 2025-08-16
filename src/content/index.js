@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 
-import { StyledGrid, StyledDisplayModeWrapper, StyledSaveButton } from './styles'
+import { StyledGrid, StyledDisplayModeWrapper } from './styles'
 
 import RenderPages from '@/utils/renderPages';
 import SinglePage from '@/content/singlePage'
@@ -14,9 +14,11 @@ import ImageDisplay from '@/content/displayModes/image'
 import WindowDisplay from '@/content/displayModes/window'
 
 import DragIconToPosition from '@/editor/components/DragIconToPosition'
-import Toolbar from '@/editor/Toolbar'
+import Toolbar from '@/editor/menus/Toolbar'
+import ActionControls from '@/editor/menus/ActionControls'
 import ModalWrapper from '@/editor/modals/ModalWrapper';
 import AddPageModal from '@/editor/modals/AddPageModal';
+import EditSpaceModal from '@/editor/modals/EditSpaceModal'
 
 import ImageBlock from '@/content/blocks/ImageBlock'
 
@@ -41,6 +43,7 @@ const Index = () => {
     const [isBuildMode, setIsBuildMode] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
+    const [showEditSpaceModal, setShowEditSpaceModal] = useState(false)
 
     const [currentEditImageId, setCurrentEditImageId] = useState(null)
     const [message, setMessage] = useState({ type: '', text: '' });
@@ -134,111 +137,117 @@ const Index = () => {
     }
 
     return (
-        <>
-            {/* TODO: Move background code to its own component */}
-            <BackgroundContainer 
-                isBuildMode={isBuildMode}
-                setIsBuildMode={setIsBuildMode}
-                currentEditImageId={currentEditImageId}
-                setCurrentEditImageId={setCurrentEditImageId}
-                openAddPageModal={openAddPageModal}
-            >
+        <BackgroundContainer 
+            isBuildMode={isBuildMode}
+            setIsBuildMode={setIsBuildMode}
+            currentEditImageId={currentEditImageId}
+            setCurrentEditImageId={setCurrentEditImageId}
+            openAddPageModal={openAddPageModal}
+        >
 
-                {/* Render Pages in their display modes */}
-                {
-                    theme && pages.map((pageData) => {
-                        if(pageData.themeConfig.displayMode === 'none'){
-                            return 
-                        } else {
-                            return <StyledDisplayModeWrapper 
-                                key={pageData.id} 
-                                onClick={() => {
-                                    if (!isBuildMode) {
-                                        setCurrentPageId(pageData.id);
-                                    } else {
-                                        // TODO: Currently need to click first to be able to then drag but drag should be possible once I click the icon/hotspot etc
-                                        setDraggedIconPageId(pageData.id)
-                                        setDragPosition(pageData.themeConfig.position || { x: 0, y: 0 });
-                                    }
-                                }}
-                                style={{cursor: isBuildMode ? 'move' : 'pointer'}}
-                            >
-                                { isBuildMode && draggedIconPageId === pageData.id ? 
-                                    <DragIconToPosition
-                                        containerRef={containerRef}
-                                        showGrid={true}
-                                        pageData={pageData}
-                                        dragPosition={dragPosition}
-                                        setDragPosition={setDragPosition}
-                                        setDraggedIconPageId={setDraggedIconPageId}
-                                    >
-                                        {getDisplayMode(pageData)}
-                                    </DragIconToPosition>
-                                    :
-                                    getDisplayMode(pageData)
+
+            <ActionControls 
+                isBuildMode={isBuildMode} 
+                setIsBuildMode={setIsBuildMode} 
+                setShowEditSpaceModal={setShowEditSpaceModal}
+                saveSpaceEdits={saveSpaceEdits}
+            />
+
+
+            {/* Render Pages in their display modes TODO: Move to RenderPages component */}
+            {
+                theme && pages.map((pageData) => {
+                    if(pageData.themeConfig.displayMode === 'none'){
+                        return 
+                    } else {
+                        return <StyledDisplayModeWrapper 
+                            key={pageData.id} 
+                            onClick={() => {
+                                if (!isBuildMode) {
+                                    setCurrentPageId(pageData.id);
+                                } else {
+                                    // TODO: Currently need to click first to be able to then drag but drag should be possible once I click the icon/hotspot etc
+                                    setDraggedIconPageId(pageData.id)
+                                    setDragPosition(pageData.themeConfig.position || { x: 0, y: 0 });
                                 }
-                            </StyledDisplayModeWrapper>
-                        }
-                    })
-                }
-                {/* Render Images */}
-                {
-                    spaceImages && spaceImages.map(({ id, image, position, size, linkToPage }, index) => 
-                        <ImageBlock
-                            key={id}
-                            id={id}
-                            image={image}
-                            position={position}
-                            size={size}
-                            linkToPage={linkToPage}
-                            index={index}
-                            isBuildMode={isBuildMode}
-                            isCurrentEditImage={currentEditImageId === id}
+                            }}
+                            style={{cursor: isBuildMode ? 'move' : 'pointer'}}
+                        >
+                            { isBuildMode && draggedIconPageId === pageData.id ? 
+                                <DragIconToPosition
+                                    containerRef={containerRef}
+                                    showGrid={true}
+                                    pageData={pageData}
+                                    dragPosition={dragPosition}
+                                    setDragPosition={setDragPosition}
+                                    setDraggedIconPageId={setDraggedIconPageId}
+                                >
+                                    {getDisplayMode(pageData)}
+                                </DragIconToPosition>
+                                :
+                                getDisplayMode(pageData)
+                            }
+                        </StyledDisplayModeWrapper>
+                    }
+                })
+            }
+            {/* Render Images */}
+            {
+                spaceImages && spaceImages.map(({ id, image, position, size, linkToPage }, index) => 
+                    <ImageBlock
+                        key={id}
+                        id={id}
+                        image={image}
+                        position={position}
+                        size={size}
+                        linkToPage={linkToPage}
+                        index={index}
+                        isBuildMode={isBuildMode}
+                        isCurrentEditImage={currentEditImageId === id}
+                    />
+                )
+            }
+            {/* {
+                showImageDialogModal && 
+                    <div>
+                        <button onClick={() => setIsMoveImage(true)}>Move</button>
+                        <button onClick={() => }>Link</button>
+                    </div>
+            } */}
+            {/* Render Currently Opened Page */}
+            {
+                currentPage && 
+                    <RenderPages>
+                        <SinglePage
+                            pageData={currentPage}
+                            pageConfig={currentPage.themeConfig}
+                            spaceTheme={theme}
+                            showPage={currentPage}
+                            setShowPage={setCurrentPageId}
                         />
-                    )
-                }
-                {/* {
-                    showImageDialogModal && 
-                        <div>
-                            <button onClick={() => setIsMoveImage(true)}>Move</button>
-                            <button onClick={() => }>Link</button>
-                        </div>
-                } */}
-                {/* Render Currently Opened Page */}
-                {
-                    currentPage && 
-                        <RenderPages>
-                            <SinglePage
-                                pageData={currentPage}
-                                pageConfig={currentPage.themeConfig}
-                                spaceTheme={theme}
-                                showPage={currentPage}
-                                setShowPage={setCurrentPageId}
+                    </RenderPages>
+            }
+            {/* Render Build Mode settings */}
+            { isBuildMode && 
+                <>
+                    { isModalOpen && 
+                        <ModalWrapper tabName={'Add Page'} modalCloseFn={() => setIsModalOpen(false)}>
+                            <AddPageModal
+                                setIsModalOpen={setIsModalOpen} 
+                                isCreatePageMode={true}  
+                                pageCoords={pageCoords}
                             />
-                        </RenderPages>
-                }
-                {/* Render Build Mode settings */}
-                { isBuildMode && 
-                    <>
-                        { isModalOpen && 
-                            <ModalWrapper tabName={'Add Page'} modalCloseFn={() => setIsModalOpen(false)}>
-                                <AddPageModal
-                                    setIsModalOpen={setIsModalOpen} 
-                                    isCreatePageMode={true}  
-                                    pageCoords={pageCoords}
-                                />
-                            </ModalWrapper>
-                        }
-                        <Toolbar />
-                        <StyledSaveButton onClick={() => saveSpaceEdits()}>Save</StyledSaveButton>
-                        {message.text && (
-                            <StyledMessage className={message.type}>{message.text}</StyledMessage>
-                        )}
-                        <StyledGrid />
-                    </>
-                }
-            </BackgroundContainer>
-        </>
+                        </ModalWrapper>
+                    }
+                    <Toolbar />
+                    {message.text && (
+                        <StyledMessage className={message.type}>{message.text}</StyledMessage>
+                    )}
+                    { showEditSpaceModal && <EditSpaceModal modalCloseFn={() => setShowEditSpaceModal(false)} />}
+                    <StyledGrid />
+                </>
+            }
+        </BackgroundContainer>
     )
 }
 

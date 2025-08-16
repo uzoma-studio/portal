@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import ModalWrapper from './modals/ModalWrapper'
-import AddPageModal from './modals/AddPageModal'
-import UploadImageModal from './modals/UploadImageModal'
-import { StyledToolbarButton } from './styles'
+import ModalWrapper from '../modals/ModalWrapper'
+import AddPageModal from '../modals/AddPageModal'
+import UploadImageModal from '../modals/UploadImageModal'
+import { StyledToolbarButton } from '../styles'
+import MenuButtonContainer from './components/MenuButtonContainer'
 
-import { BsFillFileEarmarkPlusFill } from "react-icons/bs";
+import { FaFileMedical } from "react-icons/fa6";
 import { FaImage } from "react-icons/fa";
 
 const Toolbar = ({ pageData }) => {
@@ -26,12 +27,16 @@ const Toolbar = ({ pageData }) => {
         <>
             <StyledToolbarContainer>
                 {/* Button for image uploads */}
-                <StyledToolbarButton onClick={() => setCurrentOpenModal('image')}>
-                    <FaImage />
-                </StyledToolbarButton>
-                <StyledToolbarButton onClick={() => setCurrentOpenModal('page')}>
-                    <BsFillFileEarmarkPlusFill />
-                </StyledToolbarButton>
+                <MenuButtonContainer tooltipText="Upload image" tooltipPosition="left">
+                    <StyledToolbarButton onClick={() => setCurrentOpenModal('image')}>
+                        <FaImage />
+                    </StyledToolbarButton>
+                </MenuButtonContainer>
+                <MenuButtonContainer tooltipText="Add new page" tooltipPosition="left">
+                    <StyledToolbarButton onClick={() => setCurrentOpenModal('page')}>
+                        <FaFileMedical />
+                    </StyledToolbarButton>
+                </MenuButtonContainer>
             </StyledToolbarContainer>
 
            { 

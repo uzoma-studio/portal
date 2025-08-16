@@ -85,30 +85,3 @@ export const StyledGrid = styled.div`
     background-size: 20px 20px;
     pointer-events: none;
 `;
-
-export const StyledSaveButton = styled.button`
-    border-radius: 5px;
-    position: absolute;
-    top: 4rem;
-    right: 2rem;
-    box-shadow: 4px 4px 0px rgba(0,0,0,1);
-    background: var(--primary-color);
-    color: var(--accent-color);
-    padding: .5rem;
-    z-index: 999;
-
-    &:hover, &:focus {
-        background: var(--accent-color);
-        color: var(--primary-color);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.2), 0 3px 6px rgba(0,0,0,0.15);
-        transform: translateY(-2px);
-        outline: none;
-    }
-
-    &:active {
-        background: var(--accent-color);
-        color: var(--primary-color);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        transform: translateY(1px);
-    }
-`

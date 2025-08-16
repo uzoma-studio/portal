@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createEntry, updateEntry } from '../../../data/createContent.server';
 import { useSpace } from '@/context/SpaceProvider';
 import { generateSlug } from '@/utils/helpers';
-import RichTextEditor from '../rich-text/RichTextEditor';
+import RichTextEditor from '../richText/RichTextEditor';
 import { StyledMessage } from '@/styles/rootStyles';
 import CloseButton from '@/uiComponents/closeButton';
 import { handleMediaUpload } from '@/utils/helpers';
