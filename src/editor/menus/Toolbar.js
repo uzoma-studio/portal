@@ -9,7 +9,7 @@ import MenuButtonContainer from './components/MenuButtonContainer'
 import { FaFileMedical } from "react-icons/fa6";
 import { FaImage } from "react-icons/fa";
 
-const Toolbar = ({ pageData }) => {
+const Toolbar = ({ pageData, backgroundDimensions }) => {
     const [ currentOpenModal, setCurrentOpenModal ] = useState(null)
 
     const modals = {
@@ -20,6 +20,7 @@ const Toolbar = ({ pageData }) => {
                 />,
         image: <UploadImageModal
                     setIsModalOpen={setCurrentOpenModal}
+                    backgroundDimensions={backgroundDimensions}
                 />
     }
 

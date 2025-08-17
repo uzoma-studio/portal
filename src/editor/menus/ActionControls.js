@@ -30,7 +30,7 @@ const ActionControls = ({ isBuildMode, setIsBuildMode, setShowEditSpaceModal, sa
                     </MenuButtonContainer>
                 </>
                 :
-                <MenuButtonContainer tooltipText="Enter build mode" tooltipPosition="left">
+                <MenuButtonContainer tooltipText="Edit" tooltipPosition="left">
                     <StyledToolbarButton onClick={() => setIsBuildMode(true)}>
                         <MdEdit />
                     </StyledToolbarButton>

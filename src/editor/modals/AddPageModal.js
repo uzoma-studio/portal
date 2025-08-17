@@ -123,8 +123,6 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                 } : value
             }
         }));
-
-        console.log(formData);
         
     };
     

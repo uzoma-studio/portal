@@ -11,7 +11,7 @@ import {
     StyledSubmitButton,
 } from '../styles';
 
-const UploadImageModal = ({ setIsModalOpen, setDragObjectToPosition }) => {
+const UploadImageModal = ({ setIsModalOpen, backgroundDimensions }) => {
     const { space, setImages, images } = useSpace();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,8 +29,9 @@ const UploadImageModal = ({ setIsModalOpen, setDragObjectToPosition }) => {
                 id: `preview_${prev.length}_${file.lastModified}`,
                 file,
                 image: {alt: `preview of image ${file.name}`, url: previewUrl},
-                position: {x: 50, y: 50},
-                size: {width, height},
+                position: {x: 0, y: 0},
+                // save size as percentage for responsiveness
+                size: {width: ((width/backgroundDimensions.width)*100), height: ((height/backgroundDimensions.height)*100)},
                 isPreview: true
             }])
             setIsModalOpen(false)
