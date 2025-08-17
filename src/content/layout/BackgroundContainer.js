@@ -16,7 +16,6 @@ const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEdi
     // Get background dimensions
     useEffect(() => {
         const updateDimensions = () => {
-            console.log('updating...');
             
             if (backgroundRef.current) {
                 const rect = backgroundRef.current.getBoundingClientRect();

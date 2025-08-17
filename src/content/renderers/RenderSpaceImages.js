@@ -23,7 +23,6 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
         <>
             { spaceImages.map(({ id, image, position, size, linkToPage }, index) => {
                 // Calculate pixel positions from percentages
-                console.log(position, size);
                 
                 const pixelX = (position.x / 100) * currentDimensions.width
                 const pixelY = (position.y / 100) * currentDimensions.height

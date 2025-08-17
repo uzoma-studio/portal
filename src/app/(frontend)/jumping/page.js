@@ -33,9 +33,6 @@ const Page = () => {
                 </div>
     }
 
-    console.log(spaces);
-    
-
     return (
         <div className="min-h-screen flex flex-col text-indigo-900 bg-yellow-50">
           {/* Hero/Header Section */}
