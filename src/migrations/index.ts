@@ -3,6 +3,7 @@ import * as migration_20250604_130832_multi_tenancy_migration from './20250604_1
 import * as migration_20250605_192320_adds_space_id_to_news_ticker from './20250605_192320_adds_space_id_to_news_ticker';
 import * as migration_20250620_091055_space_editor_migration from './20250620_091055_space_editor_migration';
 import * as migration_20250626_204043_adds_columns_to_pages from './20250626_204043_adds_columns_to_pages';
+import * as migration_20250823_143531_adds_space_images from './20250823_143531_adds_space_images';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20250626_204043_adds_columns_to_pages.up,
     down: migration_20250626_204043_adds_columns_to_pages.down,
-    name: './20250626_204043_adds_columns_to_pages'
+    name: '20250626_204043_adds_columns_to_pages',
+  },
+  {
+    up: migration_20250823_143531_adds_space_images.up,
+    down: migration_20250823_143531_adds_space_images.down,
+    name: '20250823_143531'
   },
 ];
