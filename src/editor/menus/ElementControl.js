@@ -8,7 +8,8 @@ const ElementControl = ({
     selectedTextId,
     onEdit,
     onDelete,
-    onLink,
+    showLinkModal,
+    setShowLinkModal,
     elementPosition,
     backgroundDimensions 
 }) => {
@@ -32,16 +33,22 @@ const ElementControl = ({
     if (!hasSelection) return null
 
     return (
-        <StyledElementControlContainer $top={position.top} $left={position.left}>
+        <StyledElementControlContainer $top={position.top} $left={position.left} onClick={(e) => e.stopPropagation()}>
             <IconButton 
-                onClick={onEdit}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit();
+                }}
                 title="Edit"
                 aria-label="Edit element"
             >
                 <MdEdit />
             </IconButton>
             <IconButton 
-                onClick={onDelete}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete();
+                }}
                 title="Delete"
                 aria-label="Delete element"
                 $danger
@@ -49,9 +56,13 @@ const ElementControl = ({
                 <MdDelete />
             </IconButton>
             <IconButton 
-                onClick={onLink}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setShowLinkModal(!showLinkModal);
+                }}
                 title={isText ? "Link text" : "Link image"}
                 aria-label="Link element"
+                $active={showLinkModal}
             >
                 <MdLink />
             </IconButton>
@@ -68,6 +79,7 @@ const StyledElementControlContainer = styled.div`
     display: flex;
     gap: 8px;
     z-index: 1500;
+    pointer-events: auto;
     animation: slideIn 0.2s ease-out;
 
     @keyframes slideIn {
@@ -86,7 +98,7 @@ const IconButton = styled.button`
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: ${props => props.$danger ? '#ef4444' : '#4a90e2'};
+    background: ${props => props.$danger ? '#ef4444' : props.$active ? '#2e7d32' : '#4a90e2'};
     color: white;
     border: none;
     cursor: pointer;
@@ -96,11 +108,12 @@ const IconButton = styled.button`
     font-size: 18px;
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
 
     &:hover {
         transform: scale(1.1);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        background: ${props => props.$danger ? '#dc2626' : '#357abd'};
+        background: ${props => props.$danger ? '#dc2626' : props.$active ? '#1b5e20' : '#357abd'};
     }
 
     &:active {

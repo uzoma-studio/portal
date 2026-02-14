@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { useSpace } from '@/context/SpaceProvider';
 
-const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions, setBackgroundDimensions, currentEditTextId, setCurrentEditTextId }) => {
+const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions, setBackgroundDimensions, currentEditTextId, setCurrentEditTextId, showLinkModal }) => {
 
     const { settings, isCurrentUserSpaceOwner } = useSpace()
     const { theme, backgroundImage } = settings
@@ -38,7 +38,14 @@ const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEdi
         };
     }, []);
 
+    console.log(showLinkModal)
+
     const handleClick = async (e) => {
+        // Don't clear selection if LinkModal is open
+        if (showLinkModal) {
+            return;
+        }
+        
         if(isBuildMode){
             // Exit image edit mode when background is clicked
             if(currentEditImageId) {

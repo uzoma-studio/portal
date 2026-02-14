@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useSpace } from '@/context/SpaceProvider';
 
 // TODO: Explore combining RenderSpaceTexts and RenderSpaceImages into a single component that can render both types based on props
-const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId, backgroundDimensions, setSelectedElementPosition }) => {
+const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId, backgroundDimensions, setSelectedElementPosition, setCurrentPageId }) => {
     
     const { texts: spaceTexts, setTexts } = useSpace()
     const [currentDimensions, setCurrentDimensions] = useState({ width: 0, height: 0 });
@@ -29,12 +29,18 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
                 width: rect.width,
                 height: rect.height
             });
+        } else {
+            // In preview mode, check if text is linked to a page
+            const text = spaceTexts.find(t => t.id === id);
+            if (text?.linkToPage) {
+                setCurrentPageId(text.linkToPage.id);
+            }
         }
     };
     
     return (
         <>
-            { spaceTexts?.map(({ id, content, fontSize, fontColor, position, size }, index) => {
+            { spaceTexts?.map(({ id, content, fontSize, fontColor, position, size, linkToPage }, index) => {
                 // Calculate pixel positions from percentages
                 const pixelX = (position.x / 100) * currentDimensions.width
                 const pixelY = (position.y / 100) * currentDimensions.height
@@ -88,6 +94,7 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
                             $fontColor={fontColor}
                             $isBuildMode={isBuildMode}
                             $isCurrentEdit={currentEditTextId === id}
+                            $hasLink={!!linkToPage}
                             onDragStart={(e) => e.preventDefault()}
                         >
                             {content}
@@ -110,9 +117,16 @@ export const StyledSpaceText = styled.div`
     color: ${props => props.$fontColor};
     word-wrap: break-word;
     overflow-y: auto;
-    cursor: ${props => props.$isBuildMode ? 'move' : 'default'};
+    cursor: ${props => props.$hasLink ? 'pointer' : (props.$isBuildMode ? 'move' : 'default')};
     border: ${props => props.$isCurrentEdit ? '2px dashed #4a90e2' : 'none'};
     border-radius: 4px;
     background: ${props => props.$isCurrentEdit ? 'rgba(74, 144, 226, 0.1)' : 'transparent'};
     transition: all 0.2s ease;
+    
+    ${props => props.$hasLink && `
+        &:hover {
+            transform: scale(1.02);
+            opacity: 0.8;
+        }
+    `}
 `;

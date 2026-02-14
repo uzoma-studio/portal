@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Image from 'next/image';
 import { useSpace } from '@/context/SpaceProvider';
 
-const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions, setSelectedElementPosition }) => {
+const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions, setSelectedElementPosition, setCurrentPageId }) => {
     
     const { images: spaceImages } = useSpace()
     const [currentDimensions, setCurrentDimensions] = useState({ width: 0, height: 0 });
@@ -30,8 +30,17 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                 width: rect.width,
                 height: rect.height
             });
+        } else {
+            // In preview mode, check if image is linked to a page
+            const image = spaceImages.find(img => img.id === id);
+            if (image?.linkToPage) {
+                setCurrentPageId(image.linkToPage.id);
+            }
         }
     };
+
+    // console.log(spaceImages);
+    
     
     return (
         <>
