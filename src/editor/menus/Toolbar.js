@@ -1,16 +1,20 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
+
 import ModalWrapper from '../modals/ModalWrapper'
 import AddPageModal from '../modals/AddPageModal'
 import UploadImageModal from '../modals/UploadImageModal'
+import AddTextModal from '../modals/AddTextModal'
+
 import { StyledToolbarButton } from '../styles'
 import MenuButtonContainer from './components/MenuButtonContainer'
 
 import { FaFileMedical } from "react-icons/fa6";
 import { FaImage } from "react-icons/fa";
+import { RxText } from "react-icons/rx";
 
 const Toolbar = ({ pageData, backgroundDimensions }) => {
-    const [ currentOpenModal, setCurrentOpenModal ] = useState(null)
+    const [ currentOpenModal, setCurrentOpenModal ] = useState('')
 
     const modals = {
         page: <AddPageModal
@@ -21,13 +25,21 @@ const Toolbar = ({ pageData, backgroundDimensions }) => {
         image: <UploadImageModal
                     setIsModalOpen={setCurrentOpenModal}
                     backgroundDimensions={backgroundDimensions}
+                />,
+        text: <AddTextModal 
+                    setIsModalOpen={setCurrentOpenModal} 
+                    backgroundDimensions={backgroundDimensions}
                 />
     }
 
     return (
         <>
             <StyledToolbarContainer>
-                {/* Button for image uploads */}
+                <MenuButtonContainer tooltipText="Add text" tooltipPosition="left">
+                    <StyledToolbarButton onClick={() => setCurrentOpenModal('text')}>
+                        <RxText />
+                    </StyledToolbarButton>
+                </MenuButtonContainer>
                 <MenuButtonContainer tooltipText="Upload image" tooltipPosition="left">
                     <StyledToolbarButton onClick={() => setCurrentOpenModal('image')}>
                         <FaImage />
@@ -42,9 +54,12 @@ const Toolbar = ({ pageData, backgroundDimensions }) => {
 
            { 
                 currentOpenModal && 
-                    <ModalWrapper tabName={`Add ${currentOpenModal}`} modalCloseFn={() => setCurrentOpenModal(null)}>
-                        { modals[currentOpenModal] }
-                    </ModalWrapper>
+                    currentOpenModal !== 'text' ?
+                        <ModalWrapper tabName={`Add ${currentOpenModal}`} modalCloseFn={() => setCurrentOpenModal(null)}>
+                            { modals[currentOpenModal] }
+                        </ModalWrapper>
+                        :
+                        modals[currentOpenModal]
             }
         </>
     )

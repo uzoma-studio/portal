@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { useSpace } from '@/context/SpaceProvider';
 import { StyledMessage } from '@/styles/rootStyles';
 import { getImageDimensions } from '@/utils/helpers';

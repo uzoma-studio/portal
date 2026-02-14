@@ -9,6 +9,7 @@ export const SpaceContext = createContext();
 
 export const SpaceProvider = ({ children }) => {
   const [space, setSpace] = useState(null);
+  const [texts, setTexts] = useState([])
   const [pages, setPages] = useState([]);
   const [posts, setPosts] = useState([])
   const [images, setImages] = useState([])
@@ -30,6 +31,7 @@ export const SpaceProvider = ({ children }) => {
         const space = await getCurrentSpace(spaceDomain);
         setSpace(space);
         setImages(space.images);
+        setTexts(space.texts);
         setSettings(space.settings);
 
         const pages = await fetchPages(space.id);
@@ -60,6 +62,8 @@ export const SpaceProvider = ({ children }) => {
       setPosts,
       images,
       setImages,
+      texts,
+      setTexts,
       settings,
       setSettings,
       user: spaceUser,

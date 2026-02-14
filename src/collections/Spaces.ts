@@ -52,6 +52,11 @@ export const Spaces: CollectionConfig = {
       },
     },
     {
+      name: 'texts',
+      type: 'json',
+      defaultValue: []
+    },
+    {
       name: 'images',
       type: 'array',
       label: 'Images',

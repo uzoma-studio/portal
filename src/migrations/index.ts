@@ -34,6 +34,6 @@ export const migrations = [
   {
     up: migration_20250823_143531_adds_space_images.up,
     down: migration_20250823_143531_adds_space_images.down,
-    name: '20250823_143531'
+    name: '20250823_143531_adds_space_images',
   },
 ];

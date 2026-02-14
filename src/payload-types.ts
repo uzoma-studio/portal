@@ -299,6 +299,15 @@ export interface Space {
    * Select the user who owns this space
    */
   owner: number | User;
+  texts?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   images?:
     | {
         image: number | Media;
@@ -844,6 +853,7 @@ export interface SpacesSelect<T extends boolean = true> {
         theme?: T;
       };
   owner?: T;
+  texts?: T;
   images?:
     | T
     | {

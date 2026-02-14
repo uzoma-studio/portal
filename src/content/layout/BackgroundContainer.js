@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { useSpace } from '@/context/SpaceProvider';
 
-const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions, setBackgroundDimensions }) => {
+const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions, setBackgroundDimensions, currentEditTextId, setCurrentEditTextId }) => {
 
     const { settings, isCurrentUserSpaceOwner } = useSpace()
     const { theme, backgroundImage } = settings
@@ -43,6 +43,10 @@ const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEdi
             // Exit image edit mode when background is clicked
             if(currentEditImageId) {
                 setCurrentEditImageId(null)
+                return
+            }
+            if(currentEditTextId) {
+                setCurrentEditTextId(null)
                 return
             }
         }  

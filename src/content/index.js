@@ -22,6 +22,7 @@ import AddPageModal from '@/editor/modals/AddPageModal';
 import EditSpaceModal from '@/editor/modals/EditSpaceModal'
 
 import RenderSpaceImages from '@/content/renderers/RenderSpaceImages'
+import RenderSpaceTexts from '@/content/renderers/RenderSpaceTexts'
 
 import AuthButton from '@/widgets/Authentication/AuthButton';
 
@@ -48,6 +49,7 @@ const Index = () => {
     const [showEditSpaceModal, setShowEditSpaceModal] = useState(false)
 
     const [currentEditImageId, setCurrentEditImageId] = useState(null)
+    const [currentEditTextId, setCurrentEditTextId] = useState(null)
     const [message, setMessage] = useState({ type: '', text: '' });
     // const [showImageDialogModal, setShowImageDialogModal] = useState(false)
 
@@ -159,6 +161,8 @@ const Index = () => {
             setIsBuildMode={setIsBuildMode}
             currentEditImageId={currentEditImageId}
             setCurrentEditImageId={setCurrentEditImageId}
+            currentEditTextId={currentEditTextId}
+            setCurrentEditTextId={setCurrentEditTextId}
             openAddPageModal={openAddPageModal}
             backgroundDimensions={backgroundDimensions}
             setBackgroundDimensions={setBackgroundDimensions}
@@ -222,6 +226,13 @@ const Index = () => {
                 isBuildMode={isBuildMode}
                 setCurrentEditImageId={setCurrentEditImageId}
                 currentEditImageId={currentEditImageId}
+                backgroundDimensions={backgroundDimensions}
+            />
+            {/* Render Text */}
+            <RenderSpaceTexts 
+                isBuildMode={isBuildMode}
+                setCurrentEditTextId={setCurrentEditTextId}
+                currentEditTextId={currentEditTextId}
                 backgroundDimensions={backgroundDimensions}
             />
 
