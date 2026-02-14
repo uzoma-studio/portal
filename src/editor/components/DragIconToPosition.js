@@ -29,9 +29,14 @@ const DragIconToPosition = ({
             const deltaX = e.clientX - dragStart.x;
             const deltaY = e.clientY - dragStart.y;
 
-            // Convert pixel movement to percentage
-            const newX = Math.max(0, Math.min(100, dragPosition.x + (deltaX / window.innerWidth) * 100));
-            const newY = Math.max(0, Math.min(100, dragPosition.y + (deltaY / window.innerHeight) * 100));
+            // Get container bounds
+            const containerRect = containerRef?.current?.getBoundingClientRect();
+            const containerWidth = containerRect?.width || window.innerWidth;
+            const containerHeight = containerRect?.height || window.innerHeight;
+
+            // Convert pixel movement to percentage, constrained to container bounds
+            const newX = Math.max(0, Math.min(100, dragPosition.x + (deltaX / containerWidth) * 100));
+            const newY = Math.max(0, Math.min(100, dragPosition.y + (deltaY / containerHeight) * 100));
 
             setDragPosition({ x: newX, y: newY });
             setDragStart({ x: e.clientX, y: e.clientY });

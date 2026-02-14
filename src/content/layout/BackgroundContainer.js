@@ -56,7 +56,8 @@ const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEdi
 
   return (
     <StyledBackgroundContainer 
-        $settings={theme} 
+        $settings={theme}
+        $isBuildMode={isBuildMode}
         ref={backgroundRef}
         onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
         onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
@@ -73,19 +74,27 @@ export default BackgroundContainer
 
 export const StyledBackgroundContainer = styled.div`
 
-    height: 100vh;
-    z-index: -1;
+    height: 80vh;
+    position: relative;
+    z-index: 0;
     overflow: hidden;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 10vh;
+    border: ${props => props.$isBuildMode ? '1px solid #ccc' : 'none'};
+    border-radius: 8px;
 
     img {
+        max-width: 100%;
+        max-height: 100%;
     }
 
     div.background {
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100vh;
+        height: 100%;
         z-index: -1;
         background: ${props => props.$settings?.style?.backgroundMode === 'gradient' 
             ? `linear-gradient(180deg, 
