@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Image from 'next/image';
 import { useSpace } from '@/context/SpaceProvider';
 
-const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions }) => {
+const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions, setSelectedElementPosition }) => {
     
     const { images: spaceImages } = useSpace()
     const [currentDimensions, setCurrentDimensions] = useState({ width: 0, height: 0 });
@@ -18,6 +18,20 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
         
         setCurrentDimensions(dimensions);
     }, [backgroundDimensions]);
+    
+    const handleImageClick = (id, event) => {
+        if (isBuildMode) {
+            setCurrentEditImageId(id);
+            // Get the element's position for ElementControl
+            const rect = event.currentTarget.getBoundingClientRect();
+            setSelectedElementPosition({
+                top: rect.top,
+                left: rect.left,
+                width: rect.width,
+                height: rect.height
+            });
+        }
+    };
     
     return (
         <>
@@ -41,7 +55,7 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                             width: pixelWidth,
                             height: pixelHeight
                         }}
-                        onClick={() => { isBuildMode && setCurrentEditImageId(id) }}
+                        onClick={(e) => handleImageClick(id, e)}
                         onResizeStop={(e, direction, ref, delta, position) => {
                             // Save the new size dimensions of the preview image
                             const image = spaceImages[index]

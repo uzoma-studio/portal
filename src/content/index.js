@@ -17,6 +17,7 @@ import WindowDisplay from '@/content/displayModes/window'
 import DragIconToPosition from '@/editor/components/DragIconToPosition'
 import Toolbar from '@/editor/menus/Toolbar'
 import ActionControls from '@/editor/menus/ActionControls'
+import ElementControl from '@/editor/menus/ElementControl'
 import ModalWrapper from '@/editor/modals/ModalWrapper';
 import AddPageModal from '@/editor/modals/AddPageModal';
 import EditSpaceModal from '@/editor/modals/EditSpaceModal'
@@ -51,6 +52,7 @@ const Index = () => {
     const [currentEditImageId, setCurrentEditImageId] = useState(null)
     const [currentEditTextId, setCurrentEditTextId] = useState(null)
     const [message, setMessage] = useState({ type: '', text: '' });
+    const [selectedElementPosition, setSelectedElementPosition] = useState(null)
     // const [showImageDialogModal, setShowImageDialogModal] = useState(false)
 
     const [backgroundDimensions, setBackgroundDimensions] = useState({ width: 0, height: 0 });
@@ -227,6 +229,7 @@ const Index = () => {
                 setCurrentEditImageId={setCurrentEditImageId}
                 currentEditImageId={currentEditImageId}
                 backgroundDimensions={backgroundDimensions}
+                setSelectedElementPosition={setSelectedElementPosition}
             />
             {/* Render Text */}
             <RenderSpaceTexts 
@@ -234,6 +237,7 @@ const Index = () => {
                 setCurrentEditTextId={setCurrentEditTextId}
                 currentEditTextId={currentEditTextId}
                 backgroundDimensions={backgroundDimensions}
+                setSelectedElementPosition={setSelectedElementPosition}
             />
 
             {/* Render Currently Opened Page */}
@@ -262,6 +266,31 @@ const Index = () => {
                             />
                         </ModalWrapper>
                     }
+                    <ElementControl
+                        selectedImageId={currentEditImageId}
+                        selectedTextId={currentEditTextId}
+                        onEdit={() => {
+                            if (currentEditImageId) {
+                                // Handle image edit
+                            } else if (currentEditTextId) {
+                                // Handle text edit - already triggered by clicking
+                            }
+                        }}
+                        onDelete={() => {
+                            if (currentEditImageId) {
+                                setCurrentEditImageId(null);
+                                // Delete image logic would go here
+                            } else if (currentEditTextId) {
+                                setCurrentEditTextId(null);
+                                // Delete text logic would go here
+                            }
+                        }}
+                        onLink={() => {
+                            // Handle linking logic
+                        }}
+                        elementPosition={selectedElementPosition}
+                        backgroundDimensions={backgroundDimensions}
+                    />
                     <Toolbar backgroundDimensions={backgroundDimensions} />
                     {message.text && (
                         <StyledMessage className={message.type}>{message.text}</StyledMessage>

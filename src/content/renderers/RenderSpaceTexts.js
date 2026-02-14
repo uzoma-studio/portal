@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useSpace } from '@/context/SpaceProvider';
 
 // TODO: Explore combining RenderSpaceTexts and RenderSpaceImages into a single component that can render both types based on props
-const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId, backgroundDimensions }) => {
+const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId, backgroundDimensions, setSelectedElementPosition }) => {
     
     const { texts: spaceTexts, setTexts } = useSpace()
     const [currentDimensions, setCurrentDimensions] = useState({ width: 0, height: 0 });
@@ -18,8 +18,19 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
         setCurrentDimensions(dimensions);
     }, [backgroundDimensions]);
 
-    console.log(spaceTexts);
-    
+    const handleTextClick = (id, event) => {
+        if (isBuildMode) {
+            setCurrentEditTextId(id);
+            // Get the element's position for ElementControl
+            const rect = event.currentTarget.getBoundingClientRect();
+            setSelectedElementPosition({
+                top: rect.top,
+                left: rect.left,
+                width: rect.width,
+                height: rect.height
+            });
+        }
+    };
     
     return (
         <>
@@ -42,7 +53,7 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
                             width: pixelWidth,
                             height: pixelHeight
                         }}
-                        onClick={() => { isBuildMode && setCurrentEditTextId(id) }}
+                        onClick={(e) => handleTextClick(id, e)}
                         onResizeStop={(e, direction, ref, delta, position) => {
                             const updatedTexts = [...spaceTexts];
                             const textIndex = updatedTexts.findIndex(t => t.id === id);
