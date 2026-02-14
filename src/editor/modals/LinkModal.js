@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useSpace } from '@/context/SpaceProvider'
-import { MdClose } from 'react-icons/md'
+import { MdClose, MdOpenInNew } from 'react-icons/md'
 
 const LinkModal = ({ 
     elementPosition, 
@@ -9,7 +9,8 @@ const LinkModal = ({
     selectedTextId,
     onClose,
     onLinkChange,
-    linkedPageId
+    linkedPageId,
+    setCurrentPageId
 }) => {
     const { pages, images: spaceImages, texts: spaceTexts } = useSpace()
     const [selectedPageId, setSelectedPageId] = useState(linkedPageId || null)
@@ -18,6 +19,12 @@ const LinkModal = ({
         const newPageId = selectedPageId === pageId ? null : pageId
         setSelectedPageId(newPageId)
         onLinkChange(newPageId)
+    }
+
+    const handleOpenPage = (pageId, e) => {
+        e.stopPropagation();
+        setCurrentPageId(pageId);
+        onClose();
     }
 
     if (!elementPosition || !pages?.length) return null
@@ -53,6 +60,12 @@ const LinkModal = ({
                                 {selectedPageId === page.id && '✓'}
                             </StyledCheckbox>
                             <span>{page.title}</span>
+                            <StyledOpenIcon 
+                                onClick={(e) => handleOpenPage(page.id, e)}
+                                title="Open page"
+                            >
+                                <MdOpenInNew />
+                            </StyledOpenIcon>
                         </StyledPageItem>
                     ))}
                 </StyledPagesList>
@@ -191,5 +204,23 @@ const StyledFooter = styled.div`
 
     strong {
         color: #333;
+    }
+`
+
+const StyledOpenIcon = styled.button`
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.5rem;
+    margin-left: auto;
+    transition: color 0.2s ease;
+    font-size: 16px;
+
+    &:hover {
+        color: #0056b3;
     }
 `

@@ -31,6 +31,7 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                 height: rect.height
             });
         } else {
+            console.log('Image clicked in preview mode, checking for link...')
             // In preview mode, check if image is linked to a page
             const image = spaceImages.find(img => img.id === id);
             if (image?.linkToPage) {
@@ -38,8 +39,6 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
             }
         }
     };
-
-    // console.log(spaceImages);
     
     
     return (
@@ -95,7 +94,6 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                             $hasLink={!!linkToPage}
                             $isCurrentEditImage={currentEditImageId === id}
                             $isBuildMode={isBuildMode}
-                            onClick={() => {linkToPage && setCurrentPageId(linkToPage.id)}}
                             onDragStart={(e) => e.preventDefault()}
                         >
                             <Image

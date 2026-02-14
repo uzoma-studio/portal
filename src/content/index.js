@@ -304,6 +304,7 @@ const Index = () => {
                             selectedImageId={currentEditImageId}
                             selectedTextId={currentEditTextId}
                             onClose={() => setShowLinkModal(false)}
+                            setCurrentPageId={setCurrentPageId}
                             onLinkChange={(pageId) => {
                                 if (currentEditImageId) {
                                     console.log('Current image ID:', currentEditImageId);
