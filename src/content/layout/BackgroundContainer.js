@@ -39,11 +39,7 @@ const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEdi
     }, []);
 
     const handleClick = async (e) => {
-        // Don't clear selection if LinkModal is open
-        if (showLinkModal) {
-            return;
-        }
-        
+
         if(isBuildMode){
             // Exit image edit mode when background is clicked
             if(currentEditImageId) {

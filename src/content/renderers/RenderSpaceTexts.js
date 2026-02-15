@@ -116,7 +116,6 @@ export const StyledSpaceText = styled.div`
     font-size: ${props => `${props.$fontSize}px`};
     color: ${props => props.$fontColor};
     word-wrap: break-word;
-    overflow-y: auto;
     cursor: ${props => props.$hasLink ? 'pointer' : (props.$isBuildMode ? 'move' : 'default')};
     border: ${props => props.$isCurrentEdit ? '2px dashed #4a90e2' : 'none'};
     border-radius: 4px;

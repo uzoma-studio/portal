@@ -2,20 +2,27 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { MdEdit, MdDelete, MdLink } from 'react-icons/md'
 import { useSpace } from '@/context/SpaceProvider'
+import ModalWrapper from '@/editor/modals/ModalWrapper'
+import AddTextModal from '@/editor/modals/AddTextModal'
+import LinkModal from '@/editor/modals/LinkModal'
 
 const ElementControl = ({ 
     selectedImageId, 
     selectedTextId,
-    onEdit,
     onDelete,
-    showLinkModal,
-    setShowLinkModal,
     elementPosition,
-    backgroundDimensions 
+    backgroundDimensions,
+    setCurrentPageId,
 }) => {
+    const { pages, images: spaceImages, setImages, texts: spaceTexts, setTexts } = useSpace()
     const [position, setPosition] = useState({ top: 0, left: 0 })
+    const [showLinkModal, setShowLinkModal] = useState(false)
+    const [showTextModal, setShowTextModal] = useState(false)
     const hasSelection = selectedImageId || selectedTextId
     const isText = !!selectedTextId
+    const linkedPageId = isText 
+        ? spaceTexts.find(t => t.id === selectedTextId)?.linkToPage?.id
+        : spaceImages.find(img => img.id === selectedImageId)?.linkToPage?.id
 
     useEffect(() => {
         if (elementPosition && backgroundDimensions) {
@@ -30,47 +37,97 @@ const ElementControl = ({
         }
     }, [elementPosition, backgroundDimensions])
 
+    const handleEdit = () => {
+        if (isText) {
+            setShowTextModal(true)
+        }
+    }
+
+    const handleLinkChange = (pageId) => {
+        if (selectedImageId) {
+            // Link image to page
+            const imageIndex = spaceImages.findIndex(img => img.id === selectedImageId);
+            if (imageIndex !== -1) {
+                const updatedImages = [...spaceImages];
+                updatedImages[imageIndex].linkToPage = pageId ? { id: pageId } : null;
+                updatedImages[imageIndex].isEdited = true;
+                setImages(updatedImages);
+            }
+        } else if (selectedTextId) {
+            // Link text to page
+            const textIndex = spaceTexts.findIndex(text => text.id === selectedTextId);
+            if (textIndex !== -1) {
+                const updatedTexts = [...spaceTexts];
+                updatedTexts[textIndex].linkToPage = pageId ? { id: pageId } : null;
+                updatedTexts[textIndex].isEdited = true;
+                setTexts(updatedTexts);
+            }
+        }
+    }
+
     if (!hasSelection) return null
 
     return (
-        <StyledElementControlContainer $top={position.top} $left={position.left} onClick={(e) => e.stopPropagation()}>
-            <IconButton 
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit();
-                }}
-                title="Edit"
-                aria-label="Edit element"
-            >
-                <MdEdit />
-            </IconButton>
-            <IconButton 
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete();
-                }}
-                title="Delete"
-                aria-label="Delete element"
-                $danger
-            >
-                <MdDelete />
-            </IconButton>
-            <IconButton 
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setShowLinkModal(!showLinkModal);
-                }}
-                title={isText ? "Link text" : "Link image"}
-                aria-label="Link element"
-                $active={showLinkModal}
-            >
-                <MdLink />
-            </IconButton>
-        </StyledElementControlContainer>
+        <>
+            <StyledElementControlContainer $top={position.top} $left={position.left} onClick={(e) => e.stopPropagation()}>
+                <IconButton 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit();
+                    }}
+                    title="Edit"
+                    aria-label="Edit element"
+                >
+                    <MdEdit />
+                </IconButton>
+                <IconButton 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete();
+                    }}
+                    title="Delete"
+                    aria-label="Delete element"
+                    $danger
+                >
+                    <MdDelete />
+                </IconButton>
+                <IconButton 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setShowLinkModal(!showLinkModal);
+                    }}
+                    title={isText ? "Link text" : "Link image"}
+                    aria-label="Link element"
+                    $active={showLinkModal}
+                >
+                    <MdLink />
+                </IconButton>
+            </StyledElementControlContainer>
+
+            {showLinkModal && (
+                <LinkModal
+                    elementPosition={elementPosition}
+                    selectedImageId={selectedImageId}
+                    selectedTextId={selectedTextId}
+                    onClose={() => setShowLinkModal(false)}
+                    setCurrentPageId={setCurrentPageId}
+                    onLinkChange={handleLinkChange}
+                    linkedPageId={linkedPageId}
+                />
+            )}
+
+            {showTextModal && (
+                <ModalWrapper tabName={selectedTextId ? 'Edit Text' : 'Add Text'} modalCloseFn={() => setShowTextModal(false)}>
+                    <AddTextModal
+                        setIsModalOpen={setShowTextModal}
+                        backgroundDimensions={backgroundDimensions}
+                        textToEdit={selectedTextId ? spaceTexts.find(t => t.id === selectedTextId) : null}
+                    />
+                </ModalWrapper>
+            )}
+        </>
     )
 }
-
-export default ElementControl
 
 const StyledElementControlContainer = styled.div`
     position: fixed;
@@ -120,3 +177,5 @@ const IconButton = styled.button`
         transform: scale(0.95);
     }
 `
+
+export default ElementControl

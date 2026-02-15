@@ -10,14 +10,15 @@ import {
     StyledSubmitButton,
 } from '../styles';
 
-const AddTextModal = ({ setIsModalOpen, backgroundDimensions }) => {
+const AddTextModal = ({ setIsModalOpen, backgroundDimensions, textToEdit }) => {
     const { setTexts, texts } = useSpace();
-    const [content, setContent] = useState('');
-    const [fontSize, setFontSize] = useState(16);
-    const [fontColor, setFontColor] = useState('#000000');
+    const [content, setContent] = useState(textToEdit?.content || '');
+    const [fontSize, setFontSize] = useState(textToEdit?.fontSize || 16);
+    const [fontColor, setFontColor] = useState(textToEdit?.fontColor || '#000000');
     const [message, setMessage] = useState({ type: '', text: '' });
     const textInputRef = useRef(null);
     const [textHeight, setTextHeight] = useState('auto');
+    const isEditMode = !!textToEdit;
 
     // Calculate text height based on content
     useEffect(() => {
@@ -37,26 +38,42 @@ const AddTextModal = ({ setIsModalOpen, backgroundDimensions }) => {
             return;
         }
 
-        // Calculate center position (in percentages)
-        const centerX = 50 - (300 / (backgroundDimensions.width || 1200)) * 50; // Assuming ~300px default width
-        const centerY = 50 - (textHeight / (backgroundDimensions.height || 800)) * 50;
+        if (isEditMode) {
+            // Update existing text
+            const updatedTexts = texts.map(text => 
+                text.id === textToEdit.id 
+                    ? {
+                        ...text,
+                        content: content,
+                        fontSize: parseInt(fontSize),
+                        fontColor: fontColor,
+                        isEdited: true
+                    }
+                    : text
+            );
+            setTexts(updatedTexts);
+            setMessage({ type: 'success', text: 'Text updated successfully!' });
+        } else {
+            // Create a new text element
+            const centerX = 50 - (300 / (backgroundDimensions.width || 1200)) * 50;
+            const centerY = 50 - (textHeight / (backgroundDimensions.height || 800)) * 50;
 
-        // Create a new text element
-        const newText = {
-            id: `text_${Date.now()}`,
-            content: content,
-            fontSize: parseInt(fontSize),
-            fontColor: fontColor,
-            position: { x: centerX, y: centerY },
-            size: { 
-                width: (300 / (backgroundDimensions.width || 1200)) * 100,
-                height: (textHeight / (backgroundDimensions.height || 800)) * 100
-            },
-            isPreview: true
-        };
+            const newText = {
+                id: `text_${Date.now()}`,
+                content: content,
+                fontSize: parseInt(fontSize),
+                fontColor: fontColor,
+                position: { x: centerX, y: centerY },
+                size: { 
+                    width: (300 / (backgroundDimensions.width || 1200)) * 100,
+                    height: (textHeight / (backgroundDimensions.height || 800)) * 100
+                },
+                isPreview: true
+            };
 
-        setTexts(prev => [...prev, newText]);
-        setMessage({ type: 'success', text: 'Text added successfully!' });
+            setTexts(prev => [...prev, newText]);
+            setMessage({ type: 'success', text: 'Text added successfully!' });
+        }
         
         // Reset form
         setContent('');
@@ -125,7 +142,7 @@ const AddTextModal = ({ setIsModalOpen, backgroundDimensions }) => {
                             onClick={handleAddText}
                             className="px-4 py-2 rounded font-medium"
                         >
-                            Add Text
+                            {isEditMode ? 'Update Text' : 'Add Text'}
                         </StyledSubmitButton>
                         <StyledCancelButton 
                             type="button"

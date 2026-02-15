@@ -21,7 +21,7 @@ import ElementControl from '@/editor/menus/ElementControl'
 import ModalWrapper from '@/editor/modals/ModalWrapper';
 import AddPageModal from '@/editor/modals/AddPageModal';
 import EditSpaceModal from '@/editor/modals/EditSpaceModal'
-import LinkModal from '@/editor/modals/LinkModal'
+
 
 import RenderSpaceImages from '@/content/renderers/RenderSpaceImages'
 import RenderSpaceTexts from '@/content/renderers/RenderSpaceTexts'
@@ -49,7 +49,7 @@ const Index = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
     const [showEditSpaceModal, setShowEditSpaceModal] = useState(false)
-    const [showLinkModal, setShowLinkModal] = useState(false)
+
 
     const [currentEditImageId, setCurrentEditImageId] = useState(null)
     const [currentEditTextId, setCurrentEditTextId] = useState(null)
@@ -184,7 +184,6 @@ const Index = () => {
             openAddPageModal={openAddPageModal}
             backgroundDimensions={backgroundDimensions}
             setBackgroundDimensions={setBackgroundDimensions}
-            showLinkModal={showLinkModal}
         >
 
             {
@@ -288,13 +287,6 @@ const Index = () => {
                     <ElementControl
                         selectedImageId={currentEditImageId}
                         selectedTextId={currentEditTextId}
-                        onEdit={() => {
-                            if (currentEditImageId) {
-                                // Handle image edit
-                            } else if (currentEditTextId) {
-                                // Handle text edit - already triggered by clicking
-                            }
-                        }}
                         onDelete={() => {
                             if (currentEditImageId) {
                                 setCurrentEditImageId(null);
@@ -306,41 +298,9 @@ const Index = () => {
                         }}
                         elementPosition={selectedElementPosition}
                         backgroundDimensions={backgroundDimensions}
-                        showLinkModal={showLinkModal}
-                        setShowLinkModal={setShowLinkModal}
+                        setCurrentPageId={setCurrentPageId}
                     />
-                    {showLinkModal && (
-                        <LinkModal
-                            elementPosition={selectedElementPosition}
-                            selectedImageId={currentEditImageId}
-                            selectedTextId={currentEditTextId}
-                            onClose={() => setShowLinkModal(false)}
-                            setCurrentPageId={setCurrentPageId}
-                            onLinkChange={(pageId) => {
-                                if (currentEditImageId) {
-                                    // Link image to page
-                                    const imageIndex = spaceImages.findIndex(img => img.id === currentEditImageId);
-                                    
-                                    if (imageIndex !== -1) {
-                                        const updatedImages = [...spaceImages];
-                                        updatedImages[imageIndex].linkToPage = pageId ? { id: pageId } : null;
-                                        updatedImages[imageIndex].isEdited = true;
-                                        setImages(updatedImages);
-                                    }
-                                } else if (currentEditTextId) {
-                                    // Link text to page
-                                    const textIndex = spaceTexts.findIndex(text => text.id === currentEditTextId);
-                                    if (textIndex !== -1) {
-                                        const updatedTexts = [...spaceTexts];
-                                        updatedTexts[textIndex].linkToPage = pageId ? { id: pageId } : null;
-                                        updatedTexts[textIndex].isEdited = true;
-                                        setTexts(updatedTexts);
-                                    }
-                                }
-                            }}
-                            linkedPageId={currentEditImageId ? spaceImages.find(img => img.id === currentEditImageId)?.linkToPage?.id : null}
-                        />
-                    )}
+
                     <Toolbar backgroundDimensions={backgroundDimensions} />
                     {message.text && (
                         <StyledMessage className={message.type}>{message.text}</StyledMessage>
