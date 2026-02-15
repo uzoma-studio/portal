@@ -110,7 +110,8 @@ const Index = () => {
                                 updatedImages.push({
                                     image: imageUpload,
                                     size: image.size,
-                                    position: image.position
+                                    position: image.position,
+                                    linkToPage: image.linkToPage
                                 });
                             } else {
                                 setMessage({ type: 'error', text: `Failed to upload ${image.file.name}` });
@@ -128,16 +129,29 @@ const Index = () => {
                             updatedImages[idx] = {
                                 ...updatedImages[idx],
                                 size: image.size,
-                                position: image.position
+                                position: image.position,
+                                linkToPage: image.linkToPage
                             };
                         }
                     }
                 }
             }
 
+            // Process edited texts
+            const updatedTexts = spaceTexts.map(text => {
+                if (text.isEdited) {
+                    return {
+                        ...text,
+                        isEdited: false
+                    };
+                }
+                return text;
+            });
+
             const spaceData = {
                 ...space,
-                images: updatedImages
+                images: updatedImages,
+                texts: updatedTexts
             };
             
             const updatedSpace = await updateEntry('spaces', space.id, spaceData);
