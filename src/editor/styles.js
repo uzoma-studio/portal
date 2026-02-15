@@ -24,10 +24,8 @@ export const StyledModalContent = styled.div`
     padding: 1.25rem;
     min-width: 300px;
     width: ${props => !props.$isCreatePageMode ? '100%' : '60%'};
-    height: ${props => !props.$isCreatePageMode ? 'unset' : '80vh'};
     max-width: 800px;
     z-index: 51;
-    overflow-y: ${props => props.$isCreatePageMode && 'auto'};
     background-color: white;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
                 0 4px 6px -4px rgba(0, 0, 0, 0.1);
