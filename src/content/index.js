@@ -49,7 +49,7 @@ const Index = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
     const [showEditSpaceModal, setShowEditSpaceModal] = useState(false)
-
+    const [isSaving, setIsSaving] = useState(false)
 
     const [currentEditImageId, setCurrentEditImageId] = useState(null)
     const [currentEditTextId, setCurrentEditTextId] = useState(null)
@@ -95,6 +95,7 @@ const Index = () => {
     }
 
     const saveSpaceEdits = async () => {
+        setIsSaving(true);
         try {
             // Start with existing non-preview images
             const updatedImages = spaceImages.filter(img => !img.isPreview);
@@ -162,12 +163,14 @@ const Index = () => {
                 setMessage({ type: 'error', text: 'Failed to edit space. Please try again' });
             }
             
+            setIsSaving(false);
             setTimeout(() => {
                 setMessage({ type: '', text: '' });
             }, 1500);
 
             setIsBuildMode(false);
         } catch (error) {
+            setIsSaving(false);
             console.error('Error in saveSpaceEdits:', error);
             setMessage({ type: 'error', text: `Error saving space: ${error.message}` });
         }
@@ -193,6 +196,7 @@ const Index = () => {
                         setIsBuildMode={setIsBuildMode} 
                         setShowEditSpaceModal={setShowEditSpaceModal}
                         saveSpaceEdits={saveSpaceEdits}
+                        isSaving={isSaving}
                     />
                     :
                     // TODO: Only show button when space is not in publish mode - reference mmm.page
