@@ -6,9 +6,10 @@ import { useSpace } from '@/context/SpaceProvider';
 
 const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions, setSelectedElementPosition, setCurrentPageId }) => {
     
-    const { images: spaceImages } = useSpace()
+    const { images: spaceImages, pages } = useSpace()
     const [currentDimensions, setCurrentDimensions] = useState({ width: 0, height: 0 });
     const [resizedImages, setResizedImages] = useState(new Set());
+    const [hoveredImageId, setHoveredImageId] = useState(null);
 
     // Update dimensions when backgroundDimensions change
     useEffect(() => {
@@ -63,6 +64,8 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                             height: pixelHeight
                         }}
                         onClick={(e) => handleImageClick(id, e)}
+                        onMouseEnter={() => setHoveredImageId(id)}
+                        onMouseLeave={() => setHoveredImageId(null)}
                         onResizeStop={(e, direction, ref, delta, position) => {
                             // Save the new size dimensions of the preview image
                             const image = spaceImages[index]
@@ -102,6 +105,12 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                                 style={{ objectFit: 'contain' }}
                                 draggable={false}
                             />
+                            {hoveredImageId === id && linkToPage && (() => {
+                                const tooltipText = typeof linkToPage === 'string'
+                                    ? linkToPage
+                                    : pages?.find(p => p.id === linkToPage.id)?.title || 'Internal link';
+                                return <StyledImageTooltip>{tooltipText}</StyledImageTooltip>;
+                            })()}
                         </StyledSpaceImage>
                     </Rnd>
                 })
@@ -117,6 +126,7 @@ export const StyledSpaceImage = styled.div`
     width: 100%;
     height: 100%;
     object-fit: contain;
+    overflow: visible;
     cursor: ${props => props.$hasLink ? 'pointer' : (props.$isBuildMode ? 'move' : 'default')};
     transition: transform 0.2s ease;
 
@@ -126,3 +136,33 @@ export const StyledSpaceImage = styled.div`
         }
     `}
 `
+
+export const StyledImageTooltip = styled.div`
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 1000;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 4px solid rgba(0, 0, 0, 0.9);
+    }
+`;

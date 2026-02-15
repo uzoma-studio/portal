@@ -3,6 +3,15 @@ import styled from 'styled-components'
 import { useSpace } from '@/context/SpaceProvider'
 import { MdClose, MdOpenInNew } from 'react-icons/md'
 
+const isValidUrl = (string) => {
+    try {
+        new URL(string);
+        return true;
+    } catch (_) {
+        return false;
+    }
+};
+
 const LinkModal = ({ 
     elementPosition, 
     selectedImageId,
@@ -13,7 +22,15 @@ const LinkModal = ({
     setCurrentPageId
 }) => {
     const { pages, images: spaceImages, texts: spaceTexts } = useSpace()
+    const selectedText = selectedTextId ? spaceTexts?.find(t => t.id === selectedTextId) : null
+    
+    const [activeTab, setActiveTab] = useState('page')
     const [selectedPageId, setSelectedPageId] = useState(linkedPageId || null)
+    const [externalUrl, setExternalUrl] = useState(selectedText?.linkToPage && typeof selectedText.linkToPage === 'string' && selectedText.linkToPage.startsWith("http") ? selectedText.linkToPage : '')
+    const [savedExternalUrl, setSavedExternalUrl] = useState('')
+    const [urlError, setUrlError] = useState('')
+
+    // Get the selected text content from selectedTextId
 
     const handlePageSelect = (pageId) => {
         const newPageId = selectedPageId === pageId ? null : pageId
@@ -27,6 +44,34 @@ const LinkModal = ({
         onClose();
     }
 
+    const handleExternalUrlChange = (e) => {
+        const url = e.target.value
+        setExternalUrl(url)
+        if (url.trim() === '') {
+            setUrlError('')
+        } else if (!isValidUrl(url)) {
+            setUrlError('Invalid URL format')
+        } else {
+            setUrlError('')
+        }
+    }
+
+    const handleExternalUrlSubmit = () => {
+        if (externalUrl.trim() === '') {
+            setUrlError('Please enter a URL')
+            return
+        }
+        if (!isValidUrl(externalUrl)) {
+            setUrlError('Invalid URL format')
+            return
+        }
+        // Store the external URL in a way that the system recognizes
+        onLinkChange(externalUrl)
+        setSavedExternalUrl(externalUrl)
+        setExternalUrl('')
+        setUrlError('')
+    }
+
     if (!elementPosition || !pages?.length) return null
 
     return (
@@ -37,7 +82,7 @@ const LinkModal = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 <StyledHeader>
-                    <h3>Link to Page</h3>
+                    <h3>Link Element</h3>
                     <StyledCloseButton onClick={(e) => {
                         e.stopPropagation();
                         onClose();
@@ -46,34 +91,88 @@ const LinkModal = ({
                     </StyledCloseButton>
                 </StyledHeader>
 
-                <StyledPagesList>
-                    {pages.map(page => (
-                        <StyledPageItem
-                            key={page.id}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handlePageSelect(page.id);
-                            }}
-                            $selected={selectedPageId === page.id}
-                        >
-                            <StyledCheckbox $selected={selectedPageId === page.id}>
-                                {selectedPageId === page.id && '✓'}
-                            </StyledCheckbox>
-                            <span>{page.title}</span>
-                            <StyledOpenIcon 
-                                onClick={(e) => handleOpenPage(page.id, e)}
-                                title="Open page"
-                            >
-                                <MdOpenInNew />
-                            </StyledOpenIcon>
-                        </StyledPageItem>
-                    ))}
-                </StyledPagesList>
+                <StyledTabContainer>
+                    <StyledTab 
+                        $active={activeTab === 'page'} 
+                        onClick={() => setActiveTab('page')}
+                    >
+                        Page Link
+                    </StyledTab>
+                    <StyledTab 
+                        $active={activeTab === 'external'} 
+                        onClick={() => setActiveTab('external')}
+                    >
+                        External Link
+                    </StyledTab>
+                </StyledTabContainer>
 
-                {selectedPageId && (
-                    <StyledFooter>
-                        <p>Linked to: <strong>{pages.find(p => p.id === selectedPageId)?.title}</strong></p>
-                    </StyledFooter>
+                {activeTab === 'page' && (
+                    <>
+                        <StyledPagesList>
+                            {pages.map(page => (
+                                <StyledPageItem
+                                    key={page.id}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handlePageSelect(page.id);
+                                    }}
+                                    $selected={selectedPageId === page.id}
+                                >
+                                    <StyledCheckbox $selected={selectedPageId === page.id}>
+                                        {selectedPageId === page.id && '✓'}
+                                    </StyledCheckbox>
+                                    <span>{page.title}</span>
+                                    <StyledOpenIcon 
+                                        onClick={(e) => handleOpenPage(page.id, e)}
+                                        title="Open page"
+                                    >
+                                        <MdOpenInNew />
+                                    </StyledOpenIcon>
+                                </StyledPageItem>
+                            ))}
+                        </StyledPagesList>
+
+                        {selectedPageId && (
+                            <StyledFooter>
+                                <p>Linked to: <strong>{pages.find(p => p.id === selectedPageId)?.title}</strong></p>
+                            </StyledFooter>
+                        )}
+                    </>
+                )}
+
+                {activeTab === 'external' && (
+                    <>
+                        <StyledExternalLinkContainer>
+                            <StyledUrlInput 
+                                type="text"
+                                placeholder="https://example.com"
+                                value={externalUrl}
+                                onChange={handleExternalUrlChange}
+                                onClick={(e) => e.stopPropagation()}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.stopPropagation();
+                                        handleExternalUrlSubmit();
+                                    }
+                                }}
+                            />
+                            {urlError && <StyledError>{urlError}</StyledError>}
+                            <StyledUrlButton 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleExternalUrlSubmit();
+                                }}
+                                disabled={!externalUrl.trim() || !!urlError}
+                            >
+                                Add Link
+                            </StyledUrlButton>
+                        </StyledExternalLinkContainer>
+                        {savedExternalUrl && (
+                            <StyledFooter>
+                                <p>Linked to: <strong>{savedExternalUrl}</strong></p>
+                            </StyledFooter>
+                        )}
+                    </>
                 )}
             </StyledLinkModal>
         </StyledModalOverlay>
@@ -132,6 +231,29 @@ const StyledHeader = styled.div`
     }
 `
 
+const StyledTabContainer = styled.div`
+    display: flex;
+    border-bottom: 1px solid #eee;
+    padding: 0 8px;
+`
+
+const StyledTab = styled.button`
+    flex: 1;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: ${props => props.$active ? 'var(--primary-color, #4a90e2)' : '#999'};
+    border-bottom: 2px solid ${props => props.$active ? 'var(--primary-color, #4a90e2)' : 'transparent'};
+    transition: all 0.2s ease;
+    
+    &:hover {
+        color: var(--primary-color, #4a90e2);
+    }
+`
+
 const StyledCloseButton = styled.button`
     background: none;
     border: none;
@@ -177,13 +299,13 @@ const StyledPageItem = styled.div`
 const StyledCheckbox = styled.div`
     width: 18px;
     height: 18px;
-    border: 2px solid ${props => props.$selected ? '#4a90e2' : '#ddd'};
+    border: 2px solid ${props => props.$selected ? 'var(--primary-color, #4a90e2)' : '#ddd'};
     border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 8px;
-    background-color: ${props => props.$selected ? '#4a90e2' : 'white'};
+    background-color: ${props => props.$selected ? 'var(--primary-color, #4a90e2)' : 'white'};
     color: white;
     font-size: 12px;
     font-weight: bold;
@@ -222,5 +344,64 @@ const StyledOpenIcon = styled.button`
 
     &:hover {
         color: #0056b3;
+    }
+`
+
+const StyledExternalLinkContainer = styled.div`
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+`
+
+const StyledUrlInput = styled.input`
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: inherit;
+    color: var(--body-text-color, #333);
+    background-color: var(--input-background-color, white);
+    
+    &:focus {
+        outline: none;
+        border-color: var(--primary-color, #4a90e2);
+        box-shadow: 0 0 4px rgba(74, 144, 226, 0.3);
+    }
+    
+    &::placeholder {
+        color: #999;
+    }
+`
+
+const StyledError = styled.p`
+    margin: 0;
+    padding: 0 4px;
+    font-size: 11px;
+    color: #ef4444;
+    font-weight: 500;
+`
+
+const StyledUrlButton = styled.button`
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--primary-color, #4a90e2);
+    color: var(--accent-color, white);
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover:not(:disabled) {
+        opacity: 0.9;
+    }
+    
+    &:disabled {
+        background: #ddd;
+        cursor: not-allowed;
+        opacity: 0.6;
     }
 `

@@ -6,8 +6,9 @@ import { useSpace } from '@/context/SpaceProvider';
 // TODO: Explore combining RenderSpaceTexts and RenderSpaceImages into a single component that can render both types based on props
 const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId, backgroundDimensions, setSelectedElementPosition, setCurrentPageId }) => {
     
-    const { texts: spaceTexts, setTexts } = useSpace()
+    const { texts: spaceTexts, setTexts, pages } = useSpace()
     const [currentDimensions, setCurrentDimensions] = useState({ width: 0, height: 0 });
+    const [hoveredTextId, setHoveredTextId] = useState(null);
 
     // Update dimensions when backgroundDimensions change
     useEffect(() => {
@@ -30,10 +31,15 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
                 height: rect.height
             });
         } else {
-            // In preview mode, check if text is linked to a page
+            // In preview mode, check if text is linked to a page or external URL
             const text = spaceTexts.find(t => t.id === id);
             if (text?.linkToPage) {
-                setCurrentPageId(text.linkToPage.id);
+                // Check if linkToPage is an external URL (string) or page ID (object)
+                if (typeof text.linkToPage === 'string' && text.linkToPage.startsWith('http')) {
+                    window.open(text.linkToPage, '_blank');
+                } else {
+                    setCurrentPageId(text.linkToPage);
+                }
             }
         }
     };
@@ -60,6 +66,8 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
                             height: pixelHeight
                         }}
                         onClick={(e) => handleTextClick(id, e)}
+                        onMouseEnter={() => setHoveredTextId(id)}
+                        onMouseLeave={() => setHoveredTextId(null)}
                         onResizeStop={(e, direction, ref, delta, position) => {
                             const updatedTexts = [...spaceTexts];
                             const textIndex = updatedTexts.findIndex(t => t.id === id);
@@ -98,6 +106,12 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
                             onDragStart={(e) => e.preventDefault()}
                         >
                             {content}
+                            {hoveredTextId === id && linkToPage && (() => {
+                                const tooltipText = typeof linkToPage === 'string' 
+                                    ? linkToPage 
+                                    : pages?.find(p => p.id === linkToPage)?.title || 'Internal link';
+                                return <StyledTooltip>{tooltipText}</StyledTooltip>;
+                            })()}
                         </StyledSpaceText>
                     </Rnd>
                 })
@@ -116,6 +130,7 @@ export const StyledSpaceText = styled.div`
     font-size: ${props => `${props.$fontSize}px`};
     color: ${props => props.$fontColor};
     word-wrap: break-word;
+    overflow: visible;
     cursor: ${props => props.$hasLink ? 'pointer' : (props.$isBuildMode ? 'move' : 'default')};
     border: ${props => props.$isCurrentEdit ? '2px dashed #4a90e2' : 'none'};
     border-radius: 4px;
@@ -128,4 +143,35 @@ export const StyledSpaceText = styled.div`
             opacity: 0.8;
         }
     `}
+`;
+
+export const StyledTooltip = styled.div`
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    margin-bottom: 8px;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 1000;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 4px solid rgba(0, 0, 0, 0.9);
+    }
 `;
