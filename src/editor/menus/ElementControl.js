@@ -9,10 +9,12 @@ import LinkModal from '@/editor/modals/LinkModal'
 const ElementControl = ({ 
     selectedImageId, 
     selectedTextId,
-    onDelete,
     elementPosition,
     backgroundDimensions,
     setCurrentPageId,
+    setCurrentEditImageId,
+    setCurrentEditTextId,
+    setMessage,
 }) => {
     const { pages, images: spaceImages, setImages, texts: spaceTexts, setTexts } = useSpace()
     const [position, setPosition] = useState({ top: 0, left: 0 })
@@ -65,6 +67,24 @@ const ElementControl = ({
         }
     }
 
+    const handleDelete = () => {
+        if (selectedImageId) {
+            // Delete image logic
+            const updatedImages = spaceImages.filter(img => img.id !== selectedImageId);
+            setImages(updatedImages);
+            setCurrentEditImageId(null);
+            setMessage({ type: 'success', text: 'Image deleted' });
+            setTimeout(() => setMessage({ type: '', text: '' }), 1500);
+        } else if (selectedTextId) {
+            // Delete text logic
+            const updatedTexts = spaceTexts.filter(text => text.id !== selectedTextId);
+            setTexts(updatedTexts);
+            setCurrentEditTextId(null);
+            setMessage({ type: 'success', text: 'Text deleted' });
+            setTimeout(() => setMessage({ type: '', text: '' }), 1500);
+        }
+    }
+
     if (!hasSelection) return null
 
     return (
@@ -83,7 +103,7 @@ const ElementControl = ({
                 <IconButton 
                     onClick={(e) => {
                         e.stopPropagation();
-                        onDelete();
+                        handleDelete();
                     }}
                     title="Delete"
                     aria-label="Delete element"

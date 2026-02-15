@@ -287,18 +287,12 @@ const Index = () => {
                     <ElementControl
                         selectedImageId={currentEditImageId}
                         selectedTextId={currentEditTextId}
-                        onDelete={() => {
-                            if (currentEditImageId) {
-                                setCurrentEditImageId(null);
-                                // Delete image logic would go here
-                            } else if (currentEditTextId) {
-                                setCurrentEditTextId(null);
-                                // Delete text logic would go here
-                            }
-                        }}
                         elementPosition={selectedElementPosition}
                         backgroundDimensions={backgroundDimensions}
                         setCurrentPageId={setCurrentPageId}
+                        setCurrentEditImageId={setCurrentEditImageId}
+                        setCurrentEditTextId={setCurrentEditTextId}
+                        setMessage={setMessage}
                     />
 
                     <Toolbar backgroundDimensions={backgroundDimensions} />
