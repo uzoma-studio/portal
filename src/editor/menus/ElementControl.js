@@ -23,8 +23,8 @@ const ElementControl = ({
     const hasSelection = selectedImageId || selectedTextId
     const isText = !!selectedTextId
     const linkedPageId = isText 
-        ? spaceTexts.find(t => t.id === selectedTextId)?.linkToPage?.id
-        : spaceImages.find(img => img.id === selectedImageId)?.linkToPage?.id
+        ? spaceTexts.find(t => t.id === selectedTextId)?.linkToPage
+        : spaceImages.find(img => img.id === selectedImageId)?.linkToPage
 
     useEffect(() => {
         if (elementPosition && backgroundDimensions) {
@@ -51,7 +51,7 @@ const ElementControl = ({
             const imageIndex = spaceImages.findIndex(img => img.id === selectedImageId);
             if (imageIndex !== -1) {
                 const updatedImages = [...spaceImages];
-                updatedImages[imageIndex].linkToPage = pageId ? { id: pageId } : null;
+                updatedImages[imageIndex].linkToPage = pageId ? pageId : null;
                 updatedImages[imageIndex].isEdited = true;
                 setImages(updatedImages);
             }
@@ -60,7 +60,7 @@ const ElementControl = ({
             const textIndex = spaceTexts.findIndex(text => text.id === selectedTextId);
             if (textIndex !== -1) {
                 const updatedTexts = [...spaceTexts];
-                updatedTexts[textIndex].linkToPage = pageId ? { id: pageId } : null;
+                updatedTexts[textIndex].linkToPage = pageId ? pageId : null;
                 updatedTexts[textIndex].isEdited = true;
                 setTexts(updatedTexts);
             }
