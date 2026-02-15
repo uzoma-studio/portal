@@ -31,7 +31,6 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                 height: rect.height
             });
         } else {
-            console.log('Image clicked in preview mode, checking for link...')
             // In preview mode, check if image is linked to a page
             const image = spaceImages.find(img => img.id === id);
             if (image?.linkToPage) {

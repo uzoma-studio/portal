@@ -94,9 +94,6 @@ const Index = () => {
         setPageCoords({ x: xPercent, y: yPercent})
     }
 
-    console.log(spaceImages);
-    
-
     const saveSpaceEdits = async () => {
         try {
             // Start with existing non-preview images
@@ -307,7 +304,6 @@ const Index = () => {
                             setCurrentPageId={setCurrentPageId}
                             onLinkChange={(pageId) => {
                                 if (currentEditImageId) {
-                                    console.log('Current image ID:', currentEditImageId);
                                     // Link image to page
                                     const imageIndex = spaceImages.findIndex(img => img.id === currentEditImageId);
                                     

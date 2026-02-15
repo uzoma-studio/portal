@@ -38,8 +38,6 @@ const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEdi
         };
     }, []);
 
-    console.log(showLinkModal)
-
     const handleClick = async (e) => {
         // Don't clear selection if LinkModal is open
         if (showLinkModal) {
