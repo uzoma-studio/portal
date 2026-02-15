@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle`
         --accent-color: ${props => props.$theme?.style?.accentColor || '#ffffff'};
         --body-text-color: ${props => props.$theme?.style?.bodyTextColor || '#222222'};
         --header-text-color: ${props => props.$theme?.style?.headerTextColor || '#222222'};
-        --background-color: ${props => props.$theme?.style?.backgroundColor || '#ffffff'};
+        --background-color: '#ffffff';
         --menu-background: ${props => props.$theme?.style?.menu?.backgroundColor || '#cccccc'};
         --menu-hover-color: ${props => props.$theme?.style?.menu?.hoverColor || '#666666'};
         
@@ -24,7 +24,6 @@ export const GlobalStyle = createGlobalStyle`
     body {
         font-family: var(--body-font);
         color: var(--body-text-color);
-        background-color: var(--background-color);
         margin: 0;
         padding: 0;
     }

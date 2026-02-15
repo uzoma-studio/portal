@@ -145,7 +145,7 @@ const EditSpaceModal = ({ modalCloseFn }) => {
   };
 
   return (
-    <ModalWrapper tabName='Space Settings' modalCloseFn={modalCloseFn}>
+    <ModalWrapper tabName='Space Settings' modalCloseFn={modalCloseFn} isFullHeight={true}>
       <div className="mt-4">
         <StyledForm onSubmit={handleSubmit}>
           <StyledSettingsSection>

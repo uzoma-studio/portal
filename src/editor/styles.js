@@ -25,6 +25,8 @@ export const StyledModalContent = styled.div`
     min-width: 300px;
     width: ${props => !props.$isCreatePageMode ? '100%' : '60%'};
     max-width: 800px;
+    height: ${props => props.$isFullHeight ? '60vh' : 'auto'};
+    overflow-y: ${props => props.$isFullHeight ? 'scroll' : 'visible'};
     z-index: 51;
     background-color: white;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
