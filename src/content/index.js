@@ -280,7 +280,7 @@ const Index = () => {
             { isBuildMode && isCurrentUserSpaceOwner &&
                 <>
                     { isModalOpen && 
-                        <ModalWrapper tabName={'Add Page'} modalCloseFn={() => setIsModalOpen(false)}>
+                        <ModalWrapper tabName='Add Page' modalCloseFn={() => setIsModalOpen(false)} isFullHeight={true}>
                             <AddPageModal
                                 setIsModalOpen={setIsModalOpen} 
                                 isCreatePageMode={true}  

@@ -55,7 +55,7 @@ const Toolbar = ({ pageData, backgroundDimensions }) => {
            { 
                 currentOpenModal && 
                     currentOpenModal !== 'text' ?
-                        <ModalWrapper tabName={`Add ${currentOpenModal}`} modalCloseFn={() => setCurrentOpenModal(null)}>
+                        <ModalWrapper tabName={`Add ${currentOpenModal}`} modalCloseFn={() => setCurrentOpenModal(null)} isFullHeight={currentOpenModal === 'page'}>
                             { modals[currentOpenModal] }
                         </ModalWrapper>
                         :
