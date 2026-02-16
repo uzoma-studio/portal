@@ -85,3 +85,21 @@ export const StyledGrid = styled.div`
     background-size: 20px 20px;
     pointer-events: none;
 `;
+
+export const StyledHeaderContainer = styled.div`
+  position: fixed;
+  top: 1rem;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  width: 100%;
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    font-family: ${props => props.$theme?.style?.bodyFont};
+    transform: translateX(50%);
+  }
+`;

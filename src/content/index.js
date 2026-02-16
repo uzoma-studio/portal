@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 
-import { StyledDisplayModeWrapper } from './styles'
+import { StyledDisplayModeWrapper, StyledHeaderContainer } from './styles'
 import { StyledMessage } from '@/styles/rootStyles';
 
 import RenderPages from '@/utils/renderPages';
@@ -189,20 +189,25 @@ const Index = () => {
             setBackgroundDimensions={setBackgroundDimensions}
         >
 
+
             {
                 isCurrentUserSpaceOwner ?
-                    <ActionControls 
-                        isBuildMode={isBuildMode} 
-                        setIsBuildMode={setIsBuildMode} 
-                        setShowEditSpaceModal={setShowEditSpaceModal}
-                        saveSpaceEdits={saveSpaceEdits}
-                        isSaving={isSaving}
-                    />
+                    <StyledHeaderContainer $theme={theme}>
+                        <p>{` `}</p>
+                        <h1>{space.name}</h1>
+                        <ActionControls 
+                            isBuildMode={isBuildMode} 
+                            setIsBuildMode={setIsBuildMode} 
+                            setShowEditSpaceModal={setShowEditSpaceModal}
+                            saveSpaceEdits={saveSpaceEdits}
+                            isSaving={isSaving}
+                        />
+                    </StyledHeaderContainer>
                     :
                     // TODO: Only show button when space is not in publish mode - reference mmm.page
-                    <div className='absolute' style={{top: '1rem', right: '2rem'}}>
+                    <StyledHeaderContainer>
                         <AuthButton />
-                    </div>
+                    </StyledHeaderContainer>
             }
 
 

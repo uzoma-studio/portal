@@ -44,9 +44,6 @@ const ActionControls = ({ isBuildMode, setIsBuildMode, setShowEditSpaceModal, sa
 export default ActionControls
 
 export const StyledContainer = styled.div`
-  position: fixed;
-  top: 1rem;
-  right: 2rem;
   display: flex;
   gap: 1rem;
   z-index: 1000;
