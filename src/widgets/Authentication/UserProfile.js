@@ -3,6 +3,109 @@ import { useAuth } from '@/context/AuthProvider';
 import styled from 'styled-components';
 import { logoutUser } from '@/utils/auth';
 import { useSpace } from '@/context/SpaceProvider';
+import { getUserSpaces } from '@root/data/fetchContent.server';
+import Link from 'next/link';
+
+const UserProfile = () => {
+    const { user, setUser } = useAuth();
+    const [showModal, setShowModal] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [userSpaces, setUserSpaces] = useState([]);
+    const spaceContext = useSpace();
+    const setIsCurrentUserSpaceOwner = spaceContext?.setIsCurrentUserSpaceOwner
+
+    useEffect(() => {
+        const fetchUserSpaces = async () => {
+            if (!user?.id) return;
+
+            try {
+                const spaces = await getUserSpaces(user.id);
+                setUserSpaces(spaces);
+            } catch (error) {
+                console.error('Error fetching user spaces:', error);
+                setUserSpaces([]);
+            }
+        };
+
+        if (showModal) {
+            fetchUserSpaces();
+        }
+    }, [showModal, user?.id]);
+
+    const handleLogout = async () => {
+        if (isLoggingOut) return;
+        
+        setIsLoggingOut(true);
+        const success = await logoutUser();
+        if (success) {
+            setUser(null)
+            setIsCurrentUserSpaceOwner && setIsCurrentUserSpaceOwner(false)
+            setShowModal(false);
+        }
+        setIsLoggingOut(false);
+    };
+
+    const getInitials = (username) => {
+        return username
+            .split(' ')
+            .map(word => word[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2)
+    }
+
+    return (
+        <StyledProfile>
+            <StyledAvatar 
+                onClick={() => setShowModal(!showModal)}
+                $theme={user?.theme}
+            >
+                {user?.avatar ? (
+                    <img src={user.avatar} alt={user.username} />
+                ) : (
+                    getInitials(user.username)
+                )}
+            </StyledAvatar>
+            {showModal && (
+                <StyledModal>
+                    <StyledModalItem>
+                        <strong>Username:</strong> {user.username}
+                    </StyledModalItem>
+                    <StyledModalItem>
+                        <strong>Email:</strong> {user.email}
+                    </StyledModalItem>
+                    {userSpaces.length > 0 && (
+                        <StyledModalItem>
+                            <strong>My Spaces:</strong>
+                            <StyledSpaceList>
+                                {userSpaces.map(space => (
+                                    <StyledSpaceItem key={space.id} $role={space.role}>
+                                        <Link href={`/${space.domain}`} onClick={() => setShowModal(false)}>
+                                            <span className="space-name">{space.name}</span>
+                                        </Link>
+                                        {(space.role === 'admin' || space.role === 'owner') && (
+                                            <span className="role-tag">
+                                                {space.role === 'owner' ? 'Owner' : 'Admin'}
+                                            </span>
+                                        )}
+                                    </StyledSpaceItem>
+                                ))}
+                            </StyledSpaceList>
+                        </StyledModalItem>
+                    )}
+                    <StyledModalItem 
+                        className={`logout ${isLoggingOut ? 'loading' : ''}`} 
+                        onClick={handleLogout}
+                    >
+                        {isLoggingOut ? 'Logging out...' : 'Logout'}
+                    </StyledModalItem>
+                </StyledModal>
+            )}
+        </StyledProfile>
+    )
+}
+
+export default UserProfile
 
 const StyledProfile = styled.div`
     position: relative;
@@ -74,6 +177,10 @@ const StyledSpaceItem = styled.div`
 
     .space-name {
         flex: 1;
+
+        &:hover {
+            text-decoration: underline;
+        }
     }
 
     .role-tag {
@@ -85,106 +192,3 @@ const StyledSpaceItem = styled.div`
         margin-left: 0.5rem;
     }
 `
-
-const UserProfile = () => {
-    const { user, setUser } = useAuth();
-    const [showModal, setShowModal] = useState(false);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const [userSpaces, setUserSpaces] = useState([]);
-    const spaceContext = useSpace();
-    const setIsCurrentUserSpaceOwner = spaceContext?.setIsCurrentUserSpaceOwner
-
-    useEffect(() => {
-        const fetchUserSpaces = async () => {
-            if (!user?.spaces) return;
-
-            try {
-                const response = await fetch('/api/spaces/user-spaces', {
-                    credentials: 'include',
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setUserSpaces(data.spaces);
-                }
-            } catch (error) {
-                console.error('Error fetching user spaces:', error);
-            }
-        };
-
-        if (showModal) {
-            fetchUserSpaces();
-        }
-    }, [showModal, user?.spaces]);
-
-    const handleLogout = async () => {
-        if (isLoggingOut) return;
-        
-        setIsLoggingOut(true);
-        const success = await logoutUser();
-        if (success) {
-            setUser(null)
-            setIsCurrentUserSpaceOwner && setIsCurrentUserSpaceOwner(false)
-            setShowModal(false);
-        }
-        setIsLoggingOut(false);
-    };
-
-    const getInitials = (username) => {
-        return username
-            .split(' ')
-            .map(word => word[0])
-            .join('')
-            .toUpperCase()
-            .slice(0, 2)
-    }
-
-    return (
-        <StyledProfile>
-            <StyledAvatar 
-                onClick={() => setShowModal(!showModal)}
-                $theme={user?.theme}
-            >
-                {user?.avatar ? (
-                    <img src={user.avatar} alt={user.username} />
-                ) : (
-                    getInitials(user.username)
-                )}
-            </StyledAvatar>
-            {showModal && (
-                <StyledModal>
-                    <StyledModalItem>
-                        <strong>Username:</strong> {user.username}
-                    </StyledModalItem>
-                    <StyledModalItem>
-                        <strong>Email:</strong> {user.email}
-                    </StyledModalItem>
-                    {userSpaces.length > 0 && (
-                        <StyledModalItem>
-                            <strong>My Spaces:</strong>
-                            <StyledSpaceList>
-                                {userSpaces.map(space => (
-                                    <StyledSpaceItem key={space.id} $role={space.role}>
-                                        <span className="space-name">{space.name}</span>
-                                        {(space.role === 'admin' || space.role === 'owner') && (
-                                            <span className="role-tag">
-                                                {space.role === 'owner' ? 'Owner' : 'Admin'}
-                                            </span>
-                                        )}
-                                    </StyledSpaceItem>
-                                ))}
-                            </StyledSpaceList>
-                        </StyledModalItem>
-                    )}
-                    <StyledModalItem 
-                        className={`logout ${isLoggingOut ? 'loading' : ''}`} 
-                        onClick={handleLogout}
-                    >
-                        {isLoggingOut ? 'Logging out...' : 'Logout'}
-                    </StyledModalItem>
-                </StyledModal>
-            )}
-        </StyledProfile>
-    )
-}
-
-export default UserProfile

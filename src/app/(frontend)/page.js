@@ -4,6 +4,9 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import PortalJumpingSection from './jumping/portalJumpingSection'
+import AuthButton from '@/widgets/Authentication/AuthButton'
+import UserProfile from '@/widgets/Authentication/UserProfile'
+import { useAuth } from '@/context/AuthProvider'
 
 const features = [
   {
@@ -24,17 +27,25 @@ const features = [
 ];
 
 const Home = () => {
+  const { user } = useAuth()
+  
   return (
     <div className="min-h-screen flex flex-col text-indigo-900 bg-yellow-50">
-      {/* Hero Section */}
-      <header className="w-full flex-1 flex flex-col justify-center items-start px-4 max-w-7xl mx-auto pt-44 pb-44">
-        <div className="flex items-center absolute top-4">
+      {/* Fixed Header at Top */}
+      <header className="w-full px-4 py-4 max-w-7xl mx-auto">
+        <div className="flex items-center w-full">
           <Link href="/" className="flex items-center">
             <Image src="/logo.png" alt="Portal Logo" width={48} height={48} className="mr-3" />
             <span className="text-2xl font-mono font-normal tracking-wide">Portal</span>
           </Link>
+          <div className="ml-auto">
+            {user ? <UserProfile /> : <AuthButton />}
+          </div>
         </div>
-        <div className='flex items-center w-full'>
+      </header>
+
+      {/* Hero Section */}
+      <section className="w-full flex-1 flex justify-center items-start px-4 max-w-7xl mx-auto pb-44 pt-44">
           <div className="w-[70%]">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mt-10 mb-6 leading-tight text-indigo-900">
               Design a webspace<br />that feels like you
@@ -43,9 +54,6 @@ const Home = () => {
               Portal allows artists, designers and creators build interactive digital spaces that capture their creative essence
             </p>
             <div className="flex gap-4 mb-8">
-              <Link href="/#cta" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
-                Get Started
-              </Link>
               <Link href="/#explore" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
                 Explore
               </Link>
@@ -54,8 +62,7 @@ const Home = () => {
           <div className="w-[30%]">
             <Image src="/space.png" width={350} height={350} alt="Illustration of Portal space" />
           </div>
-        </div>
-      </header>
+      </section>
 
       {/* How It Works Section */}
       <section className="w-full max-w-6xl mx-auto px-4 py-8 flex flex-col items-start align-center">
