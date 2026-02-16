@@ -9,7 +9,6 @@ const nextConfig = {
         NEXT_PUBLIC_PAYLOAD_URL: process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3000'
     },
     images: {
-        domains: ['localhost'],
         remotePatterns: [
             {
                 protocol: 'http',
@@ -19,6 +18,7 @@ const nextConfig = {
             },
         ],
     },
+    turbopack: {} 
 };
 
 export default withPayload(nextConfig);

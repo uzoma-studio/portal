@@ -23,23 +23,41 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@root/*": ["./*"],
-      "@payload-config": ["./src/payload.config.ts"],
-      "@payloadcms/next/views": ["node_modules/@payloadcms/next/dist/exports/views.d.ts"],
-      "@payloadcms/next/routes": ["node_modules/@payloadcms/next/dist/exports/routes.d.ts"],
-      "@payloadcms/next/layouts": ["node_modules/@payloadcms/next/dist/exports/layouts.d.ts"],
-      "@payloadcms/next/templates": ["node_modules/@payloadcms/next/dist/exports/templates.d.ts"],
-      "@payloadcms/next/utilities": ["node_modules/@payloadcms/next/dist/exports/utilities.d.ts"],
+      "@/*": [
+        "./src/*"
+      ],
+      "@root/*": [
+        "./*"
+      ],
+      "@payload-config": [
+        "./src/payload.config.ts"
+      ],
+      "@payloadcms/next/views": [
+        "node_modules/@payloadcms/next/dist/exports/views.d.ts"
+      ],
+      "@payloadcms/next/routes": [
+        "node_modules/@payloadcms/next/dist/exports/routes.d.ts"
+      ],
+      "@payloadcms/next/layouts": [
+        "node_modules/@payloadcms/next/dist/exports/layouts.d.ts"
+      ],
+      "@payloadcms/next/templates": [
+        "node_modules/@payloadcms/next/dist/exports/templates.d.ts"
+      ],
+      "@payloadcms/next/utilities": [
+        "node_modules/@payloadcms/next/dist/exports/utilities.d.ts"
+      ]
     },
-    "baseUrl": ".",
+    "baseUrl": "."
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/utils/richTextRenderer.js"  ],
+    "**/*.tsx",
+    "src/utils/richTextRenderer.js",
+    ".next/dev/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]
