@@ -48,7 +48,7 @@ const Index = () => {
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
     const [draggedIconPageId, setDraggedIconPageId] = useState(null)
     
-    const [isBuildMode, setIsBuildMode] = useState(true)
+    const [isBuildMode, setIsBuildMode] = useState(isCurrentUserSpaceOwner)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pageCoords, setPageCoords] = useState(null)
     const [showEditSpaceModal, setShowEditSpaceModal] = useState(false)
@@ -197,7 +197,7 @@ const Index = () => {
                 isCurrentUserSpaceOwner ?
                     <StyledHeaderContainer $theme={theme}>
                         <p>{` `}</p>
-                        <h1>{space.name}</h1>
+                        { isBuildMode && <h1>{space.name}</h1> }
                         <ActionControls 
                             isBuildMode={isBuildMode} 
                             setIsBuildMode={setIsBuildMode} 
@@ -213,7 +213,9 @@ const Index = () => {
                             <UserProfile />
                         ) : (
                             <StyledPortalLogo href="/">
-                                <Image src="/logo.png" alt="Portal Logo" width={48} height={48} className="mr-3" />
+                                <div style={{backgroundColor: '#fff', width: '52px', height: '52px', borderRadius: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Image src="/logo.png" alt="Portal Logo" width={48} height={48} />
+                                </div>
                             </StyledPortalLogo>
                         )}
                     </StyledHeaderContainer>
