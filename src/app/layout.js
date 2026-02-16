@@ -13,12 +13,12 @@ export default function RootLayout({ children }) {
         <meta property="og:title" content="Portal | Design your digital world" />
         <meta property="og:description" content="Portal is a webspace builder for creative people" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="/logo.png" />
+        <meta property="og:image" content="/portal-hero.gif" />
         <meta property="og:url" content="https://portal8.space" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Portal | Design your digital world" />
         <meta name="twitter:description" content="Portal is a webspace builder for creative people" />
-        <meta name="twitter:image" content="/logo.png" />
+        <meta name="twitter:image" content="/portal-hero.gif" />
       </head>
       <body>{children}</body>
     </html>
