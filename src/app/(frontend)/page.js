@@ -18,12 +18,12 @@ const features = [
   {
     number: '02',
     title: 'Add Your Content',
-    desc: 'Place objects that visitors can click to explore posts, pages, products and other content.'
+    desc: 'Place objects that visitors can interact with to explore posts, pages, products and other content.'
   },
   {
     number: '03',
     title: 'Invite Your Community',
-    desc: 'Invite your audience to interact with you, with one another and with the world you have created.'
+    desc: 'Invite your audience to interact with you and with the world you have created.'
   },
 ];
 
@@ -55,22 +55,30 @@ const Home = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="w-full flex-1 flex justify-center items-start px-4 max-w-7xl mx-auto pb-44 pt-44">
-          <div className="w-[70%]">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mt-10 mb-6 leading-tight text-indigo-900">
+      <section className="w-full flex flex-col justify-center items-center px-4 max-w-7xl mx-auto pb-24 pt-24">
+          <div className="mb-8 flex justify-center">
+            <div className="w-full max-w-2xl h-80 bg-gradient-to-br from-purple-200 to-pink-200 rounded-lg flex items-center justify-center">
+              <Image 
+                src="/portal-hero.gif" 
+                alt="Portal Hero" 
+                width={640} 
+                height={360}
+                className="rounded-lg object-cover border border-purple-500 shadow-lg animate-fade-in"
+              />
+            </div>
+          </div>
+          <div className="w-[100%] text-center md:text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mt-10 mb-6 leading-tight text-indigo-900 text-center md:text-center">
               Design a webspace<br />that feels like you
             </h1>
-            <p className="text-lg sm:text-xl font-normal text-gray-800 mb-10 max-w-xl text-left">
+            <p className="text-lg sm:text-xl font-normal text-gray-800 mb-10 w-[60%] ml-[20%] my-9 text-center md:text-center">
               Portal allows artists, designers and creators build interactive digital spaces that capture their creative essence
             </p>
-            <div className="flex gap-4 mb-8">
-              <Link href="/#explore" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
+            <div className="flex justify-center gap-4 mb-8">
+              <Link href="/#explore" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-center">
                 Explore
               </Link>
             </div>
-          </div>
-          <div className="w-[30%]">
-            <Image src="/space.png" width={350} height={350} alt="Illustration of Portal space" />
           </div>
       </section>
 
