@@ -1,11 +1,12 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import PortalJumpingSection from './jumping/portalJumpingSection'
 import AuthButton from '@/widgets/Authentication/AuthButton'
 import UserProfile from '@/widgets/Authentication/UserProfile'
+import AuthModal from '@/widgets/Authentication/AuthModal'
 import { useAuth } from '@/context/AuthProvider'
 
 const features = [
@@ -28,6 +29,7 @@ const features = [
 
 const Home = () => {
   const { user } = useAuth()
+  const [showAuthModal, setShowAuthModal] = useState(false)
   
   return (
     <div className="min-h-screen flex flex-col text-indigo-900 bg-yellow-50">
@@ -94,6 +96,27 @@ const Home = () => {
       <div className='my-32' id="explore">
         <PortalJumpingSection />
       </div>
+
+      {/* Get Started Button */}
+      <section className="w-full flex justify-center items-center py-12">
+        {user ? (
+          <Link 
+            href="/create"
+            className="px-10 py-4 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition"
+          >
+            Create a Space
+          </Link>
+        ) : (
+          <button 
+            onClick={() => setShowAuthModal(true)}
+            className="px-10 py-4 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition"
+          >
+            Get Started
+          </button>
+        )}
+      </section>
+
+      { setShowAuthModal && <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />}
 
       {/* Footer Section */}
       <footer className="w-full py-8 flex flex-col items-center border-t border-gray-800 mt-auto">
