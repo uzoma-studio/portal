@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import PortalJumpingSection from './jumping/portalJumpingSection'
 
 const features = [
   {
@@ -45,7 +46,7 @@ const Home = () => {
               <Link href="/#cta" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
                 Get Started
               </Link>
-              <Link href="/jumping" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
+              <Link href="/#explore" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
                 Explore
               </Link>
             </div>
@@ -83,23 +84,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Sign Up Form Embed Section (Blank) */}
-      <section className="w-full py-20 flex flex-col items-start justify-center max-w-4xl mx-auto mt-10 mb-10" id="cta">
-        <h2 className="text-4xl sm:text-5xl font-extrabold mb-14 text-center text-indigo-900 w-full">Sound Exciting?</h2>
-        <p className="text-lg sm:text-xl font-normal text-gray-800 mb-10 w-full text-center">
-          Sign up and be ready to jump into the Portal when we launch
-        </p>
-        <iframe 
-          src="https://tally.so/embed/3Xyd6Y?hideTitle=1&transparentBackground=1&dynamicHeight=1"
-          loading="lazy"
-          width="100%"
-          height="579"
-          frameBorder="0"
-          marginHeight="0" 
-          marginWidth="0"
-          title="Portal Sign Up"
-        ></iframe>
-      </section>
+      <div className='my-32' id="explore">
+        <PortalJumpingSection />
+      </div>
 
       {/* Footer Section */}
       <footer className="w-full py-8 flex flex-col items-center border-t border-gray-800 mt-auto">
