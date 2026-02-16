@@ -40,7 +40,15 @@ const Home = () => {
             <Image src="/logo.png" alt="Portal Logo" width={48} height={48} className="mr-3" />
             <span className="text-2xl font-mono font-normal tracking-wide">Portal</span>
           </Link>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-4">
+            {user && (
+              <Link 
+                href="/create"
+                className="px-4 py-2 rounded-lg bg-purple-500 text-white font-mono text-sm font-semibold shadow-md hover:bg-purple-600 transition"
+              >
+                Create a Space
+              </Link>
+            )}
             {user ? <UserProfile /> : <AuthButton />}
           </div>
         </div>
