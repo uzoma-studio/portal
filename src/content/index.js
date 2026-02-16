@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
+import Image from 'next/image';
 
-import { StyledDisplayModeWrapper, StyledHeaderContainer } from './styles'
+import { StyledDisplayModeWrapper, StyledHeaderContainer, StyledPortalLogo } from './styles'
 import { StyledMessage } from '@/styles/rootStyles';
 
 import RenderPages from '@/utils/renderPages';
@@ -8,6 +9,7 @@ import SinglePage from '@/content/singlePage'
 import BackgroundContainer from '@/content/layout/BackgroundContainer'
 
 import { useSpace } from '@/context/SpaceProvider';
+import { useAuth } from '@/context/AuthProvider';
 
 import Icon from '@/content/displayModes/icon'
 import Hotspot from '@/content/displayModes/hotspot'
@@ -26,13 +28,14 @@ import EditSpaceModal from '@/editor/modals/EditSpaceModal'
 import RenderSpaceImages from '@/content/renderers/RenderSpaceImages'
 import RenderSpaceTexts from '@/content/renderers/RenderSpaceTexts'
 
-import AuthButton from '@/widgets/Authentication/AuthButton';
+import UserProfile from '@/widgets/Authentication/UserProfile';
 
 import { updateEntry } from '@root/data/createContent.server';
 import { handleMediaUpload } from '@/utils/helpers';
 
 const Index = () => {
     const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages, setImages, texts: spaceTexts, setTexts } = useSpace()
+    const { user } = useAuth()
 
     const containerRef = useRef(null)
 
@@ -206,7 +209,13 @@ const Index = () => {
                     :
                     // TODO: Only show button when space is not in publish mode - reference mmm.page
                     <StyledHeaderContainer>
-                        <AuthButton />
+                        {user ? (
+                            <UserProfile />
+                        ) : (
+                            <StyledPortalLogo href="/">
+                                <Image src="/logo.png" alt="Portal Logo" width={48} height={48} className="mr-3" />
+                            </StyledPortalLogo>
+                        )}
                     </StyledHeaderContainer>
             }
 
