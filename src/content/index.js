@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 
-import { StyledGrid, StyledDisplayModeWrapper } from './styles'
+import { StyledDisplayModeWrapper } from './styles'
 import { StyledMessage } from '@/styles/rootStyles';
 
 import RenderPages from '@/utils/renderPages';
@@ -228,7 +228,6 @@ const Index = () => {
                             { isBuildMode && draggedIconPageId === pageData.id ? 
                                 <DragIconToPosition
                                     containerRef={containerRef}
-                                    showGrid={true}
                                     pageData={pageData}
                                     dragPosition={dragPosition}
                                     setDragPosition={setDragPosition}
@@ -304,7 +303,6 @@ const Index = () => {
                         <StyledMessage className={message.type}>{message.text}</StyledMessage>
                     )}
                     { showEditSpaceModal && <EditSpaceModal modalCloseFn={() => setShowEditSpaceModal(false)} />}
-                    <StyledGrid />
                 </>
             }
         </BackgroundContainer>
