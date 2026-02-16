@@ -124,8 +124,6 @@ const StyledModalOverlay = styled.div`
       button {
         padding: .5rem;
         background: #222;
-        color: var(--accent-color);
-        border: 2px solid var(--accent-color);
         border-radius: 5px;
 
         &:hover {

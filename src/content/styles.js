@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import Link from 'next/link';
 
 // Confused about a styling inconsistency between Space and Page? Check out the TODO written in the Pages.ts `style` field
 export const StyledPage = styled.div`
@@ -101,5 +102,36 @@ export const StyledHeaderContainer = styled.div`
     font-weight: bold;
     font-family: ${props => props.$theme?.style?.bodyFont};
     transform: translateX(50%);
+  }
+`;
+
+export const StyledPortalLogo = styled(Link)`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  
+  &::after {
+    content: 'made with portal';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 4px;
+    padding: 4px 8px;
+    color: purple;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    font-family: 'Courier New', monospace;
+  }
+  
+  &:hover::after {
+    opacity: 1;
   }
 `;
