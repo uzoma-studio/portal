@@ -53,10 +53,10 @@ const StyledTooltipArrow = styled.div`
 `;
 
 const StyledTooltipText = styled.div`
-  font-family: ${props => props.$spaceTheme?.style?.bodyFont};
+  font-family: ${props => props.$spaceTheme?.style?.accentColor};
   background: ${props => props.$spaceTheme?.style?.hotspotColor};
   color: ${props => props.$spaceTheme?.style?.bodyTextColor};
-  padding: 2.5px;
+  padding: 5px 10px;
   border-radius: 5px;
 `;
 
