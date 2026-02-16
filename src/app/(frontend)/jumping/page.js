@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getSpaces } from '../../../../data/fetchContent.server'
 import Image from 'next/image'
-import Header from '@/components/Header'
+import Header from '@/uiComponents/Header'
 
 const Page = () => {
     const [spaces, setSpaces] = useState([])
@@ -32,9 +32,6 @@ const Page = () => {
                     </p>
                 </div>
     }
-
-    console.log(spaces);
-    
 
     return (
         <div className="min-h-screen flex flex-col text-indigo-900 bg-yellow-50">

@@ -57,3 +57,20 @@ export const updateEntry = async (entryType, entryId, entryData) => {
         return null
     }
 }
+
+export const deleteEntry = async (entryType, entryId) => {
+    try {
+        const deleted = await payload.delete({
+            collection: entryType,
+            where: {
+                id: {
+                    equals: entryId
+                }
+            },
+        })
+        return deleted
+    } catch (error) {
+        console.error(`Error deleting ${entryType}:`, error)
+        return null
+    }
+}

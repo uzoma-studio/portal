@@ -51,5 +51,59 @@ export const Spaces: CollectionConfig = {
         description: 'Select the user who owns this space',
       },
     },
+    {
+      name: 'texts',
+      type: 'json',
+      defaultValue: []
+    },
+    {
+      name: 'images',
+      type: 'array',
+      label: 'Images',
+      labels: {
+        singular: 'Image',
+        plural: 'Images',
+      },
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media', // the slug of your Media collection
+          required: true,
+        },
+        {
+          name: 'size',
+          type: 'group',
+          fields: [
+            { name: 'width', type: 'number' },
+            { name: 'height', type: 'number' },
+          ],
+        },
+        {
+          name: 'position',
+          type: 'group',
+          fields: [
+            { name: 'x', type: 'number' },
+            { name: 'y', type: 'number' },
+          ],
+        },
+        {
+          name: 'linkToPage',
+          type: 'relationship',
+          relationTo: 'pages',
+          filterOptions: ({ data: spaceData }) => {
+            // Only show pages that belong to this space
+            if (spaceData?.id) {
+              return {
+                space: {
+                  equals: spaceData.id,
+                },
+              };
+            }
+            return {};
+          },
+        },
+      ],
+    },
   ],
 }; 

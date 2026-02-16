@@ -7,7 +7,7 @@ export async function generateMetadata({ params }) {
 
     return {
         title: name,
-        description: `${space.name} is on Portal, a webspace builder for creative people`
+        description: `${name} is on Portal, a webspace builder for creative people`
     }
 }
 

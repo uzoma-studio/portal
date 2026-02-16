@@ -217,7 +217,7 @@ export interface Page {
     /**
      * Choose how the page will show up in your space
      */
-    displayMode?: ('icon' | 'hotspot' | 'list' | 'image' | 'window') | null;
+    displayMode?: ('none' | 'icon' | 'hotspot' | 'list' | 'image' | 'window') | null;
     /**
      * Optional icon image for the page
      */
@@ -299,6 +299,30 @@ export interface Space {
    * Select the user who owns this space
    */
   owner: number | User;
+  texts?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  images?:
+    | {
+        image: number | Media;
+        size?: {
+          width?: number | null;
+          height?: number | null;
+        };
+        position?: {
+          x?: number | null;
+          y?: number | null;
+        };
+        linkToPage?: (number | null) | Page;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -829,6 +853,26 @@ export interface SpacesSelect<T extends boolean = true> {
         theme?: T;
       };
   owner?: T;
+  texts?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        size?:
+          | T
+          | {
+              width?: T;
+              height?: T;
+            };
+        position?:
+          | T
+          | {
+              x?: T;
+              y?: T;
+            };
+        linkToPage?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

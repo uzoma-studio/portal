@@ -9,8 +9,10 @@ export const SpaceContext = createContext();
 
 export const SpaceProvider = ({ children }) => {
   const [space, setSpace] = useState(null);
+  const [texts, setTexts] = useState([])
   const [pages, setPages] = useState([]);
   const [posts, setPosts] = useState([])
+  const [images, setImages] = useState([])
   const [settings, setSettings] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,7 +30,8 @@ export const SpaceProvider = ({ children }) => {
         const spaceDomain = window.location.pathname.split('/')[1];
         const space = await getCurrentSpace(spaceDomain);
         setSpace(space);
-        
+        setImages(space.images);
+        setTexts(space.texts);
         setSettings(space.settings);
 
         const pages = await fetchPages(space.id);
@@ -56,7 +59,11 @@ export const SpaceProvider = ({ children }) => {
       pages, 
       setPages,
       posts,
-      setPosts, 
+      setPosts,
+      images,
+      setImages,
+      texts,
+      setTexts,
       settings,
       setSettings,
       user: spaceUser,

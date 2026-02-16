@@ -1,8 +1,13 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import PortalJumpingSection from './jumping/portalJumpingSection'
+import AuthButton from '@/widgets/Authentication/AuthButton'
+import UserProfile from '@/widgets/Authentication/UserProfile'
+import AuthModal from '@/widgets/Authentication/AuthModal'
+import { useAuth } from '@/context/AuthProvider'
 
 const features = [
   {
@@ -23,31 +28,51 @@ const features = [
 ];
 
 const Home = () => {
+  const { user } = useAuth()
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  
   return (
     <div className="min-h-screen flex flex-col text-indigo-900 bg-yellow-50">
-      {/* Hero Section */}
-      <header className="w-full flex-1 flex flex-col justify-center items-start px-4 max-w-7xl mx-auto pt-44 pb-44">
-        <div className="flex items-center absolute top-4">
+      {/* Fixed Header at Top */}
+      <header className="w-full px-4 py-4 max-w-7xl mx-auto">
+        <div className="flex items-center w-full">
           <Link href="/" className="flex items-center">
             <Image src="/logo.png" alt="Portal Logo" width={48} height={48} className="mr-3" />
             <span className="text-2xl font-mono font-normal tracking-wide">Portal</span>
           </Link>
-        </div>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mt-10 mb-6 leading-tight text-indigo-900">
-          Design a webspace<br />that feels like you
-        </h1>
-        <p className="text-lg sm:text-xl font-normal text-gray-800 mb-10 max-w-xl text-left">
-          Portal allows artists, designers and creators build interactive digital spaces that capture their creative essence
-        </p>
-        <div className="flex gap-4 mb-8">
-          <Link href="/#cta" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
-            Get Started
-          </Link>
-          <Link href="/jumping" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
-            Explore
-          </Link>
+          <div className="ml-auto flex items-center gap-4">
+            {user && (
+              <Link 
+                href="/create"
+                className="px-4 py-2 rounded-lg bg-purple-500 text-white font-mono text-sm font-semibold shadow-md hover:bg-purple-600 transition"
+              >
+                Create a Space
+              </Link>
+            )}
+            {user ? <UserProfile /> : <AuthButton />}
+          </div>
         </div>
       </header>
+
+      {/* Hero Section */}
+      <section className="w-full flex-1 flex justify-center items-start px-4 max-w-7xl mx-auto pb-44 pt-44">
+          <div className="w-[70%]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mt-10 mb-6 leading-tight text-indigo-900">
+              Design a webspace<br />that feels like you
+            </h1>
+            <p className="text-lg sm:text-xl font-normal text-gray-800 mb-10 max-w-xl text-left">
+              Portal allows artists, designers and creators build interactive digital spaces that capture their creative essence
+            </p>
+            <div className="flex gap-4 mb-8">
+              <Link href="/#explore" className="px-8 py-3 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition text-left">
+                Explore
+              </Link>
+            </div>
+          </div>
+          <div className="w-[30%]">
+            <Image src="/space.png" width={350} height={350} alt="Illustration of Portal space" />
+          </div>
+      </section>
 
       {/* How It Works Section */}
       <section className="w-full max-w-6xl mx-auto px-4 py-8 flex flex-col items-start align-center">
@@ -76,23 +101,30 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Sign Up Form Embed Section (Blank) */}
-      <section className="w-full py-20 flex flex-col items-start justify-center max-w-4xl mx-auto mt-10 mb-10" id="cta">
-        <h2 className="text-4xl sm:text-5xl font-extrabold mb-14 text-center text-indigo-900 w-full">Sound Exciting?</h2>
-        <p className="text-lg sm:text-xl font-normal text-gray-800 mb-10 w-full text-center">
-          Sign up and be ready to jump into the Portal when we launch
-        </p>
-        <iframe 
-          src="https://tally.so/embed/3Xyd6Y?hideTitle=1&transparentBackground=1&dynamicHeight=1"
-          loading="lazy"
-          width="100%"
-          height="579"
-          frameBorder="0"
-          marginHeight="0" 
-          marginWidth="0"
-          title="Portal Sign Up"
-        ></iframe>
+      <div className='my-32' id="explore">
+        <PortalJumpingSection />
+      </div>
+
+      {/* Get Started Button */}
+      <section className="w-full flex justify-center items-center py-12">
+        {user ? (
+          <Link 
+            href="/create"
+            className="px-10 py-4 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition"
+          >
+            Create a Space
+          </Link>
+        ) : (
+          <button 
+            onClick={() => setShowAuthModal(true)}
+            className="px-10 py-4 rounded-lg bg-purple-500 text-white font-mono text-lg font-semibold shadow-md hover:bg-purple-600 transition"
+          >
+            Get Started
+          </button>
+        )}
       </section>
+
+      { setShowAuthModal && <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />}
 
       {/* Footer Section */}
       <footer className="w-full py-8 flex flex-col items-center border-t border-gray-800 mt-auto">

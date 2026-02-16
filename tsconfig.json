@@ -24,6 +24,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@root/*": ["./*"],
       "@payload-config": ["./src/payload.config.ts"],
       "@payloadcms/next/views": ["node_modules/@payloadcms/next/dist/exports/views.d.ts"],
       "@payloadcms/next/routes": ["node_modules/@payloadcms/next/dist/exports/routes.d.ts"],

@@ -80,36 +80,56 @@ export const generateSlug = (title) => {
 }; 
 
 export const handleMediaUpload = async (formImage) => {
-    if (formImage instanceof File) {
-        try {
-
-            const uploadFormData = new FormData();
-            uploadFormData.append('file', formImage);
-            uploadFormData.append(
-                '_payload',
-                JSON.stringify({
-                    alt: formImage.name,
-                }),
-            )
-
-            const response = await fetch(`/api/media`, {
-                method: 'POST',
-                body: uploadFormData,
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to upload media');
-            }
-
-            const media = await response.json();
-            
-            return media?.doc?.id;
-        } catch (error) {
-            console.error('Error uploading media:', error);
-            return;
-        }
+    if (!formImage || !(formImage instanceof File)) {
+      console.warn('Invalid file provided for upload.');
+      return;
     }
-}
+  
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', formImage);
+  
+      const payload = { alt: formImage.name };
+  
+      uploadFormData.append('_payload', JSON.stringify(payload));
+  
+      const response = await fetch(`/api/media`, {
+        method: 'POST',
+        body: uploadFormData,
+      });
+  
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to upload media: ${errText}`);
+      }
+  
+      const media = await response.json();
+      return media?.doc?.id;
+  
+    } catch (error) {
+      console.error('Error uploading media:', error);
+      return;
+    }
+};
+
+export const getImageDimensions = (file) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+  
+      // Create a temporary local URL for the file
+      img.src = URL.createObjectURL(file);
+  
+      img.onload = () => {
+        resolve({ width: img.width, height: img.height });
+        URL.revokeObjectURL(img.src); // cleanup
+      };
+  
+      img.onerror = (err) => {
+        reject(err);
+        URL.revokeObjectURL(img.src);
+      };
+    });
+};
 
 export const handleServerResponse = (response, contentType='Entry', action='updated') => {
     

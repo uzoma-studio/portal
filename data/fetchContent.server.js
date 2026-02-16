@@ -102,3 +102,21 @@ export const getPostsByUpdate = async(updateId) => {
 
     return results;
 }
+
+export const getUserSpaces = async (userId) => {
+    try {
+        const spaces = await payload.find({
+            collection: 'spaces',
+            where: {
+                owner: {
+                    equals: userId
+                }
+            },
+            sort: '-createdAt'
+        })
+        return spaces.docs || []
+    } catch (error) {
+        console.error('Error fetching user spaces:', error)
+        return []
+    }
+}

@@ -15,7 +15,7 @@
       "pageDisplayStyle": "center-modal"
     },
     "accentColor": "#ffffff",
-    "defaultPageDisplayMode": "hotspot",
+    "defaultPageDisplayMode": "none",
     "hotspotSize": "25",
     "hotspotColor": "#82007f",
     "primaryColor": "#9333ea",

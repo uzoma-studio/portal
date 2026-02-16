@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import styled from 'styled-components';
-import CloseButton from '../../components/closeButton';
+import CloseButton from '@/uiComponents/closeButton';
 import { useSpace } from '@/context/SpaceProvider';
 
 const AuthModal = ({ isOpen, onClose }) => {
@@ -124,8 +124,6 @@ const StyledModalOverlay = styled.div`
       button {
         padding: .5rem;
         background: #222;
-        color: var(--accent-color);
-        border: 2px solid var(--accent-color);
         border-radius: 5px;
 
         &:hover {
