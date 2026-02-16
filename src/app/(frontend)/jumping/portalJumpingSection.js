@@ -6,7 +6,6 @@ import { getSpaces } from '../../../../data/fetchContent.server'
 
 const PortalJumpingSection = () => {
     const [spaces, setSpaces] = useState([])
-    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchSpaces = async () => {
@@ -15,21 +14,11 @@ const PortalJumpingSection = () => {
                 setSpaces(response.docs)
             } catch (error) {
                 console.error('Error fetching spaces:', error)
-            } finally {
-                setLoading(false)
             }
         }
 
         fetchSpaces()
     }, [])
-
-    if (loading) {
-        return <div className="fixed inset-0 flex items-center justify-center bg-white">
-                    <p className="text-2xl font-mono text-indigo-900 animate-pulse">
-                        Loading Spaces...
-                    </p>
-                </div>
-    }
 
     return (
       <>
