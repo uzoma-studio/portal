@@ -23,6 +23,19 @@ const UploadImageModal = ({ setIsModalOpen, backgroundDimensions }) => {
             const { width, height } = await getImageDimensions(file);
             //   const uploadedImage = await handleMediaUpload(file, false)
             const previewUrl = URL.createObjectURL(file);
+            
+            // Calculate size as percentage, capped at 50% of background container
+            let percentWidth = (width / backgroundDimensions.width) * 100;
+            let percentHeight = (height / backgroundDimensions.height) * 100;
+            
+            // Cap at 50% of the container
+            const maxPercent = 50;
+            if (percentWidth > maxPercent || percentHeight > maxPercent) {
+                const scaleFactor = Math.min(maxPercent / percentWidth, maxPercent / percentHeight);
+                percentWidth *= scaleFactor;
+                percentHeight *= scaleFactor;
+            }
+            
             //   create a preview image before uploading
             setImages(prev => [...prev, {
                 id: `preview_${prev.length}_${file.lastModified}`,
@@ -30,7 +43,7 @@ const UploadImageModal = ({ setIsModalOpen, backgroundDimensions }) => {
                 image: {alt: `preview of image ${file.name}`, url: previewUrl},
                 position: {x: 0, y: 0},
                 // save size as percentage for responsiveness
-                size: {width: ((width/backgroundDimensions.width)*100), height: ((height/backgroundDimensions.height)*100)},
+                size: {width: percentWidth, height: percentHeight},
                 isPreview: true
             }])
             setIsModalOpen(false)
