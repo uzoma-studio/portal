@@ -13,6 +13,7 @@ import CloseButton from '@/uiComponents/closeButton';
 import { handleMediaUpload } from '@/utils/helpers';
 import { useAuth } from '@/context/AuthProvider';
 import { getCurrentUser } from '@/utils/auth';
+import ModalWrapper from './ModalWrapper';
 
 const CreateSpaceModal = ({ spaceData }) => {
 
@@ -66,20 +67,8 @@ const CreateSpaceModal = ({ spaceData }) => {
     };
 
     const handleClose = () => {
-        router.push('/jumping')
+        router.push('/')
     }
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setFormData(prev => ({
-                ...prev,
-                settings: {
-                    backgroundImage: file
-                }
-            }));
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -124,72 +113,55 @@ const CreateSpaceModal = ({ spaceData }) => {
     }
     
     return (
-        <StyledModalOverlay>
-            <StyledModalContent onClick={e => e.stopPropagation()}>
-                <div className="mt-4">
-                    <CloseButton closeFn={handleClose} position={{x: '95', y: '0'}} />
-                    <h2 className='mb-6'>Create a new space</h2>
-                    <StyledForm onSubmit={handleSubmit}>
-                        <div>
-                            <StyledLabel htmlFor="title" className="block mb-2">
-                                Space Name
-                            </StyledLabel>
-                            <StyledInput
-                                type="text"
-                                id="name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                className="w-full"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <StyledLabel htmlFor="domain" className="block mb-2">
-                                Space Domain <span style={{color: '#ccc'}}><i><small>portal8.space/___</small></i></span>
-                            </StyledLabel>
-                            <StyledInput
-                                type="text"
-                                id="domain"
-                                name="domain"
-                                value={formData.domain}
-                                onChange={handleInputChange}
-                                className="w-full"
-                                required
-                            />
-                        </div>
+        <ModalWrapper modalCloseFn={handleClose} isCreatePageMode={true}>
+            <div className="mt-4">
+                <h2 className='mb-6'>Create a new space</h2>
+                <StyledForm onSubmit={handleSubmit}>
+                    <div>
+                        <StyledLabel htmlFor="title" className="block mb-2">
+                            Space Name
+                        </StyledLabel>
+                        <StyledInput
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            className="w-full"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <StyledLabel htmlFor="domain" className="block mb-2">
+                            Space Domain <span style={{color: '#ccc'}}><i><small>portal8.space/___</small></i></span>
+                        </StyledLabel>
+                        <StyledInput
+                            type="text"
+                            id="domain"
+                            name="domain"
+                            value={formData.domain}
+                            onChange={handleInputChange}
+                            className="w-full"
+                            required
+                        />
+                    </div>
 
-                        <div>
-                            <StyledLabel htmlFor="backgroundImage" className="block mb-2">
-                                Space Image
-                            </StyledLabel>
-                            <StyledInput
-                                id="backgroundImage"
-                                name="backgroundImage"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className="w-full"
-                            />
-                        </div>
+                    {message.text && (
+                        <StyledMessage className={message.type}>
+                            {message.text}
+                        </StyledMessage>
+                    )}
 
-                        {message.text && (
-                            <StyledMessage className={message.type}>
-                                {message.text}
-                            </StyledMessage>
-                        )}
-
-                        <StyledSubmitButton 
-                            type="submit" 
-                            className="mt-4 px-6 py-3 rounded font-medium"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? `${buttonText.active}...` : `${buttonText.default} Space`}
-                        </StyledSubmitButton>
-                    </StyledForm>
-                </div>
-            </StyledModalContent>
-        </StyledModalOverlay>
+                    <StyledSubmitButton 
+                        type="submit" 
+                        className="mt-4 px-6 py-3 rounded font-medium"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? `${buttonText.active}...` : `${buttonText.default} Space`}
+                    </StyledSubmitButton>
+                </StyledForm>
+            </div>
+        </ModalWrapper>
     )
 }
 
