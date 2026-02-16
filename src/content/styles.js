@@ -96,6 +96,7 @@ export const StyledHeaderContainer = styled.div`
   align-items: center;
   padding: 0 2rem;
   width: 100%;
+  z-index: 100;
 
   h1 {
     font-size: 1.75rem;
