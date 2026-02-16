@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createEntry, updatePage } from '../../../data/createContent.server'
+import { createEntry, updatePage, deleteEntry } from '../../../data/createContent.server'
 import { getContent } from 'data/fetchContent.server';
 import { useSpace } from '@/context/SpaceProvider';
 import { generateSlug } from '@/utils/helpers';
@@ -242,6 +242,34 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
             } 
         }
         
+        setIsSubmitting(false);
+    };
+
+    const handleDeletePage = async () => {
+        if (!window.confirm('Are you sure you want to delete this page? This action cannot be undone.')) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        setMessage({ type: '', text: '' });
+
+        try {
+            const deleted = await deleteEntry('pages', pageData.id);
+
+            if (deleted) {
+                setPages(prevPages => prevPages.filter(page => page.id !== pageData.id));
+                setMessage({ type: 'success', text: 'Page deleted successfully!' });
+                setTimeout(() => {
+                    handleClose();
+                }, 1500);
+            } else {
+                setMessage({ type: 'error', text: 'Failed to delete page. Please try again.' });
+            }
+        } catch (error) {
+            console.error('Error deleting page:', error);
+            setMessage({ type: 'error', text: error.message || 'An error occurred while deleting the page.' });
+        }
+
         setIsSubmitting(false);
     };
 
@@ -495,13 +523,26 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                     </StyledMessage>
                 )}
 
-                <StyledSubmitButton 
-                    type="submit" 
-                    className="mt-4 px-6 py-3 rounded font-medium"
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting ? `${buttonText.active}...` : `${buttonText.default} Page`}
-                </StyledSubmitButton>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <StyledSubmitButton 
+                        type="submit" 
+                        className="mt-4 px-6 py-3 rounded font-medium flex-1"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? `${buttonText.active}...` : `${buttonText.default} Page`}
+                    </StyledSubmitButton>
+                    {!isCreatePageMode && (
+                        <StyledSubmitButton 
+                            type="button"
+                            onClick={handleDeletePage}
+                            className="mt-4 px-6 py-3 rounded font-medium flex-1"
+                            disabled={isSubmitting}
+                            style={{ background: '#ef4444' }}
+                        >
+                            {isSubmitting ? 'Deleting...' : 'Delete Page'}
+                        </StyledSubmitButton>
+                    )}
+                </div>
             </StyledForm>
         </div>
     );
