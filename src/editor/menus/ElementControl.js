@@ -137,13 +137,11 @@ const ElementControl = ({
             )}
 
             {showTextModal && (
-                <ModalWrapper tabName={selectedTextId ? 'Edit Text' : 'Add Text'} modalCloseFn={() => setShowTextModal(false)}>
-                    <AddTextModal
-                        setIsModalOpen={setShowTextModal}
-                        backgroundDimensions={backgroundDimensions}
-                        textToEdit={selectedTextId ? spaceTexts.find(t => t.id === selectedTextId) : null}
-                    />
-                </ModalWrapper>
+                <AddTextModal
+                    setIsModalOpen={setShowTextModal}
+                    backgroundDimensions={backgroundDimensions}
+                    textToEdit={selectedTextId ? spaceTexts.find(t => t.id === selectedTextId) : null}
+                />
             )}
         </>
     )
