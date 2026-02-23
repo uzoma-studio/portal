@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSpace } from '@/context/SpaceProvider';
 import { StyledMessage } from '@/styles/rootStyles';
-import { getImageDimensions } from '@/utils/helpers';
+import { getImageDimensions, checkFileSize } from '@/utils/helpers';
 
 import {
     StyledForm,
@@ -20,6 +20,13 @@ const UploadImageModal = ({ setIsModalOpen, backgroundDimensions }) => {
         const file = event.target.files[0];
 
         if (file) {
+            try {
+                checkFileSize(file);
+            } catch (error) {
+                setMessage({ type: 'error', text: error.message });
+                return;
+            }
+
             const { width, height } = await getImageDimensions(file);
             //   const uploadedImage = await handleMediaUpload(file, false)
             const previewUrl = URL.createObjectURL(file);
@@ -67,6 +74,7 @@ const UploadImageModal = ({ setIsModalOpen, backgroundDimensions }) => {
                             onChange={handleFileChange}
                             className="w-full"
                         />
+                        <p style={{marginTop: '.5rem', fontSize: '14px', color: '#999'}}>Max 5MB</p>
                     </div>
                 </StyledForm>
             </div>

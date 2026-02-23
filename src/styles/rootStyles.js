@@ -105,6 +105,8 @@ export const StyledMessage = styled.div`
     border-radius: 0.25rem;
     margin-bottom: 1rem;
     font-size: 0.875rem;
+    position: absolute;
+    width: 100%;
     
     &.success {
         background-color: #dcfce7;

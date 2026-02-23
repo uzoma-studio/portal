@@ -119,10 +119,12 @@ const Index = () => {
                                 });
                             } else {
                                 setMessage({ type: 'error', text: `Failed to upload ${image.file.name}` });
+                                setIsSaving(false);
                                 return;
                             }
                         } catch (error) {
                             console.error('Error uploading image:', error);
+                            setIsSaving(false);
                             setMessage({ type: 'error', text: `Error uploading ${image.file.name}: ${error.message}` });
                             return;
                         }

@@ -77,13 +77,25 @@ export const generateSlug = (title) => {
     slug = slug.replace(/^-+|-+$/g, '');
     
     return slug;
-}; 
+};
+
+export const checkFileSize = (file, maxSizeMB = 5) => {
+    const MAX_FILE_SIZE = maxSizeMB * 1024 * 1024; // Convert MB to bytes
+    if (file.size > MAX_FILE_SIZE) {
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        const error = new Error(`File size (${fileSizeMB}MB) exceeds maximum allowed size of ${maxSizeMB}MB. Please choose a smaller image.`);
+        error.code = 'FILE_SIZE_EXCEEDED';
+        throw error;
+    }
+};
 
 export const handleMediaUpload = async (formImage) => {
     if (!formImage || !(formImage instanceof File)) {
       console.warn('Invalid file provided for upload.');
-      return;
+      throw new Error('Invalid file provided for upload.');
     }
+
+    checkFileSize(formImage);
   
     try {
       const uploadFormData = new FormData();
@@ -108,7 +120,7 @@ export const handleMediaUpload = async (formImage) => {
   
     } catch (error) {
       console.error('Error uploading media:', error);
-      return;
+      throw error;
     }
 };
 
