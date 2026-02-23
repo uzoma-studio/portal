@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { MdEdit, MdDelete, MdLink } from 'react-icons/md'
 import { useSpace } from '@/context/SpaceProvider'
+import { handleMediaDelete } from '@/utils/helpers'
 import ModalWrapper from '@/editor/modals/ModalWrapper'
 import AddTextModal from '@/editor/modals/AddTextModal'
 import LinkModal from '@/editor/modals/LinkModal'
@@ -67,13 +68,25 @@ const ElementControl = ({
         }
     }
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (selectedImageId) {
-            // Delete image logic
+            // Delete image from space
+            const imageToDelete = spaceImages.find(img => img.id === selectedImageId);
             const updatedImages = spaceImages.filter(img => img.id !== selectedImageId);
             setImages(updatedImages);
             setCurrentEditImageId(null);
-            setMessage({ type: 'success', text: 'Image deleted' });
+            
+            // Delete from media collection if it exists
+            if (imageToDelete?.image?.id) {
+                const deleted = await handleMediaDelete(imageToDelete.image.id);
+                if (deleted) {
+                    setMessage({ type: 'success', text: 'Image deleted' });
+                } else {
+                    setMessage({ type: 'warning', text: 'Image removed from space (failed to delete from media)' });
+                }
+            } else {
+                setMessage({ type: 'success', text: 'Image deleted' });
+            }
             setTimeout(() => setMessage({ type: '', text: '' }), 1500);
         } else if (selectedTextId) {
             // Delete text logic

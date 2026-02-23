@@ -69,7 +69,7 @@ export const Spaces: CollectionConfig = {
           name: 'image',
           type: 'upload',
           relationTo: 'media', // the slug of your Media collection
-          required: true,
+          required: false,
         },
         {
           name: 'size',

@@ -124,6 +124,31 @@ export const handleMediaUpload = async (formImage) => {
     }
 };
 
+export const handleMediaDelete = async (mediaId) => {
+    if (!mediaId) {
+      console.warn('Invalid media ID provided for deletion.');
+      return false;
+    }
+
+    try {
+      const response = await fetch(`/api/media/${mediaId}`, {
+        method: 'DELETE',
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error(`Failed to delete media: ${JSON.stringify(responseData)}`);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting media:', error);
+      return false;
+    }
+};
+
 export const getImageDimensions = (file) => {
     return new Promise((resolve, reject) => {
       const img = new Image();

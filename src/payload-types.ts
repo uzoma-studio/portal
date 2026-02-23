@@ -310,7 +310,7 @@ export interface Space {
     | null;
   images?:
     | {
-        image: number | Media;
+        image?: (number | null) | Media;
         size?: {
           width?: number | null;
           height?: number | null;
