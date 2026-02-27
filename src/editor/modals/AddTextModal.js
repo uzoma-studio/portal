@@ -84,7 +84,7 @@ const AddTextModal = ({ setIsModalOpen, backgroundDimensions, textToEdit }) => {
     };
 
     return (
-        <StyledInlineTextContainer>
+        <StyledInlineTextContainer onClick={(e) => e.stopPropagation()}>
             {/* Inline Text Input */}
             <StyledTextInputWrapper>
                 <StyledTextPreview
