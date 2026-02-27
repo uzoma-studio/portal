@@ -84,7 +84,10 @@ const AddTextModal = ({ setIsModalOpen, backgroundDimensions, textToEdit }) => {
     };
 
     return (
-        <StyledInlineTextContainer onClick={(e) => e.stopPropagation()}>
+        <StyledInlineTextContainer 
+        onClick={(e) => {e.stopPropagation();}}
+        onDoubleClick={(e) => {e.stopPropagation();}}
+    >
             {/* Inline Text Input */}
             <StyledTextInputWrapper>
                 <StyledTextPreview
@@ -113,6 +116,8 @@ const AddTextModal = ({ setIsModalOpen, backgroundDimensions, textToEdit }) => {
                                 max="72"
                                 value={fontSize}
                                 onChange={(e) => setFontSize(e.target.value)}
+                                onClick={(e) => {e.stopPropagation();}}
+                                onDoubleClick={(e) => {e.stopPropagation();}}
                                 className="w-full"
                             />
                         </div>
@@ -126,6 +131,7 @@ const AddTextModal = ({ setIsModalOpen, backgroundDimensions, textToEdit }) => {
                                 type="color"
                                 value={fontColor}
                                 onChange={(e) => setFontColor(e.target.value)}
+                                onClick={(e) => e.stopPropagation()}
                             />
                         </div>
                     </StyledConfigRow>
