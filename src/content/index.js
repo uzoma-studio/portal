@@ -212,7 +212,7 @@ const Index = () => {
                         {user ? (
                             <UserProfile />
                         ) : 
-                            { portalLogo }
+                            portalLogo
                         }
                     </StyledHeaderContainer>
             }
