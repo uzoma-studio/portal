@@ -35,10 +35,8 @@ const EditSpaceModal = ({ modalCloseFn }) => {
     
     // UseRef to keep values constant across renders
     const defaultFormData = useRef(settings?.theme?.style || themeSettings.style).current;
-    const defaultBgImage = useRef(settings?.backgroundImage).current;
 
     const [formData, setFormData] = useState(defaultFormData);
-    const [backgroundImage, setBackgroundImage] = useState({ file: settings?.backgroundImage || null, isSet: false })
     const [message, setMessage] = useState({ type: '', text: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { saveDraft } = useSaveDraft()
@@ -60,17 +58,6 @@ const EditSpaceModal = ({ modalCloseFn }) => {
     }));
   };
 
-  const handleMenuChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      menu: {
-        ...prev.menu,
-        [name]: type === 'checkbox' ? checked : value,
-      },
-    }));
-  };
-
   const handlePageStylesChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -81,18 +68,10 @@ const EditSpaceModal = ({ modalCloseFn }) => {
       },
     }));
   };
-  
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          setBackgroundImage({file, isSet: true})
-        }
-    }
 
   const handleCancel = () => {
     setSettings({
         ...settings,
-        backgroundImage: defaultBgImage,
         theme: {
             style:  { ...defaultFormData }
         }
@@ -106,13 +85,10 @@ const EditSpaceModal = ({ modalCloseFn }) => {
     setMessage({ type: '', text: '' });
     // Simulate save
 
-    const handleBgImage = !backgroundImage.isSet ? backgroundImage.file : await handleMediaUpload(backgroundImage.file)
-
     const spaceData = {
         ...space,
         settings: {
             ...space.settings,
-            backgroundImage: handleBgImage,
             theme: {
                 style: { ...formData }
             }
@@ -151,56 +127,6 @@ const EditSpaceModal = ({ modalCloseFn }) => {
     <ModalWrapper tabName='Space Settings' modalCloseFn={modalCloseFn} isFullHeight={true}>
       <div className="mt-4">
         <StyledForm onSubmit={handleSubmit}>
-          <StyledSettingsSection>
-              <div>
-                  <StyledLabel htmlFor="backgroundImage" className="block mb-2">Space Image</StyledLabel>
-                  <StyledInput
-                      id="backgroundImage"
-                      name="backgroundImage"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="w-full"
-                  />
-              </div>
-          </StyledSettingsSection>
-          <StyledSettingsSection>
-            <StyledLabel className="block mb-2">Menu Settings</StyledLabel>
-            <StyledSettingsGrid>
-              <div>
-                <StyledLabel>Menu Background Color</StyledLabel>
-                <StyledColorLabel>
-                  <StyledColorPreview style={{ backgroundColor: formData.menu?.backgroundColor || '#ccc' }} />
-                  <StyledLabel htmlFor="backgroundColor" className="block text-sm">Background Color</StyledLabel>
-                </StyledColorLabel>
-                <StyledColorInput
-                  type="color"
-                  name="backgroundColor"
-                  value={formData.menu?.backgroundColor || '#ccc'}
-                  onChange={handleMenuChange}
-                />
-              </div>
-              <div>
-                <StyledLabel htmlFor="showNewsTicker" className="inline-block" style={{marginRight: '.5rem'}}>Show News Ticker</StyledLabel>
-                <input
-                  type="checkbox"
-                  name="showNewsTicker"
-                  checked={!!formData.menu?.showNewsTicker}
-                  onChange={handleMenuChange}
-                />
-              </div>
-              <div>
-                <StyledLabel htmlFor="showFooter" className="inline-block" style={{marginRight: '.5rem'}}>Show Footer</StyledLabel>
-                <input
-                  type="checkbox"
-                  name="showFooter"
-                  checked={!!formData.menu?.showFooter}
-                  onChange={handleMenuChange}
-                />
-              </div>
-            </StyledSettingsGrid>
-          </StyledSettingsSection>
-
           <StyledSettingsSection>
             <StyledLabel className="block mb-2">Typography</StyledLabel>
             <StyledSettingsGrid>
@@ -317,60 +243,6 @@ const EditSpaceModal = ({ modalCloseFn }) => {
                 />
               </div>
             </StyledSettingsGrid>
-          </StyledSettingsSection>
-
-          <StyledSettingsSection>
-            <StyledLabel className="block mb-2">Theme</StyledLabel>
-            <StyledSettingsGrid>
-              <div>
-                <StyledLabel htmlFor="backgroundMode" className="block">Background Mode</StyledLabel>
-                <StyledSelect
-                  name="backgroundMode"
-                  value={formData.backgroundMode || 'image'}
-                  onChange={handleInputChange}
-                >
-                  <option value="image">Image</option>
-                  <option value="color">Color</option>
-                  <option value="gradient">Gradient</option>
-                </StyledSelect>
-              </div>
-              <div>
-                <StyledLabel htmlFor="backgroundImageRenderMode" className="block">Background Image Render Mode</StyledLabel>
-                <StyledSelect
-                  name="backgroundImageRenderMode"
-                  value={formData.backgroundImageRenderMode || 'background'}
-                  onChange={handleInputChange}
-                >
-                  <option value="background">Background</option>
-                  <option value="center">Center</option>
-                </StyledSelect>
-              </div>
-
-              <div>
-                <StyledLabel htmlFor="showEnvironment" className="inline-block" style={{marginRight: '.5rem'}}>Show Environment</StyledLabel>
-                <input
-                  type="checkbox"
-                  name="showEnvironment"
-                  checked={!!formData.showEnvironment}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div>
-                <StyledLabel htmlFor="environment" className="block">Environment</StyledLabel>
-                <StyledSelect
-                  name="environment"
-                  value={formData.environment || 'icon'}
-                  onChange={handleInputChange}
-                >
-                  <option value="park">Park</option>
-                  <option value="night">Night</option>
-                  <option value="beach">Beach</option>
-                  <option value="ocean">Ocean</option>
-                  <option value="city">City</option>
-                </StyledSelect>
-              </div>
-          </StyledSettingsGrid>
           </StyledSettingsSection>
 
           <StyledSettingsSection>
