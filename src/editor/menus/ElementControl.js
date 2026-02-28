@@ -103,16 +103,19 @@ const ElementControl = ({
     return (
         <>
             <StyledElementControlContainer $top={position.top} $left={position.left} onClick={(e) => e.stopPropagation()}>
-                <IconButton 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleEdit();
-                    }}
-                    title="Edit"
-                    aria-label="Edit element"
-                >
-                    <MdEdit />
-                </IconButton>
+                { 
+                isText &&
+                    <IconButton 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit();
+                        }}
+                        title="Edit"
+                        aria-label="Edit element"
+                    >
+                        <MdEdit />
+                    </IconButton>
+                }
                 <IconButton 
                     onClick={(e) => {
                         e.stopPropagation();
