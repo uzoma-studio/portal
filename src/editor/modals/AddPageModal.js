@@ -4,7 +4,7 @@ import { getContent } from 'data/fetchContent.server';
 import { useSpace } from '@/context/SpaceProvider';
 import { generateSlug } from '@/utils/helpers';
 import RichTextEditor from '../richText/RichTextEditor'
-import themeSettings from '@root/themeSettings.json';
+import themeSettings from '@/defaultValues/themeSettings.json';
 import { StyledMessage } from '@/styles/rootStyles';
 
 import CreateBlogSection from '../components/CreateBlogSection';

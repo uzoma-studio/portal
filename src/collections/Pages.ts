@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { generateSlug } from '../utils/helpers';
-import themeSettings from '../../themeSettings.json';
+import themeSettings from '@/defaultValues/themeSettings.json';
 
 export const Pages: CollectionConfig = {
   slug: 'pages',

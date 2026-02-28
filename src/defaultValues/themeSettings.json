@@ -1,0 +1,32 @@
+{
+  "style": {
+    "menu": {
+      "defaultHeight": "3.5rem",
+      "backgroundColor": "#cccccc",
+      "showNewsTicker": true,
+      "showFooter": true
+    },
+    "bodyFont": "Courier New",
+    "headerFont": "Courier New",
+    "defaultPageStyles": {
+      "borderWidth": "3px",
+      "backgroundColor": "#ffffff",
+      "textColor": "#222222",
+      "pageDisplayStyle": "center-modal"
+    },
+    "accentColor": "#ffffff",
+    "defaultPageDisplayMode": "none",
+    "hotspotSize": "25",
+    "hotspotColor": "#82007f",
+    "primaryColor": "#9333ea",
+    "bodyTextColor": "#222222",
+    "backgroundMode": "image",
+    "secondaryColor": "#c084fc",
+    "backgroundColor": "#ffffff",
+    "headerTextColor": "#222222",
+    "contentTextColor": "#222222",
+    "backgroundImageRenderMode": "background",
+    "environment": "park",
+    "showEnvironment": false
+  }
+}

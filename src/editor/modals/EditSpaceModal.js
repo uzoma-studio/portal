@@ -14,7 +14,7 @@ import {
 } from '../styles';
 import { StyledMessage } from '@/styles/rootStyles';
 import { useSpace } from '@/context/SpaceProvider';
-import themeSettings from '@root/themeSettings.json'
+import themeSettings from '@/defaultValues/themeSettings.json'
 import { updateEntry } from 'data/createContent.server';
 import { handleMediaUpload } from '@/utils/helpers';
 import ModalWrapper from './ModalWrapper';

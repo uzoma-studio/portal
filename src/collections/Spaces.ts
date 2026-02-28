@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload';
-import themeSettings from '../../themeSettings.json';
+import themeSettings from '@/defaultValues/themeSettings.json';
 import defaultText from '@/defaultValues/defaultText.json'
 
 export const Spaces: CollectionConfig = {
