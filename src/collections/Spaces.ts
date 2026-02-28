@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload';
 import themeSettings from '../../themeSettings.json';
+import defaultText from '@/defaultValues/defaultText.json'
 
 export const Spaces: CollectionConfig = {
   slug: 'spaces',
@@ -54,7 +55,7 @@ export const Spaces: CollectionConfig = {
     {
       name: 'texts',
       type: 'json',
-      defaultValue: []
+      defaultValue: defaultText
     },
     {
       name: 'images',

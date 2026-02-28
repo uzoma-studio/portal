@@ -1,0 +1,47 @@
+[
+  {
+    "id": "text_1772260532192",
+    "size": {
+      "width": 24.30939226519337,
+      "height": 8.573591938959753
+    },
+    "content": "Add text, image or page ➡️",
+    "fontSize": 21,
+    "isEdited": false,
+    "position": {
+      "x": 73.27348066298343,
+      "y": 89.38882093696002
+    },
+    "fontColor": "#000000"
+  },
+  {
+    "id": "text_1772260613253",
+    "size": {
+      "width": 30.801104972375693,
+      "height": 9.194866717145242
+    },
+    "content": "Preview changes, adjust settings and save your space ↗️",
+    "fontSize": 19,
+    "isEdited": false,
+    "position": {
+      "x": 68.02486187845305,
+      "y": 3.5907740695439525
+    },
+    "fontColor": "#000000"
+  },
+  {
+    "id": "text_1772260713388",
+    "size": {
+      "width": 27.624309392265197,
+      "height": 14.165064942629158
+    },
+    "content": "Welcome to your space editor. Click any of the text tips to delete 🗑️",
+    "fontSize": 18,
+    "isEdited": false,
+    "position": {
+      "x": 34.944751381215475,
+      "y": 42.047682839225736
+    },
+    "fontColor": "#785fa5"
+  }
+]

@@ -24,7 +24,6 @@ import ModalWrapper from '@/editor/modals/ModalWrapper';
 import AddPageModal from '@/editor/modals/AddPageModal';
 import EditSpaceModal from '@/editor/modals/EditSpaceModal'
 
-
 import RenderSpaceImages from '@/content/renderers/RenderSpaceImages'
 import RenderSpaceTexts from '@/content/renderers/RenderSpaceTexts'
 
@@ -194,11 +193,10 @@ const Index = () => {
             setBackgroundDimensions={setBackgroundDimensions}
         >
 
-
             {
                 isCurrentUserSpaceOwner ?
                     <StyledHeaderContainer $theme={theme}>
-                        <p>{` `}</p>
+                        { portalLogo }
                         { isBuildMode && <h1>{space.name}</h1> }
                         <ActionControls 
                             isBuildMode={isBuildMode} 
@@ -213,13 +211,9 @@ const Index = () => {
                     <StyledHeaderContainer>
                         {user ? (
                             <UserProfile />
-                        ) : (
-                            <StyledPortalLogo href="/">
-                                <div style={{backgroundColor: '#fff', width: '52px', height: '52px', borderRadius: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                    <Image src="/logo.png" alt="Portal Logo" width={48} height={48} />
-                                </div>
-                            </StyledPortalLogo>
-                        )}
+                        ) : 
+                            { portalLogo }
+                        }
                     </StyledHeaderContainer>
             }
 
@@ -326,5 +320,11 @@ const Index = () => {
         </BackgroundContainer>
     )
 }
+
+const portalLogo = <StyledPortalLogo href="/">
+                    <div style={{backgroundColor: '#fff', width: '52px', height: '52px', borderRadius: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                        <Image src="/logo.png" alt="Portal Logo" width={48} height={48} />
+                    </div>
+                </StyledPortalLogo>
 
 export default Index
