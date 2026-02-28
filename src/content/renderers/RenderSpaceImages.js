@@ -35,7 +35,7 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
             // In preview mode, check if image is linked to a page
             const image = spaceImages.find(img => img.id === id);
             if (image?.linkToPage) {
-                setCurrentPageId(image.linkToPage.id);
+                setCurrentPageId(image.linkToPage);
             }
         }
     };
@@ -108,7 +108,7 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                             {hoveredImageId === id && linkToPage && (() => {
                                 const tooltipText = typeof linkToPage === 'string'
                                     ? linkToPage
-                                    : pages?.find(p => p.id === linkToPage.id)?.title || 'Internal link';
+                                    : pages?.find(p => p.id === linkToPage )?.title || 'Internal link';
                                 return <StyledImageTooltip>{tooltipText}</StyledImageTooltip>;
                             })()}
                         </StyledSpaceImage>
