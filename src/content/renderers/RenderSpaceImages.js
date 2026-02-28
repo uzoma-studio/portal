@@ -3,10 +3,12 @@ import { Rnd } from 'react-rnd';
 import styled from 'styled-components';
 import Image from 'next/image';
 import { useSpace } from '@/context/SpaceProvider';
+import { useSaveDraft } from '@/hooks/useSaveDraft';
 
 const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImageId, backgroundDimensions, setSelectedElementPosition, setCurrentPageId }) => {
     
-    const { images: spaceImages, pages } = useSpace()
+    const { images: spaceImages, setImages, pages } = useSpace()
+    const { saveDraft } = useSaveDraft()
     const [currentDimensions, setCurrentDimensions] = useState({ width: 0, height: 0 });
     const [resizedImages, setResizedImages] = useState(new Set());
     const [hoveredImageId, setHoveredImageId] = useState(null);
@@ -68,24 +70,51 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                         onMouseLeave={() => setHoveredImageId(null)}
                         onResizeStop={(e, direction, ref, delta, position) => {
                             // Save the new size dimensions of the preview image
-                            const image = spaceImages[index]
-                            const imgWidthPx = Number(ref.style.width.split('px')[0])
-                            const imgHeightPx = Number(ref.style.height.split('px')[0])
-                            // Save sizes as percentages for responsiveness
-                            image.size.width = (imgWidthPx / currentDimensions.width) * 100
-                            image.size.height = (imgHeightPx / currentDimensions.height) * 100
-                            // Save new position as percentages too
-                            image.position.x = (position.x / currentDimensions.width) * 100
-                            image.position.y = (position.y / currentDimensions.height) * 100
+                            const updatedImages = spaceImages.map((img, idx) => {
+                                if (idx === index) {
+                                    const imgWidthPx = Number(ref.style.width.split('px')[0])
+                                    const imgHeightPx = Number(ref.style.height.split('px')[0])
+                                    return {
+                                        ...img,
+                                        size: {
+                                            width: (imgWidthPx / currentDimensions.width) * 100,
+                                            height: (imgHeightPx / currentDimensions.height) * 100
+                                        },
+                                        position: {
+                                            x: (position.x / currentDimensions.width) * 100,
+                                            y: (position.y / currentDimensions.height) * 100
+                                        },
+                                        isEdited: true
+                                    };
+                                }
+                                return img;
+                            });
+                            setImages(updatedImages);
                             setResizedImages(prev => new Set([...prev, id]));
-                            image.isEdited = true
+                            
+                            // Save draft on interaction
+                            saveDraft();
                         }}
                         onDragStop={(e, direction) => {
-                            const image = spaceImages[index]
-                            image.position.x = (direction.x / currentDimensions.width) * 100
-                            image.position.y = (direction.y / currentDimensions.height) * 100
-                            image.isEdited = true
-                            setCurrentEditImageId(null)
+                            const updatedImages = spaceImages.map((img, idx) => {
+                                if (idx === index) {
+                                return {
+                                    ...img,
+                                    position: {
+                                    x: (direction.x / currentDimensions.width) * 100,
+                                    y: (direction.y / currentDimensions.height) * 100
+                                    },
+                                    isEdited: true
+                                };
+                                }
+                                return img;
+                            });
+                            
+                            setImages(updatedImages);
+                            setCurrentEditImageId(null);
+                            
+                            // Save draft on interaction
+                            saveDraft();
                         }}
                         disableDragging={!isBuildMode}
                         enableResizing={isBuildMode}

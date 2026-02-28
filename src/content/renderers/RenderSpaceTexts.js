@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Rnd } from 'react-rnd';
 import styled from 'styled-components';
 import { useSpace } from '@/context/SpaceProvider';
+import { useSaveDraft } from '@/hooks/useSaveDraft';
 
 // TODO: Explore combining RenderSpaceTexts and RenderSpaceImages into a single component that can render both types based on props
 const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId, backgroundDimensions, setSelectedElementPosition, setCurrentPageId }) => {
     
     const { texts: spaceTexts, setTexts, pages } = useSpace()
+    const { saveDraft } = useSaveDraft()
     const [currentDimensions, setCurrentDimensions] = useState({ width: 0, height: 0 });
     const [hoveredTextId, setHoveredTextId] = useState(null);
 
@@ -69,29 +71,49 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
                         onMouseEnter={() => setHoveredTextId(id)}
                         onMouseLeave={() => setHoveredTextId(null)}
                         onResizeStop={(e, direction, ref, delta, position) => {
-                            const updatedTexts = [...spaceTexts];
-                            const textIndex = updatedTexts.findIndex(t => t.id === id);
-                            if (textIndex !== -1) {
-                                const textWidthPx = Number(ref.style.width.split('px')[0])
-                                const textHeightPx = Number(ref.style.height.split('px')[0])
-                                updatedTexts[textIndex].size.width = (textWidthPx / currentDimensions.width) * 100
-                                updatedTexts[textIndex].size.height = (textHeightPx / currentDimensions.height) * 100
-                                updatedTexts[textIndex].position.x = (position.x / currentDimensions.width) * 100
-                                updatedTexts[textIndex].position.y = (position.y / currentDimensions.height) * 100
-                                updatedTexts[textIndex].isEdited = true
-                                setTexts(updatedTexts);
-                            }
+                            const updatedTexts = spaceTexts.map((text) => {
+                                if (text.id === id) {
+                                    const textWidthPx = Number(ref.style.width.split('px')[0])
+                                    const textHeightPx = Number(ref.style.height.split('px')[0])
+                                    return {
+                                        ...text,
+                                        size: {
+                                            width: (textWidthPx / currentDimensions.width) * 100,
+                                            height: (textHeightPx / currentDimensions.height) * 100
+                                        },
+                                        position: {
+                                            x: (position.x / currentDimensions.width) * 100,
+                                            y: (position.y / currentDimensions.height) * 100
+                                        },
+                                        isEdited: true
+                                    };
+                                }
+                                return text;
+                            });
+                            setTexts(updatedTexts);
+                            
+                            // Save draft on interaction
+                            saveDraft();
                         }}
                         onDragStop={(e, direction) => {
-                            const updatedTexts = [...spaceTexts];
-                            const textIndex = updatedTexts.findIndex(t => t.id === id);
-                            if (textIndex !== -1) {
-                                updatedTexts[textIndex].position.x = (direction.x / currentDimensions.width) * 100
-                                updatedTexts[textIndex].position.y = (direction.y / currentDimensions.height) * 100
-                                updatedTexts[textIndex].isEdited = true
-                                setTexts(updatedTexts);
-                            }
-                            setCurrentEditTextId(null)
+                            const updatedTexts = spaceTexts.map((text) => {
+                                if (text.id === id) {
+                                    return {
+                                        ...text,
+                                        position: {
+                                            x: (direction.x / currentDimensions.width) * 100,
+                                            y: (direction.y / currentDimensions.height) * 100
+                                        },
+                                        isEdited: true
+                                    };
+                                }
+                                return text;
+                            });
+                            setTexts(updatedTexts);
+                            setCurrentEditTextId(null);
+                            
+                            // Save draft on interaction
+                            saveDraft();
                         }}
                         disableDragging={!isBuildMode}
                         enableResizing={isBuildMode}

@@ -30,10 +30,10 @@ import RenderSpaceTexts from '@/content/renderers/RenderSpaceTexts'
 import UserProfile from '@/widgets/Authentication/UserProfile';
 
 import { updateEntry } from '@root/data/createContent.server';
-import { handleMediaUpload, saveDraftToLocalStorage, loadDraftFromLocalStorage, clearDraftFromLocalStorage } from '@/utils/helpers';
+import { handleMediaUpload, saveDraftToLocalStorageUtil, loadDraftFromLocalStorage, clearDraftFromLocalStorage } from '@/utils/helpers';
 
 const Index = () => {
-    const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages, texts: spaceTexts, message, setMessage, setTexts, setImages, setPages } = useSpace()
+    const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages, texts: spaceTexts, message, setMessage, setTexts, setImages } = useSpace()
     const { user } = useAuth()
 
     const containerRef = useRef(null)
@@ -63,18 +63,6 @@ const Index = () => {
 
     const currentPage = pages.find(p => p.id === currentPageId)
 
-    // Auto-save draft on image/text/page changes
-    useEffect(() => {
-        if (space?.id && isBuildMode && (spaceImages.length > 0 || spaceTexts.length > 0 || pages.length > 0)) {
-            saveDraftToLocalStorage(space.id, {
-                images: spaceImages,
-                texts: spaceTexts,
-                pages
-            });
-        }
-        console.log('space updated')
-    }, [spaceImages, spaceTexts, pages, space?.id, isBuildMode]);
-
     // Restore draft on mount
     useEffect(() => {
         if (space?.id && isCurrentUserSpaceOwner && !hasDraftRestored) {
@@ -82,7 +70,6 @@ const Index = () => {
             if (draft) {
                 setImages(draft.images);
                 setTexts(draft.texts);
-                setPages(draft.pages);
                 setHasDraftRestored(true);
             }
         }

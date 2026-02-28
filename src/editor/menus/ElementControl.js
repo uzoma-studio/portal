@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { MdEdit, MdDelete, MdLink } from 'react-icons/md'
 import { useSpace } from '@/context/SpaceProvider'
 import { handleMediaDelete } from '@/utils/helpers'
+import { useSaveDraft } from '@/hooks/useSaveDraft'
 import ModalWrapper from '@/editor/modals/ModalWrapper'
 import AddTextModal from '@/editor/modals/AddTextModal'
 import LinkModal from '@/editor/modals/LinkModal'
@@ -17,7 +18,8 @@ const ElementControl = ({
     setCurrentEditTextId,
     setMessage,
 }) => {
-    const { pages, images: spaceImages, setImages, texts: spaceTexts, setTexts } = useSpace()
+    const { pages, images: spaceImages, setImages, texts: spaceTexts, setTexts, space } = useSpace()
+    const { saveDraft } = useSaveDraft()
     const [position, setPosition] = useState({ top: 0, left: 0 })
     const [showLinkModal, setShowLinkModal] = useState(false)
     const [showTextModal, setShowTextModal] = useState(false)
@@ -49,22 +51,36 @@ const ElementControl = ({
     const handleLinkChange = (pageId) => {
         if (selectedImageId) {
             // Link image to page
-            const imageIndex = spaceImages.findIndex(img => img.id === selectedImageId);
-            if (imageIndex !== -1) {
-                const updatedImages = [...spaceImages];
-                updatedImages[imageIndex].linkToPage = pageId ? pageId : null;
-                updatedImages[imageIndex].isEdited = true;
-                setImages(updatedImages);
-            }
+            const updatedImages = spaceImages.map((img) => {
+                if (img.id === selectedImageId) {
+                    return {
+                        ...img,
+                        linkToPage: pageId ? pageId : null,
+                        isEdited: true
+                    };
+                }
+                return img;
+            });
+            setImages(updatedImages);
+            
+            // Save draft on interaction
+            saveDraft();
         } else if (selectedTextId) {
             // Link text to page
-            const textIndex = spaceTexts.findIndex(text => text.id === selectedTextId);
-            if (textIndex !== -1) {
-                const updatedTexts = [...spaceTexts];
-                updatedTexts[textIndex].linkToPage = pageId ? pageId : null;
-                updatedTexts[textIndex].isEdited = true;
-                setTexts(updatedTexts);
-            }
+            const updatedTexts = spaceTexts.map((text) => {
+                if (text.id === selectedTextId) {
+                    return {
+                        ...text,
+                        linkToPage: pageId ? pageId : null,
+                        isEdited: true
+                    };
+                }
+                return text;
+            });
+            setTexts(updatedTexts);
+            
+            // Save draft on interaction
+            saveDraft();
         }
     }
 
