@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useSpace } from '@/context/SpaceProvider'
 import { MdClose, MdOpenInNew } from 'react-icons/md'
+import AddPageModal from './AddPageModal'
+import ModalWrapper from './ModalWrapper'
 
 const isValidUrl = (string) => {
     try {
@@ -29,6 +31,7 @@ const LinkModal = ({
     const [externalUrl, setExternalUrl] = useState(selectedText?.linkToPage && typeof selectedText.linkToPage === 'string' && selectedText.linkToPage.startsWith("http") ? selectedText.linkToPage : '')
     const [savedExternalUrl, setSavedExternalUrl] = useState('')
     const [urlError, setUrlError] = useState('')
+    const [isAddingPage, setIsAddingPage] = useState(false)
 
     // Get the selected text content from selectedTextId
 
@@ -72,7 +75,29 @@ const LinkModal = ({
         setUrlError('')
     }
 
-    if (!elementPosition || !pages?.length) return null
+    const handleNewPageCreated = (createdPage) => {
+        if (createdPage?.id) {
+            onLinkChange(createdPage.id)
+        }
+        setIsAddingPage(false)
+        onClose()
+    }
+
+    if (!elementPosition) return null
+
+    if (isAddingPage) {
+        return (
+            <ModalWrapper tabName='Add Page' modalCloseFn={() => setIsAddingPage(false)} isFullHeight={true} style={{ zIndex: 1602 }}>
+                <AddPageModal
+                    setIsModalOpen={setIsAddingPage}
+                    isCreatePageMode={true}
+                    pageData={null}
+                    pageCoords={null}
+                    onPageCreated={handleNewPageCreated}
+                />
+            </ModalWrapper>
+        )
+    }
 
     return (
         <StyledModalOverlay onClick={onClose}>
@@ -131,6 +156,16 @@ const LinkModal = ({
                                 </StyledPageItem>
                             ))}
                         </StyledPagesList>
+
+                        <StyledAddPageButton
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsAddingPage(true);
+                            }}
+                        >
+                            + Add new page
+                        </StyledAddPageButton>
 
                         {selectedPageId && (
                             <StyledFooter>
@@ -403,5 +438,24 @@ const StyledUrlButton = styled.button`
         background: #ddd;
         cursor: not-allowed;
         opacity: 0.6;
+    }
+`
+
+const StyledAddPageButton = styled.button`
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px dashed var(--primary-color, #4a90e2);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--primary-color, #4a90e2);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(74, 144, 226, 0.06);
+        color: var(--primary-color, #4a90e2);
     }
 `

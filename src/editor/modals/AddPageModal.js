@@ -33,7 +33,7 @@ import {
     StyledIconButton
 } from '../styles';
 
-const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
+const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords, onPageCreated }) => {
     const { space, settings, setPages, setLastCreatedPage, message: spaceMessage, setMessage: setSpaceMessage } = useSpace()
 
     const [pageBodyField, setPageBodyField] = useState(null)
@@ -195,6 +195,10 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
 
                     setMessage({ type, text: message });
                     setSpaceMessage({ type, text: message });
+
+                    if (onPageCreated) {
+                        onPageCreated(createdPage);
+                    }
                     setTimeout(() => {
                         handleClose();
                         setSpaceMessage({ type: '', text: '' });
