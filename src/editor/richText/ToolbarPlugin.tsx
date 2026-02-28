@@ -23,11 +23,13 @@ import {
   createCommand,
   $createTextNode,
 } from 'lexical';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useState, useRef} from 'react';
 import styled from 'styled-components';
 import {HeadingNode, QuoteNode} from '@lexical/rich-text';
 import {ListNode, ListItemNode} from '@lexical/list';
 import {ListPlugin} from '@lexical/react/LexicalListPlugin';
+import {handleMediaUpload} from '@/utils/helpers';
+import {$createImageNode} from './nodes/ImageNode';
 
 const INSERT_UNORDERED_LIST_COMMAND = createCommand('INSERT_UNORDERED_LIST_COMMAND');
 const INSERT_ORDERED_LIST_COMMAND = createCommand('INSERT_ORDERED_LIST_COMMAND');
@@ -109,6 +111,7 @@ export default function ToolbarPlugin() {
   const [canRedo, setCanRedo] = useState(false);
   const [isList, setIsList] = useState(false);
   const [isOrderedList, setIsOrderedList] = useState(false);
+  const fileInputRef = useRef(null);
 
   const updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -206,6 +209,41 @@ export default function ToolbarPlugin() {
         selection.insertNodes([listNode]);
       }
     });
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      // Upload image to media collection
+      const uploadedImage = await handleMediaUpload(file, true);
+      
+      if (uploadedImage?.url) {
+        // Insert image node into the editor
+        editor.update(() => {
+          const selection = $getSelection();
+          const imageNode = $createImageNode({
+            src: uploadedImage.url,
+            altText: file.name,
+          });
+
+          if ($isRangeSelection(selection)) {
+            selection.insertNodes([imageNode]);
+          } else {
+            const root = $getRoot();
+            root.append(imageNode);
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+    }
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -309,6 +347,24 @@ export default function ToolbarPlugin() {
         >
           Right
         </StyledButton>
+        <StyledDivider />
+        <StyledButton
+          onClick={(e) => {
+            e.preventDefault();
+            fileInputRef.current?.click();
+          }}
+          title="Upload Image"
+          type="button"
+        >
+          🖼️ Image
+        </StyledButton>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          style={{ display: 'none' }}
+        />
       </StyledToolbarRow>
 
       <StyledToolbarRow>

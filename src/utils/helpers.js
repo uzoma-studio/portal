@@ -89,7 +89,7 @@ export const checkFileSize = (file, maxSizeMB = 5) => {
     }
 };
 
-export const handleMediaUpload = async (formImage) => {
+export const handleMediaUpload = async (formImage, returnFullMediaObj = false) => {
     if (!formImage || !(formImage instanceof File)) {
       console.warn('Invalid file provided for upload.');
       throw new Error('Invalid file provided for upload.');
@@ -116,7 +116,7 @@ export const handleMediaUpload = async (formImage) => {
       }
   
       const media = await response.json();
-      return media?.doc?.id;
+      return returnFullMediaObj ? media?.doc : media?.doc?.id;
   
     } catch (error) {
       console.error('Error uploading media:', error);
