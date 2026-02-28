@@ -18,6 +18,7 @@ import themeSettings from '@/defaultValues/themeSettings.json'
 import { updateEntry } from 'data/createContent.server';
 import { handleMediaUpload } from '@/utils/helpers';
 import ModalWrapper from './ModalWrapper';
+import { useSaveDraft } from '@/hooks/useSaveDraft';
 
 const fonts = [
   'Courier New',
@@ -40,6 +41,7 @@ const EditSpaceModal = ({ modalCloseFn }) => {
     const [backgroundImage, setBackgroundImage] = useState({ file: settings?.backgroundImage || null, isSet: false })
     const [message, setMessage] = useState({ type: '', text: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { saveDraft } = useSaveDraft()
 
   useEffect(() => {
     setSettings({
@@ -122,6 +124,7 @@ const EditSpaceModal = ({ modalCloseFn }) => {
 
         if (updatedSpace?.id) {
             setSettings(spaceData.settings)
+            saveDraft(undefined, undefined, undefined, spaceData.settings);
             setMessage({ 
                 type: 'success', 
                 text: 'Space edited successfully!' 
@@ -132,7 +135,7 @@ const EditSpaceModal = ({ modalCloseFn }) => {
         } else {
             setMessage({ 
                 type: 'error', 
-                text: 'Failed to create page. Please try again.' 
+                text: 'Failed to edit space. Please try again.' 
             });
         }
     } catch (error) {

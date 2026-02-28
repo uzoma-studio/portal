@@ -33,7 +33,7 @@ import { updateEntry } from '@root/data/createContent.server';
 import { handleMediaUpload, saveDraftToLocalStorageUtil, loadDraftFromLocalStorage, clearDraftFromLocalStorage } from '@/utils/helpers';
 
 const Index = () => {
-    const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages, texts: spaceTexts, message, setMessage, setTexts, setImages } = useSpace()
+    const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages, texts: spaceTexts, message, setMessage, setTexts, setImages, setSettings } = useSpace()
     const { user } = useAuth()
 
     const containerRef = useRef(null)
@@ -70,6 +70,9 @@ const Index = () => {
             if (draft) {
                 setImages(draft.images);
                 setTexts(draft.texts);
+                if (draft.settings) {
+                    setSettings(draft.settings);
+                }
                 setHasDraftRestored(true);
             }
         }
