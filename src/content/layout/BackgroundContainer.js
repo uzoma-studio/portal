@@ -72,9 +72,7 @@ const BackgroundContainer = ({ children, isBuildMode, setIsBuildMode, currentEdi
         onClick={(e) => isCurrentUserSpaceOwner && handleClick(e)}
         onDoubleClick={() => isCurrentUserSpaceOwner && handleDoubleClick()}
     >
-        <div className='background'
-            style={{cursor: isBuildMode ? 'crosshair' : 'auto'}}
-        />
+        <div className='background'/>
         { children }
     </StyledBackgroundContainer>
   )

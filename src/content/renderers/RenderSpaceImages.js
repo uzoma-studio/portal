@@ -127,7 +127,12 @@ export const StyledSpaceImage = styled.div`
     height: 100%;
     object-fit: contain;
     overflow: visible;
-    cursor: ${props => props.$hasLink ? 'pointer' : (props.$isBuildMode ? 'move' : 'default')};
+    cursor: ${props => {
+        if (!props.$isBuildMode) {
+            return props.$hasLink ? 'pointer' : 'default';
+        }
+        return props.$isCurrentEditImage ? 'move' : 'grab';
+    }};
     transition: transform 0.2s ease;
 
     ${props => props.$hasLink && `

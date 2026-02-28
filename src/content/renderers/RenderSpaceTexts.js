@@ -131,7 +131,12 @@ export const StyledSpaceText = styled.div`
     color: ${props => props.$fontColor};
     word-wrap: break-word;
     overflow: visible;
-    cursor: ${props => props.$hasLink ? 'pointer' : (props.$isBuildMode ? 'move' : 'default')};
+    cursor: ${props => {
+        if (!props.$isBuildMode) {
+            return props.$hasLink ? 'pointer' : 'default';
+        }
+        return props.$isCurrentEdit ? 'move' : 'grab';
+    }};
     border: ${props => props.$isCurrentEdit ? '2px dashed #4a90e2' : 'none'};
     border-radius: 4px;
     background: ${props => props.$isCurrentEdit ? 'rgba(74, 144, 226, 0.1)' : 'transparent'};
