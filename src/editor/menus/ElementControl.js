@@ -90,6 +90,7 @@ const ElementControl = ({
             const imageToDelete = spaceImages.find(img => img.id === selectedImageId);
             const updatedImages = spaceImages.filter(img => img.id !== selectedImageId);
             setImages(updatedImages);
+            saveDraft(updatedImages);
             setCurrentEditImageId(null);
             
             // Delete from media collection if it exists
@@ -108,6 +109,7 @@ const ElementControl = ({
             // Delete text logic
             const updatedTexts = spaceTexts.filter(text => text.id !== selectedTextId);
             setTexts(updatedTexts);
+            saveDraft(undefined, updatedTexts);
             setCurrentEditTextId(null);
             setMessage({ type: 'success', text: 'Text deleted' });
             setTimeout(() => setMessage({ type: '', text: '' }), 1500);
