@@ -92,8 +92,8 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                             setImages(updatedImages);
                             setResizedImages(prev => new Set([...prev, id]));
                             
-                            // Save draft on interaction
-                            saveDraft();
+                            // Save draft on interaction with updated values
+                            saveDraft(updatedImages);
                         }}
                         onDragStop={(e, direction) => {
                             const updatedImages = spaceImages.map((img, idx) => {
@@ -113,8 +113,8 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                             setImages(updatedImages);
                             setCurrentEditImageId(null);
                             
-                            // Save draft on interaction
-                            saveDraft();
+                            // Save draft on interaction with updated values
+                            saveDraft(updatedImages);
                         }}
                         disableDragging={!isBuildMode}
                         enableResizing={isBuildMode}

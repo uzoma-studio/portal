@@ -92,8 +92,8 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
                             });
                             setTexts(updatedTexts);
                             
-                            // Save draft on interaction
-                            saveDraft();
+                            // Save draft on interaction with updated values
+                            saveDraft(undefined, updatedTexts);
                         }}
                         onDragStop={(e, direction) => {
                             const updatedTexts = spaceTexts.map((text) => {
@@ -112,8 +112,8 @@ const RenderSpaceTexts = ({ isBuildMode, currentEditTextId, setCurrentEditTextId
                             setTexts(updatedTexts);
                             setCurrentEditTextId(null);
                             
-                            // Save draft on interaction
-                            saveDraft();
+                            // Save draft on interaction with updated values
+                            saveDraft(undefined, updatedTexts);
                         }}
                         disableDragging={!isBuildMode}
                         enableResizing={isBuildMode}

@@ -63,8 +63,8 @@ const ElementControl = ({
             });
             setImages(updatedImages);
             
-            // Save draft on interaction
-            saveDraft();
+            // Save draft on interaction with updated values
+            saveDraft(updatedImages);
         } else if (selectedTextId) {
             // Link text to page
             const updatedTexts = spaceTexts.map((text) => {
@@ -79,8 +79,8 @@ const ElementControl = ({
             });
             setTexts(updatedTexts);
             
-            // Save draft on interaction
-            saveDraft();
+            // Save draft on interaction with updated values
+            saveDraft(undefined, updatedTexts);
         }
     }
 
