@@ -7,10 +7,7 @@ import {
     StyledInput,
     StyledSubmitButton,
 } from '../styles';
-import { StyledModalOverlay, StyledModalContent } from '../styles';
 import { StyledMessage } from '@/styles/rootStyles';
-import CloseButton from '@/uiComponents/closeButton';
-import { handleMediaUpload } from '@/utils/helpers';
 import { useAuth } from '@/context/AuthProvider';
 import { getCurrentUser } from '@/utils/auth';
 import ModalWrapper from './ModalWrapper';
@@ -22,9 +19,6 @@ const CreateSpaceModal = ({ spaceData }) => {
     const [formData, setFormData] = useState({
         name: spaceData?.name || '',
         domain: spaceData?.domain || '',
-        settings: {
-            backgroundImage: spaceData?.settings?.backgroundImage || null
-        }
     });
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [message, setMessage] = useState({ type: '', text: '' })
@@ -77,7 +71,6 @@ const CreateSpaceModal = ({ spaceData }) => {
 
         try {
             let newSpaceData = { ...formData, owner: currentUser.id }
-            newSpaceData.settings.backgroundImage = await handleMediaUpload(formData.settings.backgroundImage)
 
             const newSpace = await createEntry('spaces', newSpaceData);
                 
