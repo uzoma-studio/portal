@@ -93,6 +93,7 @@ const RenderSpaceImages = ({ isBuildMode, currentEditImageId, setCurrentEditImag
                             setResizedImages(prev => new Set([...prev, id]));
                             
                             // Save draft on interaction with updated values
+                            // TODO: Make this automatic on every change to images, texts, and settings instead of having to call it manually in every interaction handler
                             saveDraft(updatedImages);
                         }}
                         onDragStop={(e, direction) => {
