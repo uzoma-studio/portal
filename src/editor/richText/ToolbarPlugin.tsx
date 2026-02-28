@@ -29,7 +29,7 @@ import {HeadingNode, QuoteNode} from '@lexical/rich-text';
 import {ListNode, ListItemNode} from '@lexical/list';
 import {ListPlugin} from '@lexical/react/LexicalListPlugin';
 import {handleMediaUpload} from '@/utils/helpers';
-import {$createImageNode} from './nodes/ImageNode';
+import {$createImageNode, $isImageNode} from './nodes/ImageNode';
 
 const INSERT_UNORDERED_LIST_COMMAND = createCommand('INSERT_UNORDERED_LIST_COMMAND');
 const INSERT_ORDERED_LIST_COMMAND = createCommand('INSERT_ORDERED_LIST_COMMAND');
@@ -111,6 +111,8 @@ export default function ToolbarPlugin() {
   const [canRedo, setCanRedo] = useState(false);
   const [isList, setIsList] = useState(false);
   const [isOrderedList, setIsOrderedList] = useState(false);
+  const [isImageSelected, setIsImageSelected] = useState(false);
+  const [imageSize, setImageSize] = useState('medium');
   const fileInputRef = useRef(null);
 
   const updateToolbar = useCallback(() => {
@@ -133,6 +135,32 @@ export default function ToolbarPlugin() {
           setIsOrderedList(false);
         }
       }
+    }
+
+    if (selection) {
+      const nodes = selection.getNodes();
+      let foundImageNode = null;
+
+      for (const node of nodes) {
+        if ($isImageNode(node)) {
+          foundImageNode = node;
+          break;
+        }
+        const parent = node.getParent && node.getParent();
+        if (parent && $isImageNode(parent)) {
+          foundImageNode = parent;
+          break;
+        }
+      }
+
+      if (foundImageNode && typeof foundImageNode.getSize === 'function') {
+        setIsImageSelected(true);
+        setImageSize(foundImageNode.getSize());
+      } else {
+        setIsImageSelected(false);
+      }
+    } else {
+      setIsImageSelected(false);
     }
   }, []);
 
@@ -434,6 +462,46 @@ export default function ToolbarPlugin() {
         >
           Quote
         </StyledButton>
+
+        {isImageSelected && (
+          <>
+            <StyledDivider />
+            <StyledSelect
+              value={imageSize}
+              onChange={(e) => {
+                const newSize = e.target.value as 'small' | 'medium' | 'large';
+                setImageSize(newSize);
+                editor.update(() => {
+                  const selection = $getSelection();
+                  if (!selection) return;
+                  const nodes = selection.getNodes();
+
+                  for (const node of nodes) {
+                    let imageNode = null as any;
+                    if ($isImageNode(node)) {
+                      imageNode = node;
+                    } else {
+                      const parent = node.getParent && node.getParent();
+                      if (parent && $isImageNode(parent)) {
+                        imageNode = parent;
+                      }
+                    }
+
+                    if (imageNode && typeof imageNode.setSize === 'function') {
+                      imageNode.setSize(newSize);
+                      break;
+                    }
+                  }
+                });
+              }}
+              title="Image size"
+            >
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large</option>
+            </StyledSelect>
+          </>
+        )}
       </StyledToolbarRow>
     </StyledToolbar>
   );
