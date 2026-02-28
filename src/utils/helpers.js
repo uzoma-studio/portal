@@ -263,3 +263,45 @@ export const parseTimeFromISO = (dateString, timezone = null, format = "12h") =>
       return null;
     }
   };
+
+// Draft space edits to local storage
+export const saveDraftToLocalStorage = (spaceId, { images, texts, pages }) => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const draft = {
+      spaceId,
+      images: images || [],
+      texts: texts || [],
+      pages: pages || [],
+      savedAt: Date.now()
+    };
+    localStorage.setItem(`space-draft-${spaceId}`, JSON.stringify(draft));
+  } catch (error) {
+    console.error('Error saving draft to local storage:', error);
+  }
+};
+
+// Load draft from local storage
+export const loadDraftFromLocalStorage = (spaceId) => {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const draft = localStorage.getItem(`space-draft-${spaceId}`);
+    return draft ? JSON.parse(draft) : null;
+  } catch (error) {
+    console.error('Error loading draft from local storage:', error);
+    return null;
+  }
+};
+
+// Clear draft from local storage
+export const clearDraftFromLocalStorage = (spaceId) => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    localStorage.removeItem(`space-draft-${spaceId}`);
+  } catch (error) {
+    console.error('Error clearing draft from local storage:', error);
+  }
+};

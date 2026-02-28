@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image';
 
 import { StyledDisplayModeWrapper, StyledHeaderContainer, StyledPortalLogo } from './styles'
@@ -30,10 +30,10 @@ import RenderSpaceTexts from '@/content/renderers/RenderSpaceTexts'
 import UserProfile from '@/widgets/Authentication/UserProfile';
 
 import { updateEntry } from '@root/data/createContent.server';
-import { handleMediaUpload } from '@/utils/helpers';
+import { handleMediaUpload, saveDraftToLocalStorage, loadDraftFromLocalStorage, clearDraftFromLocalStorage } from '@/utils/helpers';
 
 const Index = () => {
-    const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages, texts: spaceTexts, message, setMessage} = useSpace()
+    const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages, texts: spaceTexts, message, setMessage, setTexts, setImages, setPages } = useSpace()
     const { user } = useAuth()
 
     const containerRef = useRef(null)
@@ -59,8 +59,34 @@ const Index = () => {
     // const [showImageDialogModal, setShowImageDialogModal] = useState(false)
 
     const [backgroundDimensions, setBackgroundDimensions] = useState({ width: 0, height: 0 });
+    const [hasDraftRestored, setHasDraftRestored] = useState(false);
 
     const currentPage = pages.find(p => p.id === currentPageId)
+
+    // Auto-save draft on image/text/page changes
+    useEffect(() => {
+        if (space?.id && isBuildMode && (spaceImages.length > 0 || spaceTexts.length > 0 || pages.length > 0)) {
+            saveDraftToLocalStorage(space.id, {
+                images: spaceImages,
+                texts: spaceTexts,
+                pages
+            });
+        }
+        console.log('space updated')
+    }, [spaceImages, spaceTexts, pages, space?.id, isBuildMode]);
+
+    // Restore draft on mount
+    useEffect(() => {
+        if (space?.id && isCurrentUserSpaceOwner && !hasDraftRestored) {
+            const draft = loadDraftFromLocalStorage(space.id);
+            if (draft) {
+                setImages(draft.images);
+                setTexts(draft.texts);
+                setPages(draft.pages);
+                setHasDraftRestored(true);
+            }
+        }
+    }, [space?.id, isCurrentUserSpaceOwner]);
 
     const getDisplayMode = (pageData) => {
         const getDisplayModePosition = isBuildMode && draggedIconPageId === pageData.id ? dragPosition : pageData.themeConfig.position
@@ -161,6 +187,7 @@ const Index = () => {
             const updatedSpace = await updateEntry('spaces', space.id, spaceData);
             
             if (updatedSpace?.id) {
+                clearDraftFromLocalStorage(space.id);
                 setMessage({ type: 'success', text: 'Space edited successfully!' });
             } else {
                 setMessage({ type: 'error', text: 'Failed to edit space. Please try again' });
