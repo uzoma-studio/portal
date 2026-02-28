@@ -57,6 +57,7 @@ export const getFeaturedSpaces = async () => {
 export const fetchPages = async (spaceId) => {
     const result = await payload.find({
         collection: 'pages',
+        pagination: false,
         where: {
             space: {
                 equals: spaceId
