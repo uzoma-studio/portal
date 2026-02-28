@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSpace } from '@/context/SpaceProvider';
 import { StyledMessage } from '@/styles/rootStyles';
+import { useSaveDraft } from '@/hooks/useSaveDraft';
 
 import {
     StyledForm,
@@ -19,6 +20,7 @@ const AddTextModal = ({ setIsModalOpen, backgroundDimensions, textToEdit }) => {
     const textInputRef = useRef(null);
     const [textHeight, setTextHeight] = useState('auto');
     const isEditMode = !!textToEdit;
+    const { saveDraft } = useSaveDraft()
 
     // Calculate text height based on content
     useEffect(() => {
@@ -52,6 +54,7 @@ const AddTextModal = ({ setIsModalOpen, backgroundDimensions, textToEdit }) => {
                     : text
             );
             setTexts(updatedTexts);
+            saveDraft(undefined, updatedTexts);
             setMessage({ type: 'success', text: 'Text updated successfully!' });
         } else {
             // Create a new text element
@@ -72,6 +75,7 @@ const AddTextModal = ({ setIsModalOpen, backgroundDimensions, textToEdit }) => {
             };
 
             setTexts(prev => [...prev, newText]);
+            saveDraft(undefined, [...texts, newText]);
             setMessage({ type: 'success', text: 'Text added successfully!' });
         }
         
