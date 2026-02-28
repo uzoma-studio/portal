@@ -32,7 +32,6 @@ const PortalJumpingSection = () => {
         <section className="w-full max-w-7xl mx-auto px-4 py-8 flex flex-col items-start">
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-12 w-full">
             {spaces.map(({ space }) => {
-              console.log(space)
               const circleStyle = { background: space.settings?.theme?.style?.backgroundColor };
               return (
                 <Link 

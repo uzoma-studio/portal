@@ -204,6 +204,7 @@ const Index = () => {
                             setShowEditSpaceModal={setShowEditSpaceModal}
                             saveSpaceEdits={saveSpaceEdits}
                             isSaving={isSaving}
+                            setCurrentPageId={setCurrentPageId}
                         />
                     </StyledHeaderContainer>
                     :

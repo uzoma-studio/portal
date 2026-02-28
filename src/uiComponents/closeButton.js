@@ -26,7 +26,8 @@ const StyledButton = styled.button`
  * @returns {JSX.Element} The rendered close button
  */
 
-const CloseButton = ({ closeFn, position }) => {
+// TODO: We shouldn't have to set position so manually like this
+const CloseButton = ({ closeFn, position={x: '95', y: '0'} }) => {
   return (
     <StyledButton onClick={closeFn} $position={position}>
         x
