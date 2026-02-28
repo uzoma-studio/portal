@@ -7,9 +7,8 @@ export const StyledModalOverlay = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 50;
+    z-index: ${props => props.$zIndex ?? 50};
     background-color: rgba(0, 0, 0, 0.5);
-}
 `
 
 export const StyledModalContent = styled.div`

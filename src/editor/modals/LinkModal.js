@@ -87,7 +87,7 @@ const LinkModal = ({
 
     if (isAddingPage) {
         return (
-            <ModalWrapper tabName='Add Page' modalCloseFn={() => setIsAddingPage(false)} isFullHeight={true} style={{ zIndex: 1602 }}>
+            <ModalWrapper tabName='Add Page' modalCloseFn={() => setIsAddingPage(false)} isFullHeight={true} zIndex={1601}>
                 <AddPageModal
                     setIsModalOpen={setIsAddingPage}
                     isCreatePageMode={true}

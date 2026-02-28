@@ -2,9 +2,9 @@ import React from 'react'
 import { StyledModalOverlay, StyledModalContent, StyledTabButton } from '../styles'
 import CloseButton from '@/uiComponents/closeButton'
 
-const ModalWrapper = ({ children, tabName, modalCloseFn, isCreatePageMode=true, isFullHeight=false }) => {
-  return (
-    <StyledModalOverlay onClick={modalCloseFn}>
+const ModalWrapper = ({ children, tabName, modalCloseFn, isCreatePageMode=true, isFullHeight=false, zIndex }) => {
+    return (
+        <StyledModalOverlay onClick={modalCloseFn} $zIndex={zIndex}>
         <StyledModalContent
             $isCreatePageMode={isCreatePageMode}
             $isFullHeight={isFullHeight}
