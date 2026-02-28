@@ -41,6 +41,19 @@ export const getSpaces = async () => {
     }
 }
 
+export const getFeaturedSpaces = async () => {
+    try {
+        const res = await payload.find({
+            collection: 'featured-spaces',
+            sort: 'displayOrder'
+        })
+        return res.docs?.[0]?.spaces || []
+    } catch (error) {
+        console.error('Error fetching featured spaces:', error)
+        return []
+    }
+}
+
 export const fetchPages = async (spaceId) => {
     const result = await payload.find({
         collection: 'pages',
@@ -54,11 +67,16 @@ export const fetchPages = async (spaceId) => {
 }
 
 export const getContent = async (type, limit=10) => {
-    const result = await payload.find({
+    try {
+        const result = await payload.find({
         collection: type,
         limit
-    })
+    }) 
     return result
+    } catch (error) {
+        console.error(`Error fetching ${type}:`, error)
+        return { docs: [] }
+    }
 }
 
 export const getContentByPageContentType = async (type, contentTypeId, sortFn='-createdAt', limit=10) => {

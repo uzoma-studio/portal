@@ -78,6 +78,7 @@ export interface Config {
     subscriptions: Subscription;
     users: User;
     spaces: Space;
+    'featured-spaces': FeaturedSpace;
     spaceMemberships: SpaceMembership;
     siteSettings: SiteSetting;
     icons: Icon;
@@ -99,6 +100,7 @@ export interface Config {
     subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     spaces: SpacesSelect<false> | SpacesSelect<true>;
+    'featured-spaces': FeaturedSpacesSelect<false> | FeaturedSpacesSelect<true>;
     spaceMemberships: SpaceMembershipsSelect<false> | SpaceMembershipsSelect<true>;
     siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     icons: IconsSelect<false> | IconsSelect<true>;
@@ -533,6 +535,19 @@ export interface Subscription {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featured-spaces".
+ */
+export interface FeaturedSpace {
+  id: number;
+  spaces: {
+    space: number | Space;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "spaceMemberships".
  */
 export interface SpaceMembership {
@@ -605,6 +620,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'spaces';
         value: number | Space;
+      } | null)
+    | ({
+        relationTo: 'featured-spaces';
+        value: number | FeaturedSpace;
       } | null)
     | ({
         relationTo: 'spaceMemberships';
@@ -871,6 +890,20 @@ export interface SpacesSelect<T extends boolean = true> {
               y?: T;
             };
         linkToPage?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featured-spaces_select".
+ */
+export interface FeaturedSpacesSelect<T extends boolean = true> {
+  spaces?:
+    | T
+    | {
+        space?: T;
         id?: T;
       };
   updatedAt?: T;

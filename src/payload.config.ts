@@ -25,6 +25,7 @@ import { SpaceMemberships } from './collections/SpaceMembers'
 import { Icons } from './collections/Icons'
 import { Updates } from './collections/Updates'
 import { ProductImages } from './collections/ProductImages'
+import { FeaturedSpaces } from './collections/FeaturedSpaces'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -99,6 +100,12 @@ export default buildConfig({
     },
     {
       ...Spaces,
+      admin: {
+        group: 'Settings',
+      },
+    },
+    {
+      ...FeaturedSpaces,
       admin: {
         group: 'Settings',
       },
