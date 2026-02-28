@@ -33,7 +33,7 @@ import { updateEntry } from '@root/data/createContent.server';
 import { handleMediaUpload } from '@/utils/helpers';
 
 const Index = () => {
-    const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages, setImages, texts: spaceTexts, setTexts } = useSpace()
+    const { space, pages, settings, isCurrentUserSpaceOwner, images: spaceImages, texts: spaceTexts, message, setMessage} = useSpace()
     const { user } = useAuth()
 
     const containerRef = useRef(null)
@@ -55,7 +55,6 @@ const Index = () => {
 
     const [currentEditImageId, setCurrentEditImageId] = useState(null)
     const [currentEditTextId, setCurrentEditTextId] = useState(null)
-    const [message, setMessage] = useState({ type: '', text: '' });
     const [selectedElementPosition, setSelectedElementPosition] = useState(null)
     // const [showImageDialogModal, setShowImageDialogModal] = useState(false)
 
@@ -311,7 +310,9 @@ const Index = () => {
                         setMessage={setMessage}
                     />
 
-                    <Toolbar backgroundDimensions={backgroundDimensions} />
+                    <Toolbar 
+                        backgroundDimensions={backgroundDimensions} 
+                    />
                     {message.text && (
                         <StyledMessage className={message.type}>{message.text}</StyledMessage>
                     )}

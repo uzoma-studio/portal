@@ -16,6 +16,8 @@ export const SpaceProvider = ({ children }) => {
   const [settings, setSettings] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [lastCreatedPage, setLastCreatedPage] = useState(null);
+  const [message, setMessage] = useState({ type: '', text: '' });
 
   const { user } = useAuth()
   const [spaceUser, setSpaceUser] = useState(null)
@@ -69,7 +71,11 @@ export const SpaceProvider = ({ children }) => {
       user: spaceUser,
       isCurrentUserSpaceOwner,
       setIsCurrentUserSpaceOwner,
-      loadingState: { isLoading, error } 
+      loadingState: { isLoading, error },
+      lastCreatedPage,
+      setLastCreatedPage,
+      message,
+      setMessage
     }}>
       {children}
     </SpaceContext.Provider>

@@ -34,7 +34,7 @@ import {
 } from '../styles';
 
 const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }) => {
-    const { space, settings, setPages } = useSpace()
+    const { space, settings, setPages, setLastCreatedPage, message: spaceMessage, setMessage: setSpaceMessage } = useSpace()
 
     const [pageBodyField, setPageBodyField] = useState(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -185,9 +185,19 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                 if (type === 'success') {
                     setPages(prevPages => [...prevPages, createdPage]);
 
+                    if (setLastCreatedPage && createdPage?.id) {
+                        setLastCreatedPage({
+                            id: createdPage.id,
+                            title: createdPage.title,
+                            ts: Date.now()
+                        });
+                    }
+
                     setMessage({ type, text: message });
-                        setTimeout(() => {
-                            handleClose();
+                    setSpaceMessage({ type, text: message });
+                    setTimeout(() => {
+                        handleClose();
+                        setSpaceMessage({ type: '', text: '' });
                     }, 1500);
                 } else {
                     setMessage({ type, text: message });
@@ -516,12 +526,6 @@ const AddPageModal = ({ setIsModalOpen, isCreatePageMode, pageData, pageCoords }
                         </>
                     }
                 </StyledSettingsSection>
-
-                {message.text && (
-                    <StyledMessage className={message.type}>
-                        {message.text}
-                    </StyledMessage>
-                )}
 
                 <div style={{ display: 'flex', gap: '8px' }}>
                     <StyledSubmitButton 
