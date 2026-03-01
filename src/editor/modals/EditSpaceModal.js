@@ -11,6 +11,7 @@ import {
   StyledColorInput,
   StyledColorLabel,
   StyledColorPreview,
+  StyledTextArea,
 } from '../styles';
 import { StyledMessage } from '@/styles/rootStyles';
 import { useSpace } from '@/context/SpaceProvider';
@@ -31,12 +32,15 @@ const fonts = [
 
 const EditSpaceModal = ({ modalCloseFn }) => {
 
-    const { space, settings, setSettings } = useSpace()
+    const { space, setSpace, settings, setSettings } = useSpace()
     
     // UseRef to keep values constant across renders
     const defaultFormData = useRef(settings?.theme?.style || themeSettings.style).current;
 
     const [formData, setFormData] = useState(defaultFormData);
+    const [spaceName, setSpaceName] = useState(space?.name || '');
+    const [spaceDomain, setSpaceDomain] = useState(space?.domain || '');
+    const [spaceDescription, setSpaceDescription] = useState(space?.description || '');
     const [message, setMessage] = useState({ type: '', text: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { saveDraft } = useSaveDraft()
@@ -76,6 +80,9 @@ const EditSpaceModal = ({ modalCloseFn }) => {
             style:  { ...defaultFormData }
         }
     });
+    setSpaceName(space?.name || '');
+    setSpaceDomain(space?.domain || '');
+    setSpaceDescription(space?.description || '');
     modalCloseFn()
   };
 
@@ -83,10 +90,12 @@ const EditSpaceModal = ({ modalCloseFn }) => {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage({ type: '', text: '' });
-    // Simulate save
 
     const spaceData = {
         ...space,
+        name: spaceName,
+        domain: spaceDomain,
+        description: spaceDescription,
         settings: {
             ...space.settings,
             theme: {
@@ -100,7 +109,8 @@ const EditSpaceModal = ({ modalCloseFn }) => {
 
         if (updatedSpace?.id) {
             setSettings(spaceData.settings)
-            saveDraft(undefined, undefined, undefined, spaceData.settings);
+            setSpace(spaceData);
+            saveDraft(undefined, undefined, undefined, spaceData);
             setMessage({ 
                 type: 'success', 
                 text: 'Space edited successfully!' 
@@ -127,6 +137,48 @@ const EditSpaceModal = ({ modalCloseFn }) => {
     <ModalWrapper tabName='Space Settings' modalCloseFn={modalCloseFn} isFullHeight={true}>
       <div className="mt-4">
         <StyledForm onSubmit={handleSubmit}>
+          <StyledSettingsSection>
+            <StyledLabel className="block" style={{marginBottom: '2rem'}}>Space Info</StyledLabel>
+            <StyledSettingsGrid>
+              <div>
+                <StyledLabel htmlFor="spaceName" className="block">Space Name</StyledLabel>
+                <StyledInput
+                  id="spaceName"
+                  type="text"
+                  name="spaceName"
+                  value={spaceName}
+                  onChange={(e) => setSpaceName(e.target.value)}
+                  placeholder="Space Name"
+                />
+              </div>
+              <div>
+                <StyledLabel htmlFor="spaceDomain" className="block">Space Domain</StyledLabel>
+                <StyledInput
+                  id="spaceDomain"
+                  type="text"
+                  name="spaceDomain"
+                  value={spaceDomain}
+                  onChange={(e) => setSpaceDomain(e.target.value)}
+                  placeholder="Space Domain"
+                  disabled={true}
+                />
+              </div>
+            </StyledSettingsGrid>
+            <div style={{marginTop: '1rem'}}>
+              <StyledLabel htmlFor="spaceDescription" className="block">Space Description</StyledLabel>
+              <br />
+              <StyledTextArea
+                id="spaceDescription"
+                type="text"
+                name="spaceDescription"
+                value={spaceDescription}
+                onChange={(e) => setSpaceDescription(e.target.value)}
+                placeholder="Enter space description"
+                style={{ width: '100%' }}
+              />
+            </div>
+          </StyledSettingsSection>
+
           <StyledSettingsSection>
             <StyledLabel className="block mb-2">Typography</StyledLabel>
             <StyledSettingsGrid>

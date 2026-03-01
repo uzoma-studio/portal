@@ -20,22 +20,13 @@ export const Spaces: CollectionConfig = {
       unique: true,
     },
     {
+      name: 'description',
+      type: 'text'
+    },
+    {
       name: 'settings',
       type: 'group',
       fields: [
-        {
-          name: 'siteTitle',
-          type: 'text',
-        },
-        {
-          name: 'siteDescription',
-          type: 'text',
-        },
-        {
-            name: 'backgroundImage',
-            type: 'upload',
-            relationTo: 'media',
-        },
         {
           name: 'theme',
           type: 'json',
@@ -55,6 +46,7 @@ export const Spaces: CollectionConfig = {
     {
       name: 'texts',
       type: 'json',
+      label: 'Texts',
       defaultValue: defaultText
     },
     {

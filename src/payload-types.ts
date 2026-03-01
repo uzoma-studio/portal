@@ -283,10 +283,8 @@ export interface Space {
   id: number;
   name: string;
   domain: string;
+  description?: string | null;
   settings?: {
-    siteTitle?: string | null;
-    siteDescription?: string | null;
-    backgroundImage?: (number | null) | Media;
     theme?:
       | {
           [k: string]: unknown;
@@ -863,12 +861,10 @@ export interface UsersSelect<T extends boolean = true> {
 export interface SpacesSelect<T extends boolean = true> {
   name?: T;
   domain?: T;
+  description?: T;
   settings?:
     | T
     | {
-        siteTitle?: T;
-        siteDescription?: T;
-        backgroundImage?: T;
         theme?: T;
       };
   owner?: T;

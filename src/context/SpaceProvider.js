@@ -58,6 +58,7 @@ export const SpaceProvider = ({ children }) => {
   return (
     <SpaceContext.Provider value={{ 
       space,
+      setSpace,
       pages, 
       setPages,
       posts,

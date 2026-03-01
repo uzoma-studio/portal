@@ -265,7 +265,7 @@ export const parseTimeFromISO = (dateString, timezone = null, format = "12h") =>
   };
 
 // Draft space edits to local storage (utility function - use useSaveDraft hook in components)
-export const saveDraftToLocalStorageUtil = (spaceId, { images, texts, pages, settings }) => {
+export const saveDraftToLocalStorageUtil = (spaceId, { images, texts, pages, space }) => {
   if (typeof window === 'undefined') return;
 
   try {
@@ -274,7 +274,7 @@ export const saveDraftToLocalStorageUtil = (spaceId, { images, texts, pages, set
       images: images || [],
       texts: texts || [],
       pages: pages || [],
-      settings: settings || null,
+      space: space || null,
       savedAt: Date.now()
     };
     localStorage.setItem(`space-draft-${spaceId}`, JSON.stringify(draft));
