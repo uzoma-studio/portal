@@ -8,6 +8,7 @@ import AddTextModal from '../modals/AddTextModal'
 
 import { StyledToolbarButton } from '../styles'
 import MenuButtonContainer from './components/MenuButtonContainer'
+import BackgroundColorButton from './components/BackgroundColorButton'
 
 import { FaFileMedical } from "react-icons/fa6";
 import { FaImage } from "react-icons/fa";
@@ -35,6 +36,7 @@ const Toolbar = ({ pageData, backgroundDimensions }) => {
     return (
         <>
             <StyledToolbarContainer>
+                <BackgroundColorButton />
                 <MenuButtonContainer tooltipText="Add text" tooltipPosition="left">
                     <StyledToolbarButton onClick={() => setCurrentOpenModal('text')}>
                         <RxText />
