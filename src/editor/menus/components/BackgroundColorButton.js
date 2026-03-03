@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useSpace } from '@/context/SpaceProvider'
 import { useSaveDraft } from '@/hooks/useSaveDraft'
 import { StyledToolbarButton } from '../../styles'
@@ -6,31 +6,35 @@ import MenuButtonContainer from './MenuButtonContainer'
 import styled from 'styled-components'
 
 const BackgroundColorButton = () => {
-  const { space, setSpace, setSettings } = useSpace()
+  const { space, settings, setSpace, setSettings } = useSpace()
   const { saveDraft } = useSaveDraft()
 
-  const themeStyle = space?.settings?.theme?.style || {}
-  const [backgroundColor, setBackgroundColor] = useState(themeStyle.backgroundColor || '#ffffff')
+  const themeStyle = settings?.theme?.style || space?.settings?.theme?.style || {}
+  const backgroundColor = themeStyle.backgroundColor || '#ffffff'
 
   const handleBackgroundColorChange = (event) => {
-    const newColor = event.target.value
-    setBackgroundColor(newColor)
-    const updatedSpace = {
-      ...space,
-      settings: {
-        ...space?.settings,
-        theme: {
-          ...space?.settings?.theme,
-          style: {
-            ...space?.settings?.theme?.style,
-            backgroundColor: newColor,
-          },
+    const newColor = event.target.value;
+    setSettings(prevSettings => ({
+      ...prevSettings,
+      theme: {
+        ...prevSettings?.theme,
+        style: {
+          ...prevSettings?.theme?.style,
+          backgroundColor: newColor,
         },
       },
+    }));
+  }
+
+  const handleColorPickerClosed = () => {
+    if (!space) return;
+
+    const updatedSpace = {
+      ...space,
+      settings: settings || space.settings,
     }
 
     setSpace(updatedSpace);
-    setSettings(updatedSpace.settings)
     saveDraft(undefined, undefined, undefined, updatedSpace)
   }
 
@@ -41,7 +45,8 @@ const BackgroundColorButton = () => {
             aria-label="Change background color"
             value={backgroundColor}
             onChange={handleBackgroundColorChange}
-            $backgroundColor={backgroundColor}
+            onBlur={handleColorPickerClosed}
+            style={{ backgroundColor }}
         />
     </MenuButtonContainer>
   )
@@ -55,7 +60,6 @@ const StyledColorInputButton = styled.input`
   appearance: none;
   border: 2px solid var(--primary-color);
   box-shadow: none;
-  background-color: ${props => props.$backgroundColor || '#ffffff'};
   width: 56px;
   height: 56px;
   padding: 0;
