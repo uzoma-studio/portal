@@ -5,6 +5,7 @@ import * as migration_20250620_091055_space_editor_migration from './20250620_09
 import * as migration_20250626_204043_adds_columns_to_pages from './20250626_204043_adds_columns_to_pages';
 import * as migration_20250823_143531_adds_space_images from './20250823_143531_adds_space_images';
 import * as migration_20260216_141538 from './20260216_141538';
+import * as migration_20260303_215402 from './20260303_215402';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20260216_141538.up,
     down: migration_20260216_141538.down,
-    name: '20260216_141538'
+    name: '20260216_141538',
+  },
+  {
+    up: migration_20260303_215402.up,
+    down: migration_20260303_215402.down,
+    name: '20260303_215402'
   },
 ];
