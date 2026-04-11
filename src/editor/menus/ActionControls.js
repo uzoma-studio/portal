@@ -71,6 +71,7 @@ const ActionControls = ({ isBuildMode, setIsBuildMode, setShowEditSpaceModal, sa
                 setCurrentPageId={setCurrentPageId}
             />
       }
+      {/* Move PagesSidebar to its own component and toggle between showing hamburger menu and showing the sidebar */}
     </>
   )
 }
