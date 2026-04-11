@@ -10,12 +10,13 @@ const PortalJumpingSection = () => {
     useEffect(() => {
         const fetchSpaces = async () => {
             try {
-                const response = await getSpaces()
+                const response = await getFeaturedSpaces()
                 setSpaces(response || [])
             } catch (error) {
                 console.error(error)
             }
         }
+        console.log(response)
 
         fetchSpaces()
     }, [])
