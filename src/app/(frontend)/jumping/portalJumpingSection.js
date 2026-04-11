@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { getFeaturedSpaces } from '../../../../data/fetchContent.server'
+import { getSpaces, getFeaturedSpaces } from '../../../../data/fetchContent.server'
 
 const PortalJumpingSection = () => {
     const [spaces, setSpaces] = useState([])
@@ -10,7 +10,7 @@ const PortalJumpingSection = () => {
     useEffect(() => {
         const fetchSpaces = async () => {
             try {
-                const response = await getFeaturedSpaces()
+                const response = await getSpaces()
                 setSpaces(response || [])
             } catch (error) {
                 console.error(error)
