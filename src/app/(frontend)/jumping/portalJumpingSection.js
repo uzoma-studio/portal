@@ -16,7 +16,6 @@ const PortalJumpingSection = () => {
                 console.error(error)
             }
         }
-        console.log(response)
 
         fetchSpaces()
     }, [])
