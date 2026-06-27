@@ -74,6 +74,8 @@ const Index = () => {
         setSettings,
         setImages,
         setTexts,
+        setCurrentEditImageId,
+        setCurrentEditTextId,
     });
 
     const currentPage = pages.find(p => p.id === currentPageId)

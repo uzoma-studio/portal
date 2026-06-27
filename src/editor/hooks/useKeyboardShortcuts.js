@@ -28,6 +28,8 @@ const useKeyboardShortcuts = ({
   setSettings,
   setImages,
   setTexts,
+  setCurrentEditImageId,
+  setCurrentEditTextId,
 }) => {
   const [historyIndex, setHistoryIndex] = useState(-1)
   const historyRef = useRef([])
@@ -137,6 +139,23 @@ const useKeyboardShortcuts = ({
     }
   }, [setImages, setTexts])
 
+  const handleDelete = useCallback(() => {
+    if (selectedImageId) {
+      setImages((prev) => prev.filter((img) => img.id !== selectedImageId))
+      if (setCurrentEditImageId) {
+        setCurrentEditImageId(null)
+      }
+      return
+    }
+
+    if (selectedTextId) {
+      setTexts((prev) => prev.filter((txt) => txt.id !== selectedTextId))
+      if (setCurrentEditTextId) {
+        setCurrentEditTextId(null)
+      }
+    }
+  }, [selectedImageId, selectedTextId, setImages, setTexts, setCurrentEditImageId, setCurrentEditTextId])
+
   useEffect(() => {
     if (!space?.id) return
     if (isApplyingHistoryRef.current) return
@@ -185,11 +204,17 @@ const useKeyboardShortcuts = ({
         handlePaste()
         return
       }
+
+      if (!isMeta && (key === 'backspace' || key === 'delete')) {
+        event.preventDefault()
+        handleDelete()
+        return
+      }
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [isBuildMode, handleUndo, handleRedo, handleCopy, handlePaste])
+  }, [isBuildMode, handleUndo, handleRedo, handleCopy, handlePaste, handleDelete])
 
   return {
     canUndo: historyIndex > 0,
