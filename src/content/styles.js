@@ -106,6 +106,11 @@ export const StyledHeaderContainer = styled.div`
   }
 `;
 
+export const StyledControlsContainer = styled.div`
+  display: flex;
+  gap: 0.75rem;
+`;
+
 export const StyledPortalLogo = styled(Link)`
   position: relative;
   display: flex;

@@ -1,39 +1,63 @@
-import React from 'react'
-import styled from 'styled-components'
-import { MdClose } from 'react-icons/md'
+import React, { useState, useEffect } from 'react'
+import styled, { css } from 'styled-components'
+import { MdMenu } from 'react-icons/md'
 import { useSpace } from '@/context/SpaceProvider'
 import CloseButton from '@/uiComponents/closeButton'
 
-const PagesSidebar = ({ onClose, setCurrentPageId }) => {
+const PagesSidebar = ({ setCurrentPageId }) => {
 
-    const { pages } = useSpace()
+    const { pages, lastCreatedPage } = useSpace()
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+    const [isHamburgerAnimating, setIsHamburgerAnimating] = useState(false)
+
+    useEffect(() => {
+      if (!lastCreatedPage) return;
+
+      setIsHamburgerAnimating(true);
+      const timer = setTimeout(() => {
+        setIsHamburgerAnimating(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }, [lastCreatedPage?.ts]);
+
   return (
-    <>
-      <Overlay onClick={onClose} />
-      <StyledSidebar>
-        <SidebarHeader>
-          <h3>Pages</h3>
-          <CloseButton closeFn={onClose} position={{x: '90', y: '0.5'}} />
-        </SidebarHeader>
-        <PagesList>
-          {pages && pages.length > 0 ? (
-            pages.map((page) => (
-              <PageItem
-                key={page.id}
-                onClick={() => {
-                  setCurrentPageId(page.id);
-                  onClose()
-                }}
-              >
-                {page.title || 'Untitled Page'}
-              </PageItem>
-            ))
-          ) : (
-            <NoPages>No pages in this space</NoPages>
-          )}
-        </PagesList>
-      </StyledSidebar>
-    </>
+    isSidebarOpen ?
+      <>
+        <Overlay onClick={() => setIsSidebarOpen(false)} />
+        <StyledSidebar>
+          <SidebarHeader>
+            <h3>Pages</h3>
+            <CloseButton closeFn={() => setIsSidebarOpen(false)} position={{x: '90', y: '0.5'}} />
+          </SidebarHeader>
+          <PagesList>
+            {pages && pages.length > 0 ? (
+              pages.map((page) => (
+                <PageItem
+                  key={page.id}
+                  onClick={() => {
+                    setCurrentPageId(page.id);
+                    setIsSidebarOpen(false);
+                  }}
+                >
+                  {page.title || 'Untitled Page'}
+                </PageItem>
+              ))
+            ) : (
+              <NoPages>No pages in this space</NoPages>
+            )}
+          </PagesList>
+        </StyledSidebar>
+      </>
+      :
+      <HamburgerButton
+          $isAnimating={isHamburgerAnimating}
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          title="Open pages"
+          aria-label="Open pages sidebar"
+          >
+          <MdMenu />
+      </HamburgerButton>
   )
 }
 
@@ -112,3 +136,49 @@ const NoPages = styled.div`
   color: #999;
   font-size: 0.9rem;
 `
+
+const HamburgerButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  position: relative;
+  overflow: visible;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #ef4444;
+    opacity: 0;
+    right: 3px;
+    bottom: 6px;
+    transform: scale(0.6);
+    pointer-events: none;
+  }
+
+  &:hover {
+    color: var(--body-text-color);
+  }
+
+  &:active {
+    color: #666;
+  }
+
+  ${props => props.$isAnimating && css`
+    animation: ${pulse} 0.7s ease-out;
+
+    &::after {
+      opacity: 1;
+      animation: ${pulseCircle} 2s ease-in-out infinite;
+    }
+  `}
+`;

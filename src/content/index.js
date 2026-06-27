@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image';
 
-import { StyledDisplayModeWrapper, StyledHeaderContainer, StyledPortalLogo } from './styles'
+import { StyledDisplayModeWrapper, StyledHeaderContainer, StyledPortalLogo, StyledControlsContainer } from './styles'
 import { StyledMessage } from '@/styles/rootStyles';
 
 import RenderPages from '@/utils/renderPages';
@@ -32,6 +32,7 @@ import UserProfile from '@/widgets/Authentication/UserProfile';
 import { updateEntry } from '@root/data/createContent.server';
 import { handleMediaUpload, loadDraftFromLocalStorage, clearDraftFromLocalStorage } from '@/utils/helpers';
 import useKeyboardShortcuts from '@/editor/hooks/useKeyboardShortcuts';
+import PagesSidebar from '@/editor/menus/components/PagesSidebar'
 
 const Index = () => {
     const { space, setSpace, pages, settings, setSettings, isCurrentUserSpaceOwner, images: spaceImages, texts: spaceTexts, message, setMessage, setTexts, setImages } = useSpace()
@@ -228,31 +229,44 @@ const Index = () => {
             backgroundDimensions={backgroundDimensions}
             setBackgroundDimensions={setBackgroundDimensions}
         >
+            <StyledHeaderContainer>
+                {
+                    isCurrentUserSpaceOwner ? (
+                        <>
+                            {portalLogo}
 
-            {
-                isCurrentUserSpaceOwner ?
-                    <StyledHeaderContainer $theme={theme}>
-                        { portalLogo }
-                        { isBuildMode && <h1>{space.name}</h1> }
-                        <ActionControls 
-                            isBuildMode={isBuildMode} 
-                            setIsBuildMode={setIsBuildMode} 
-                            setShowEditSpaceModal={setShowEditSpaceModal}
-                            saveSpaceEdits={saveSpaceEdits}
-                            isSaving={isSaving}
-                            setCurrentPageId={setCurrentPageId}
-                        />
-                    </StyledHeaderContainer>
-                    :
-                    // TODO: Only show button when space is not in publish mode - reference mmm.page
-                    <StyledHeaderContainer>
-                        {user ? (
-                            <UserProfile />
-                        ) : 
-                            portalLogo
-                        }
-                    </StyledHeaderContainer>
-            }
+                            <h1>{space.name}</h1>
+
+                            <StyledControlsContainer>
+                                <ActionControls
+                                    isBuildMode={isBuildMode}
+                                    setIsBuildMode={setIsBuildMode}
+                                    setShowEditSpaceModal={setShowEditSpaceModal}
+                                    saveSpaceEdits={saveSpaceEdits}
+                                    isSaving={isSaving}
+                                    setCurrentPageId={setCurrentPageId}
+                                />
+                                <PagesSidebar
+                                    setCurrentPageId={setCurrentPageId}
+                                />
+                                <UserProfile />
+                            </StyledControlsContainer>
+                        </>
+                    ):
+                    (
+                        <>
+                            { portalLogo }
+                            <p>{` `}</p>
+                            <StyledControlsContainer>
+                                <PagesSidebar
+                                    setCurrentPageId={setCurrentPageId}
+                                />
+                                { user && <UserProfile /> }
+                            </StyledControlsContainer>
+                        </>
+                    )
+                }
+            </StyledHeaderContainer>
 
 
             {/* Render Pages in their display modes TODO: Move to RenderPages component */}
