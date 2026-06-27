@@ -30,7 +30,8 @@ import RenderSpaceTexts from '@/content/renderers/RenderSpaceTexts'
 import UserProfile from '@/widgets/Authentication/UserProfile';
 
 import { updateEntry } from '@root/data/createContent.server';
-import { handleMediaUpload, saveDraftToLocalStorageUtil, loadDraftFromLocalStorage, clearDraftFromLocalStorage } from '@/utils/helpers';
+import { handleMediaUpload, loadDraftFromLocalStorage, clearDraftFromLocalStorage } from '@/utils/helpers';
+import useKeyboardShortcuts from '@/editor/hooks/useKeyboardShortcuts';
 
 const Index = () => {
     const { space, setSpace, pages, settings, setSettings, isCurrentUserSpaceOwner, images: spaceImages, texts: spaceTexts, message, setMessage, setTexts, setImages } = useSpace()
@@ -60,6 +61,18 @@ const Index = () => {
 
     const [backgroundDimensions, setBackgroundDimensions] = useState({ width: 0, height: 0 });
     const [hasDraftRestored, setHasDraftRestored] = useState(false);
+
+    useKeyboardShortcuts({
+        isBuildMode,
+        space,
+        settings,
+        spaceImages,
+        spaceTexts,
+        setSpace,
+        setSettings,
+        setImages,
+        setTexts,
+    });
 
     const currentPage = pages.find(p => p.id === currentPageId)
 
