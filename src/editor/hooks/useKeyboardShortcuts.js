@@ -22,6 +22,8 @@ const useKeyboardShortcuts = ({
   settings,
   spaceImages,
   spaceTexts,
+  selectedImageId,
+  selectedTextId,
   setSpace,
   setSettings,
   setImages,
@@ -29,6 +31,7 @@ const useKeyboardShortcuts = ({
 }) => {
   const [historyIndex, setHistoryIndex] = useState(-1)
   const historyRef = useRef([])
+  const clipboardRef = useRef(null)
   const isApplyingHistoryRef = useRef(false)
 
   const createSnapshot = useCallback(() => {
@@ -78,6 +81,62 @@ const useKeyboardShortcuts = ({
     applySnapshot(entry.snapshot)
   }, [historyIndex, applySnapshot])
 
+  const createPastedPosition = (position) => {
+    if (!position || typeof position.x !== 'number' || typeof position.y !== 'number') {
+      return { x: 5, y: 5 }
+    }
+
+    return {
+      x: Math.min(95, position.x + 5),
+      y: Math.min(95, position.y + 5),
+    }
+  }
+
+  const buildNewId = (prefix) => `${prefix}_${Date.now()}_${Math.round(Math.random() * 10000)}`
+
+  const handleCopy = useCallback(() => {
+    if (selectedImageId) {
+      const image = spaceImages.find((img) => img.id === selectedImageId)
+      if (image) {
+        clipboardRef.current = { type: 'image', value: cloneSnapshot(image) }
+      }
+      return
+    }
+
+    if (selectedTextId) {
+      const text = spaceTexts.find((txt) => txt.id === selectedTextId)
+      if (text) {
+        clipboardRef.current = { type: 'text', value: cloneSnapshot(text) }
+      }
+    }
+  }, [selectedImageId, selectedTextId, spaceImages, spaceTexts])
+
+  const handlePaste = useCallback(() => {
+    const clipboard = clipboardRef.current
+    if (!clipboard) return
+
+    if (clipboard.type === 'image') {
+      const copiedImage = clipboard.value
+      const patch = {
+        ...cloneSnapshot(copiedImage),
+        id: buildNewId('preview'),
+        position: createPastedPosition(copiedImage.position),
+      }
+      setImages((prev) => [...prev, patch])
+      return
+    }
+
+    if (clipboard.type === 'text') {
+      const copiedText = clipboard.value
+      const patch = {
+        ...cloneSnapshot(copiedText),
+        id: buildNewId('text'),
+        position: createPastedPosition(copiedText.position),
+      }
+      setTexts((prev) => [...prev, patch])
+    }
+  }, [setImages, setTexts])
+
   useEffect(() => {
     if (!space?.id) return
     if (isApplyingHistoryRef.current) return
@@ -101,21 +160,36 @@ const useKeyboardShortcuts = ({
 
     const onKeyDown = (event) => {
       const isMeta = event.metaKey || event.ctrlKey
-      if (!isMeta || event.key.toLowerCase() !== 'z') return
+      const key = event.key.toLowerCase()
 
       if (isEditableElement(event.target)) return
 
-      event.preventDefault()
-      if (event.shiftKey) {
-        handleRedo()
-      } else {
-        handleUndo()
+      if (isMeta && key === 'z') {
+        event.preventDefault()
+        if (event.shiftKey) {
+          handleRedo()
+        } else {
+          handleUndo()
+        }
+        return
+      }
+
+      if (isMeta && key === 'c') {
+        event.preventDefault()
+        handleCopy()
+        return
+      }
+
+      if (isMeta && key === 'v') {
+        event.preventDefault()
+        handlePaste()
+        return
       }
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [isBuildMode, handleUndo, handleRedo])
+  }, [isBuildMode, handleUndo, handleRedo, handleCopy, handlePaste])
 
   return {
     canUndo: historyIndex > 0,

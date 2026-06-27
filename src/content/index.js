@@ -68,6 +68,8 @@ const Index = () => {
         settings,
         spaceImages,
         spaceTexts,
+        selectedImageId: currentEditImageId,
+        selectedTextId: currentEditTextId,
         setSpace,
         setSettings,
         setImages,
