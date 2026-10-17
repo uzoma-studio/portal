@@ -124,6 +124,48 @@ export const handleMediaUpload = async (formImage, returnFullMediaObj = false) =
     }
 };
 
+const DRAFT_IMAGES_DB = 'portal-space-draft-images';
+const DRAFT_IMAGES_STORE = 'images';
+
+const openDraftImagesDB = () => new Promise((resolve, reject) => {
+  const request = indexedDB.open(DRAFT_IMAGES_DB, 1);
+  request.onupgradeneeded = () => request.result.createObjectStore(DRAFT_IMAGES_STORE);
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+
+export const saveDraftImage = async (id, file) => {
+  const db = await openDraftImagesDB();
+  await new Promise((resolve, reject) => {
+    const request = db.transaction(DRAFT_IMAGES_STORE, 'readwrite').objectStore(DRAFT_IMAGES_STORE).put(file, id);
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
+  db.close();
+};
+
+export const getDraftImage = async (id) => {
+  const db = await openDraftImagesDB();
+  const file = await new Promise((resolve, reject) => {
+    const request = db.transaction(DRAFT_IMAGES_STORE, 'readonly').objectStore(DRAFT_IMAGES_STORE).get(id);
+    request.onsuccess = () => resolve(request.result || null);
+    request.onerror = () => reject(request.error);
+  });
+  db.close();
+  return file;
+};
+
+export const deleteDraftImage = async (id) => {
+  if (!id || typeof indexedDB === 'undefined') return;
+  const db = await openDraftImagesDB();
+  await new Promise((resolve, reject) => {
+    const request = db.transaction(DRAFT_IMAGES_STORE, 'readwrite').objectStore(DRAFT_IMAGES_STORE).delete(id);
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
+  db.close();
+};
+
 export const handleMediaDelete = async (mediaId) => {
     if (!mediaId) {
       console.warn('Invalid media ID provided for deletion.');

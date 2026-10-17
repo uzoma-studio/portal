@@ -30,7 +30,7 @@ import RenderSpaceTexts from '@/content/renderers/RenderSpaceTexts'
 import UserProfile from '@/widgets/Authentication/UserProfile';
 
 import { updateEntry } from '@root/data/createContent.server';
-import { handleMediaUpload, loadDraftFromLocalStorage, clearDraftFromLocalStorage } from '@/utils/helpers';
+import { handleMediaUpload, loadDraftFromLocalStorage, clearDraftFromLocalStorage, getDraftImage, deleteDraftImage } from '@/utils/helpers';
 import useKeyboardShortcuts from '@/editor/hooks/useKeyboardShortcuts';
 import PagesSidebar from '@/editor/menus/components/PagesSidebar'
 
@@ -83,10 +83,20 @@ const Index = () => {
 
     // Restore draft on mount
     useEffect(() => {
-        if (space?.id && isCurrentUserSpaceOwner && !hasDraftRestored) {
-            const draft = loadDraftFromLocalStorage(space.id);
-            if (draft) {
-                setImages(draft.images);
+        const restoreDraft = async () => {
+            if (space?.id && isCurrentUserSpaceOwner && !hasDraftRestored) {
+                const draft = loadDraftFromLocalStorage(space.id);
+                if (!draft) return;
+                const restoredImages = await Promise.all((draft.images || []).map(async image => {
+                    if (!image.localId) return image;
+                    const file = await getDraftImage(image.localId);
+                    return file ? {
+                        ...image,
+                        file,
+                        image: { ...image.image, url: URL.createObjectURL(file) },
+                    } : image;
+                }));
+                setImages(restoredImages);
                 setTexts(draft.texts);
                 if (draft.space) {
                     setSpace(draft.space);
@@ -96,7 +106,8 @@ const Index = () => {
                 }
                 setHasDraftRestored(true);
             }
-        }
+        };
+        restoreDraft();
     }, [space?.id, isCurrentUserSpaceOwner]);
 
     const getDisplayMode = (pageData) => {
@@ -143,8 +154,10 @@ const Index = () => {
                 if (image.isEdited) {
                     if (image.isPreview) {
                         try {
-                            const imageUpload = await handleMediaUpload(image.file);
-                            
+                            // Draft image files stay in IndexedDB until the user saves the space.
+                            const file = image.file || await getDraftImage(image.localId);
+                            const imageUpload = image.image?.id || (file ? await handleMediaUpload(file) : null);
+
                             if (imageUpload) {
                                 updatedImages.push({
                                     image: imageUpload,
@@ -153,14 +166,14 @@ const Index = () => {
                                     linkToPage: image.linkToPage
                                 });
                             } else {
-                                setMessage({ type: 'error', text: `Failed to upload ${image.file.name}` });
+                                setMessage({ type: 'error', text: `Failed to save ${image.image?.alt || 'image'}` });
                                 setIsSaving(false);
                                 return;
                             }
                         } catch (error) {
                             console.error('Error uploading image:', error);
                             setIsSaving(false);
-                            setMessage({ type: 'error', text: `Error uploading ${image.file.name}: ${error.message}` });
+                            setMessage({ type: 'error', text: `Error saving ${image.image?.alt || 'image'}: ${error.message}` });
                             return;
                         }
                     } else {
@@ -198,6 +211,7 @@ const Index = () => {
             const updatedSpace = await updateEntry('spaces', space.id, spaceData);
             
             if (updatedSpace?.id) {
+                await Promise.all(spaceImages.filter(image => image.localId).map(image => deleteDraftImage(image.localId)));
                 clearDraftFromLocalStorage(space.id);
                 setMessage({ type: 'success', text: 'Space edited successfully!' });
             } else {
